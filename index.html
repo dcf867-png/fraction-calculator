@@ -46,10 +46,8 @@ body {
 
 /* ══════════════════════════════════
    SHARED CALCULATOR LAYOUT
-   Used by both Fraction and Construction tabs
 ══════════════════════════════════ */
 
-/* Display */
 .calc-display {
   padding: 10px 14px 8px;
   flex-shrink: 0;
@@ -117,7 +115,6 @@ body {
   min-height: 0;
 }
 
-/* Main area: left 2-col + separator + right 3-col */
 .key-area {
   display: flex;
   gap: 0;
@@ -133,7 +130,6 @@ body {
   padding-right: 8px;
 }
 
-/* Visual separator between left and right */
 .pad-sep {
   width: 2px;
   background: #3a3d55;
@@ -150,11 +146,9 @@ body {
   padding-left: 8px;
 }
 
-/* Row containers */
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; flex: 1; }
 .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; flex: 1; }
 
-/* Fraction bar between num and den pads */
 .frac-bar-key {
   height: 4px;
   background: #4a4d6a;
@@ -163,7 +157,6 @@ body {
   margin: 3px 0;
 }
 
-/* Op row */
 .op-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -204,7 +197,7 @@ body {
 
 .span2 { grid-column: span 2; }
 
-/* Construction tab keys — slightly different tint */
+/* Construction tab keys */
 #tab-const .key     { background: #1e2230; color: #ede5c0; }
 #tab-const .key:active { background: #2a2e40; }
 #tab-const .key-c   { background: #4a1a10; color: #f87878; }
@@ -266,7 +259,7 @@ body {
   padding: 4px 7px; cursor: pointer; flex-shrink: 0;
 }
 
-/* Section labels shown above each pad */
+/* Section labels */
 .pad-label {
   font-size: 0.6rem;
   font-weight: 800;
@@ -288,80 +281,6 @@ body {
   border-bottom: 1px solid transparent;
 }
 
-/* ── Cost Tab ── */
-#tab-cost .calc-display {
-  background: linear-gradient(160deg, #1a0e2a 0%, #120a1e 100%);
-  color: #c080f0;
-  border-bottom: 1px solid #3a2060;
-  min-height: 100px;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 10px;
-}
-#tab-cost .disp-main { color: #c080f0; font-size: 2.2rem; }
-#tab-cost .disp-top  { color: #9060c0; }
-#tab-cost .disp-sub  { color: #9060c0; font-size: 1.1rem; font-weight: 600; text-align: right; }
-#tab-cost .disp-c-btn { background: #2a1050; color: #c080f0; }
-
-.cost-mode-toggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  flex-shrink: 0;
-  padding: 6px 6px 0;
-}
-.cost-mode-btn {
-  padding: 5px 0;
-  background: #1a1028;
-  border: 1px solid #3a2060;
-  border-radius: 6px;
-  color: #9060c0;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.cost-mode-btn.active-cost-mode { background: #8040d0; border-color: #8040d0; color: #fff; }
-
-.cost-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 6px 0;
-  flex-shrink: 0;
-}
-.cost-dims-row { display: flex; align-items: center; gap: 6px; }
-.cost-dim-group { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
-.cost-dim-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7050a0; }
-.cost-fields-row { display: flex; align-items: center; gap: 3px; }
-.cost-dp {
-  background: #1e1430;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  color: #ddc0f8;
-  font-size: 1.3rem;
-  font-weight: 800;
-  text-align: center;
-  padding: 5px 6px;
-  min-width: 38px;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.cost-dp.active-cost { background: #8040d0; color: #fff; border-color: #8040d0; }
-.cost-unit { font-size: 2.4rem; color: #7050a0; font-weight: 700; line-height: 1; }
-.cost-x { font-size: 1.8rem; color: #7050a0; font-weight: 700; flex-shrink: 0; padding-top: 18px; }
-
-.cost-rate-row { display: flex; align-items: center; gap: 8px; padding: 0 2px; }
-.cost-dollar { font-size: 1.6rem; font-weight: 800; color: #9060c0; flex-shrink: 0; }
-.cost-rate-dp { flex: 1; min-width: 0; font-size: 1.4rem; }
-.cost-per-unit { font-size: 0.85rem; font-weight: 800; color: #9060c0; flex-shrink: 0; letter-spacing: 0.05em; }
-
-#tab-cost .key     { background: #1a1030; color: #ddc0f8; }
-#tab-cost .key:active { background: #261840; }
-#tab-cost .key-del { color: #7050a0; }
-#tab-cost .key-dot { color: #b090e0; }
-
 /* ── Sq Ft Tab ── */
 #tab-sqft .calc-display {
   background: linear-gradient(160deg, #0e1f0e 0%, #0a170a 100%);
@@ -374,13 +293,14 @@ body {
 }
 #tab-sqft .disp-main { color: #6dd86d; font-size: 2.2rem; }
 #tab-sqft .disp-top  { color: #4a9a4a; }
+#tab-sqft .disp-sub  { color: #80d860; font-size: 1.3rem; font-weight: 700; text-align: right; }
 #tab-sqft .disp-c-btn { background: #1a3a10; color: #6dd86d; }
 
 .sqft-inputs {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 10px 8px 6px;
+  padding: 8px 8px 4px;
   gap: 6px;
   flex-shrink: 0;
 }
@@ -397,14 +317,25 @@ body {
 .sqft-unit { font-size: 2.4rem; color: #4a9a4a; font-weight: 700; line-height: 1; }
 .sqft-x { font-size: 1.8rem; color: #4a9a4a; font-weight: 700; flex-shrink: 0; padding-top: 18px; }
 
+.sq-rate-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 2px 10px 4px; flex-shrink: 0;
+}
+.sq-dollar { font-size: 1.6rem; font-weight: 800; color: #4a9a4a; flex-shrink: 0; }
+.sq-rate-dp { flex: 1; min-width: 0; font-size: 1.4rem; }
+.sq-rate-unit { font-size: 0.85rem; font-weight: 800; color: #4a9a4a; flex-shrink: 0; }
+.sq-rate-hint { font-size: 0.65rem; color: #3a7a3a; font-style: italic; flex-shrink: 0; }
+
 .sq-numpad {
   display: flex; flex-direction: column; flex: 1;
   gap: 4px; min-height: 0; padding: 0 6px 6px;
 }
 .sq-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; flex: 1; }
+.sq-row4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; flex: 1; }
 #tab-sqft .key     { background: #162416; color: #c0e8c0; }
 #tab-sqft .key:active { background: #1e341e; }
 #tab-sqft .key-del { color: #4a9a4a; }
+#tab-sqft .key-dot { color: #80c880; }
 #tab-sqft .sq-adv  { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
 </style>
 </head>
@@ -414,7 +345,6 @@ body {
   <button class="tab active" onclick="showTab('frac',this)">Fraction</button>
   <button class="tab" onclick="showTab('const',this)">Construction</button>
   <button class="tab" onclick="showTab('sqft',this)">Sq Ft</button>
-  <button class="tab" onclick="showTab('cost',this)">Cost</button>
 </div>
 
 <!-- ════════════════════════════════
@@ -529,7 +459,6 @@ body {
 
 <!-- ════════════════════════════════
      CONSTRUCTION TAB
-     Left = whole inches, Right = fraction of inch
 ════════════════════════════════ -->
 <div id="tab-const" class="panel">
 
@@ -545,11 +474,9 @@ body {
   <div class="calc-keypad">
     <div class="key-area">
 
-      <!-- Left: inches or feet+inches -->
       <div class="left-pad">
         <div class="pad-label" id="c-pad-label">Inches</div>
 
-        <!-- IN / FT toggle -->
         <div class="mode-toggle">
           <button class="mode-btn active-mode" id="mode-in" onclick="setMode('in')">IN</button>
           <button class="mode-btn"             id="mode-ft" onclick="setMode('ft')">FT</button>
@@ -557,7 +484,6 @@ body {
 
         <div id="in-ctrl"></div>
 
-        <!-- FT mode: feet | inches mini fields -->
         <div class="ft-fields-row" id="ft-ctrl" style="display:none">
           <span class="mini-dp active-field" id="dp-ft"   onclick="setFtField('ft')">0</span>
           <span class="mini-unit">'</span>
@@ -565,7 +491,6 @@ body {
           <span class="mini-unit">"</span>
         </div>
 
-        <!-- Numpad (shared) -->
         <div class="row2">
           <button class="key" onclick="cW('1')">1</button>
           <button class="key" onclick="cW('2')">2</button>
@@ -591,14 +516,13 @@ body {
           <button class="key key-del" onclick="cWdel()">⌫</button>
         </div>
         <div class="row2" id="ft-sep-row" style="display:none">
-          <button class="key" id="c-ft-sep-btn" style="color:#f5a623;font-weight:800;font-size:1.3rem" onclick="cFtAdvance()">'</button>
+          <button class="key" style="color:#f5a623;font-weight:800;font-size:1.3rem" onclick="cFtAdvance()">'</button>
           <button class="key key-del" onclick="cWdel()">⌫</button>
         </div>
       </div>
 
       <div class="pad-sep"></div>
 
-      <!-- Right: fraction of inch -->
       <div class="right-pad">
         <div class="right-label-row">
           <div class="pad-label">Numerator</div>
@@ -661,79 +585,6 @@ body {
 </div>
 
 <!-- ════════════════════════════════
-     COST TAB
-════════════════════════════════ -->
-<div id="tab-cost" class="panel">
-
-  <div class="calc-display">
-    <button class="disp-c-btn" onclick="costClear()">C</button>
-    <div class="disp-stack">
-      <div class="disp-top"  id="cost-top"></div>
-      <div class="disp-main" id="cost-main">$0.00</div>
-      <div class="disp-sub"  id="cost-sub"></div>
-    </div>
-  </div>
-
-  <div class="cost-mode-toggle">
-    <button class="cost-mode-btn active-cost-mode" id="cost-mode-sqft"   onclick="setCostMode('sqft')">SQ FT</button>
-    <button class="cost-mode-btn"                  id="cost-mode-linear" onclick="setCostMode('linear')">LINEAR FT</button>
-  </div>
-
-  <div class="cost-inputs">
-    <div class="cost-dims-row">
-      <div class="cost-dim-group">
-        <div class="cost-dim-label">Length</div>
-        <div class="cost-fields-row">
-          <span class="cost-dp active-cost" id="cost-lft" onclick="setCostField('lft')">0</span>
-          <span class="cost-unit">'</span>
-          <span class="cost-dp" id="cost-lin" onclick="setCostField('lin')">0</span>
-          <span class="cost-unit">"</span>
-        </div>
-      </div>
-      <div class="cost-x" id="cost-x-sym">×</div>
-      <div class="cost-dim-group" id="cost-width-group">
-        <div class="cost-dim-label">Width</div>
-        <div class="cost-fields-row">
-          <span class="cost-dp" id="cost-wft" onclick="setCostField('wft')">0</span>
-          <span class="cost-unit">'</span>
-          <span class="cost-dp" id="cost-win" onclick="setCostField('win')">0</span>
-          <span class="cost-unit">"</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="cost-rate-row">
-      <span class="cost-dollar">$</span>
-      <span class="cost-dp cost-rate-dp" id="cost-rate" onclick="setCostField('rate')">0</span>
-      <span class="cost-per-unit" id="cost-per-unit">/sq ft</span>
-    </div>
-  </div>
-
-  <div class="sq-numpad">
-    <div class="sq-row3">
-      <button class="key" onclick="costW('1')">1</button>
-      <button class="key" onclick="costW('2')">2</button>
-      <button class="key" onclick="costW('3')">3</button>
-    </div>
-    <div class="sq-row3">
-      <button class="key" onclick="costW('4')">4</button>
-      <button class="key" onclick="costW('5')">5</button>
-      <button class="key" onclick="costW('6')">6</button>
-    </div>
-    <div class="sq-row3">
-      <button class="key" onclick="costW('7')">7</button>
-      <button class="key" onclick="costW('8')">8</button>
-      <button class="key" onclick="costW('9')">9</button>
-    </div>
-    <div class="sq-row3">
-      <button class="key" onclick="costW('0')">0</button>
-      <button class="key key-dot" onclick="costW('.')">.</button>
-      <button class="key key-del" onclick="costDel()">⌫</button>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════
      SQ FT TAB
 ════════════════════════════════ -->
 <div id="tab-sqft" class="panel">
@@ -743,6 +594,7 @@ body {
     <div class="disp-stack">
       <div class="disp-top"  id="sq-top"></div>
       <div class="disp-main" id="sq-main">0 sq ft</div>
+      <div class="disp-sub"  id="sq-sub"></div>
     </div>
   </div>
 
@@ -768,6 +620,13 @@ body {
     </div>
   </div>
 
+  <div class="sq-rate-row">
+    <span class="sq-dollar">$</span>
+    <span class="sq-dp sq-rate-dp" id="sq-rate" onclick="setSqField('rate')">0</span>
+    <span class="sq-rate-unit">/sq ft</span>
+    <span class="sq-rate-hint">(optional)</span>
+  </div>
+
   <div class="sq-numpad">
     <div class="sq-row3">
       <button class="key" onclick="sqW('1')">1</button>
@@ -784,16 +643,17 @@ body {
       <button class="key" onclick="sqW('8')">8</button>
       <button class="key" onclick="sqW('9')">9</button>
     </div>
-    <div class="sq-row3">
+    <div class="sq-row4">
       <button class="key" onclick="sqW('0')">0</button>
       <button class="key sq-adv" onclick="sqW('\'')">'</button>
+      <button class="key key-dot" onclick="sqW('.')">.</button>
       <button class="key key-del" onclick="sqDel()">⌫</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── Shared utilities ──────────────────────────────────────────────────────────
+// ─── Shared utilities ─────────────────────────────────────────────────────────
 function showTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -807,7 +667,6 @@ function gcd(a, b) {
   return a || 1;
 }
 
-// Format decimal as mixed fraction using nice denominators
 function fmtMixed(v) {
   if (!isFinite(v)) return 'Error';
   const neg = v < 0;
@@ -834,7 +693,6 @@ function fmtMixed(v) {
   return '0';
 }
 
-// Format decimal inches as total inches+fraction only (no feet)
 function fmtInchesOnly(totalIn) {
   if (!isFinite(totalIn)) return '';
   const neg = totalIn < 0;
@@ -858,7 +716,6 @@ function fmtInchesOnly(totalIn) {
   return (neg ? '−' : '') + s + '"';
 }
 
-// Format decimal inches as feet+inches+fraction string
 function fmtInches(totalIn) {
   if (!isFinite(totalIn)) return 'Error';
   const neg = totalIn < 0;
@@ -888,7 +745,7 @@ function fmtInches(totalIn) {
   return `${sign}${inStr}"`;
 }
 
-// ─── FRACTION TAB state + logic ───────────────────────────────────────────────
+// ─── FRACTION TAB ─────────────────────────────────────────────────────────────
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
 
 function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
@@ -983,14 +840,12 @@ function fSign() {
   fRender();
 }
 
-// ─── CONSTRUCTION TAB state + logic ───────────────────────────────────────────
+// ─── CONSTRUCTION TAB ─────────────────────────────────────────────────────────
 const CT = {
   phase: 'A',
-  mode: 'in',      // 'in' | 'ft'
-  ftField: 'ft',   // active sub-field when mode='ft': 'ft' | 'in'
-  // IN mode
+  mode: 'in',
+  ftField: 'ft',
   whole: '', num: '', den: '',
-  // FT mode
   feet: '', ftIn: '',
   storedVal: 0, storedStr: '0"', op: '',
 };
@@ -1130,8 +985,6 @@ function cEq(chain=false) {
     document.getElementById('c-sub').textContent='';
     CT.phase='A'; cResetInput(); return;
   }
-  // IN mode: main=total inches, sub=feet+inches
-  // FT mode: main=feet+inches, sub=total inches
   const mainStr = CT.mode==='in' ? fmtInchesOnly(res) : fmtInches(res);
   const subStr  = CT.mode==='in' ? fmtInches(res)     : fmtInchesOnly(res);
   if(!chain) {
@@ -1143,9 +996,7 @@ function cEq(chain=false) {
   CT.storedVal=res; CT.storedStr=mainStr; cResetInput();
 }
 
-function cFtAdvance() {
-  setFtField('in');
-}
+function cFtAdvance() { setFtField('in'); }
 
 function cClear() {
   CT.phase='A'; CT.op=''; CT.storedVal=0;
@@ -1164,12 +1015,12 @@ function cSign() {
   cRender();
 }
 
-// ─── SQ FT TAB state + logic ──────────────────────────────────────────────────
-const SQ = { field: 'lft', lft: '', lin: '', wft: '', win: '' };
+// ─── SQ FT TAB ────────────────────────────────────────────────────────────────
+const SQ = { field: 'lft', lft: '', lin: '', wft: '', win: '', rate: '' };
 
 function setSqField(f) {
   SQ.field = f;
-  ['lft','lin','wft','win'].forEach(id =>
+  ['lft','lin','wft','win','rate'].forEach(id =>
     document.getElementById('sq-'+id).classList.toggle('active-sq', id===f)
   );
 }
@@ -1181,24 +1032,40 @@ function sqCalc() {
 }
 
 function sqRender() {
-  document.getElementById('sq-lft').textContent = SQ.lft || '0';
-  document.getElementById('sq-lin').textContent = SQ.lin || '0';
-  document.getElementById('sq-wft').textContent = SQ.wft || '0';
-  document.getElementById('sq-win').textContent = SQ.win || '0';
+  document.getElementById('sq-lft').textContent  = SQ.lft  || '0';
+  document.getElementById('sq-lin').textContent  = SQ.lin  || '0';
+  document.getElementById('sq-wft').textContent  = SQ.wft  || '0';
+  document.getElementById('sq-win').textContent  = SQ.win  || '0';
+  document.getElementById('sq-rate').textContent = SQ.rate || '0';
   const sqft = sqCalc();
   const lenStr = `${SQ.lft||'0'}' ${SQ.lin||'0'}"`;
   const widStr = `${SQ.wft||'0'}' ${SQ.win||'0'}"`;
   document.getElementById('sq-top').textContent  = sqft > 0 ? `${lenStr} × ${widStr}` : '';
   document.getElementById('sq-main').textContent = sqft > 0 ? sqft.toFixed(2) + ' sq ft' : '0 sq ft';
+  const rate = parseFloat(SQ.rate || '0');
+  if (sqft > 0 && rate > 0) {
+    const cost = sqft * rate;
+    const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    document.getElementById('sq-sub').textContent = fmt(cost);
+  } else {
+    document.getElementById('sq-sub').textContent = '';
+  }
 }
 
 function sqW(d) {
   if (d === "'") {
-    const next = { lft:'lin', lin:'wft', wft:'win', win:'win' };
+    const next = { lft:'lin', lin:'wft', wft:'win', win:'rate', rate:'rate' };
     setSqField(next[SQ.field]);
     return;
   }
-  const maxLen = (SQ.field==='lin' || SQ.field==='win') ? 2 : 4;
+  if (d === '.') {
+    if (SQ.field !== 'rate') return;
+    if (SQ.rate.includes('.')) return;
+    SQ.rate += '.';
+    sqRender();
+    return;
+  }
+  const maxLen = SQ.field === 'rate' ? 10 : (SQ.field==='lin' || SQ.field==='win') ? 2 : 4;
   if (SQ[SQ.field].length >= maxLen) return;
   SQ[SQ.field] += d;
   sqRender();
@@ -1210,109 +1077,19 @@ function sqDel() {
 }
 
 function sqClear() {
-  SQ.lft=''; SQ.lin=''; SQ.wft=''; SQ.win='';
+  SQ.lft=''; SQ.lin=''; SQ.wft=''; SQ.win=''; SQ.rate='';
   setSqField('lft');
   sqRender();
 }
 
-// ─── COST TAB state + logic ───────────────────────────────────────────────────
-const COST = { mode: 'sqft', field: 'lft', lft:'', lin:'', wft:'', win:'', rate:'' };
-
-function setCostMode(m) {
-  COST.mode = m;
-  COST.lft=''; COST.lin=''; COST.wft=''; COST.win=''; COST.rate='';
-  document.getElementById('cost-mode-sqft').classList.toggle('active-cost-mode', m==='sqft');
-  document.getElementById('cost-mode-linear').classList.toggle('active-cost-mode', m==='linear');
-  document.getElementById('cost-x-sym').style.display        = m==='sqft' ? '' : 'none';
-  document.getElementById('cost-width-group').style.display  = m==='sqft' ? '' : 'none';
-  document.getElementById('cost-per-unit').textContent       = m==='sqft' ? '/sq ft' : '/lin ft';
-  setCostField('lft');
-  costRender();
-}
-
-function setCostField(f) {
-  COST.field = f;
-  ['lft','lin','wft','win','rate'].forEach(id => {
-    const el = document.getElementById('cost-'+id);
-    if (el) el.classList.toggle('active-cost', id===f);
-  });
-}
-
-function costCalc() {
-  const lenIn = (parseInt(COST.lft||'0') * 12) + parseInt(COST.lin||'0');
-  const rate  = parseFloat(COST.rate||'0');
-  if (COST.mode === 'sqft') {
-    const widIn = (parseInt(COST.wft||'0') * 12) + parseInt(COST.win||'0');
-    return (lenIn * widIn / 144) * rate;
-  }
-  return (lenIn / 12) * rate;
-}
-
-function costRender() {
-  ['lft','lin','wft','win'].forEach(id => {
-    const el = document.getElementById('cost-'+id);
-    if (el) el.textContent = COST[id] || '0';
-  });
-  document.getElementById('cost-rate').textContent = COST.rate || '0';
-  const total = costCalc();
-  const lenIn = (parseInt(COST.lft||'0') * 12) + parseInt(COST.lin||'0');
-  const rate  = parseFloat(COST.rate||'0');
-  if (total > 0) {
-    const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    document.getElementById('cost-main').textContent = fmt(total);
-    if (COST.mode === 'sqft') {
-      const widIn = (parseInt(COST.wft||'0') * 12) + parseInt(COST.win||'0');
-      const sqft = lenIn * widIn / 144;
-      document.getElementById('cost-top').textContent = '';
-      document.getElementById('cost-sub').textContent = `${sqft.toFixed(2)} sq ft × ${fmt(rate)}/sq ft`;
-    } else {
-      const linFt = lenIn / 12;
-      document.getElementById('cost-top').textContent = '';
-      document.getElementById('cost-sub').textContent = `${linFt.toFixed(2)} lin ft × ${fmt(rate)}/lin ft`;
-    }
-  } else {
-    document.getElementById('cost-main').textContent = '$0.00';
-    document.getElementById('cost-top').textContent  = '';
-    document.getElementById('cost-sub').textContent  = '';
-  }
-}
-
-function costW(d) {
-  const f = COST.field;
-  if (f === 'rate') {
-    if (d === '.' && COST.rate.includes('.')) return;
-    if (COST.rate.length >= 10) return;
-    COST.rate += d;
-  } else {
-    if (d === '.') return;
-    const maxLen = (f==='lin'||f==='win') ? 2 : 4;
-    if (COST[f].length >= maxLen) return;
-    COST[f] += d;
-  }
-  costRender();
-}
-
-function costDel() {
-  const f = COST.field;
-  COST[f] = COST[f].slice(0,-1);
-  costRender();
-}
-
-function costClear() {
-  COST.lft=''; COST.lin=''; COST.wft=''; COST.win=''; COST.rate='';
-  setCostField('lft');
-  costRender();
-}
-
 // ─── Keyboard input ───────────────────────────────────────────────────────────
-let fracKbField  = 'whole'; // 'whole' | 'num' | 'den'
-let constKbField = 'whole'; // 'whole' | 'num' | 'den'
+let fracKbField  = 'whole';
+let constKbField = 'whole';
 
 function getActiveTab() {
   if (document.getElementById('tab-frac').classList.contains('active'))  return 'frac';
   if (document.getElementById('tab-const').classList.contains('active')) return 'const';
   if (document.getElementById('tab-sqft').classList.contains('active'))  return 'sqft';
-  if (document.getElementById('tab-cost').classList.contains('active'))  return 'cost';
 }
 
 document.addEventListener('keydown', e => {
@@ -1356,22 +1133,10 @@ document.addEventListener('keydown', e => {
 
   else if (tab === 'sqft') {
     if (k >= '0' && k <= '9') sqW(k);
-    else if (k === "'")      sqW("'");
+    else if (k === "'") sqW("'");
+    else if (k === '.') sqW('.');
     else if (k === 'Backspace') sqDel();
     else if (k === 'Escape')    sqClear();
-    else return;
-    e.preventDefault();
-  }
-
-  else if (tab === 'cost') {
-    if (k >= '0' && k <= '9') costW(k);
-    else if (k === '.')         costW('.');
-    else if (k === 'Backspace') costDel();
-    else if (k === 'Escape')    costClear();
-    else if (k === "'") {
-      const next = { lft:'lin', lin: COST.mode==='sqft' ? 'wft' : 'rate', wft:'win', win:'rate', rate:'rate' };
-      setCostField(next[COST.field]);
-    }
     else return;
     e.preventDefault();
   }
