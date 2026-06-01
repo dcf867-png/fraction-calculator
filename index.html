@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fraction Calculator</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  font-family: system-ui, -apple-system, sans-serif;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  background: #0d0d1a;
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1;
+  padding: 11px 4px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #b0b0cc;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.tab.active { color: #f5a623; border-bottom-color: #f5a623; }
+
+.panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.panel.active { display: flex; }
+
+/* ══════════════════════════════════
+   SHARED CALCULATOR LAYOUT
+   Used by both Fraction and Construction tabs
+══════════════════════════════════ */
+
+/* Display */
+.calc-display {
+  padding: 10px 14px 8px;
+  flex-shrink: 0;
+  min-height: 85px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.disp-top {
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-height: 18px;
+  text-align: right;
+  opacity: 0.85;
+}
+.disp-main {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* Fraction tab display: teal */
+#tab-frac .calc-display {
+  background: linear-gradient(160deg, #6ab4cc 0%, #4a93ac 100%);
+  color: #000;
+}
+
+/* Construction tab display: dark amber */
+#tab-const .calc-display {
+  background: linear-gradient(160deg, #2a2010 0%, #1e1a0d 100%);
+  color: #f5c060;
+  border-bottom: 1px solid #3a3020;
+  min-height: 100px;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+}
+#tab-const .disp-main { color: #f5c060; }
+#tab-const .disp-top  { color: #d4a060; }
+#tab-const .disp-sub  { color: #d4a060; font-size: 1.1rem; font-weight: 600; text-align: right; min-height: 0; }
+.disp-stack { flex: 1; display: flex; flex-direction: column; align-items: flex-end; }
+.disp-c-btn {
+  background: #4a1a10;
+  color: #f87878;
+  border: none;
+  border-radius: 7px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 8px 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Keypad wrapper */
+.calc-keypad {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 6px;
+  gap: 5px;
+  min-height: 0;
+}
+
+/* Main area: left 2-col + separator + right 3-col */
+.key-area {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.left-pad {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  gap: 4px;
+  padding-right: 8px;
+}
+
+/* Visual separator between left and right */
+.pad-sep {
+  width: 2px;
+  background: #3a3d55;
+  border-radius: 1px;
+  flex-shrink: 0;
+  margin: 4px 0;
+}
+
+.right-pad {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  gap: 4px;
+  padding-left: 8px;
+}
+
+/* Row containers */
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; flex: 1; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; flex: 1; }
+
+/* Fraction bar between num and den pads */
+.frac-bar-key {
+  height: 4px;
+  background: #4a4d6a;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin: 3px 0;
+}
+
+/* Op row */
+.op-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  flex-shrink: 0;
+  height: 48px;
+}
+
+/* ── Keys ── */
+.key {
+  background: #2c3050;
+  border: none;
+  border-radius: 7px;
+  color: #f0f2ff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.08s;
+  line-height: 1;
+}
+.key:active { background: #3d4268; }
+
+.key-c  { background: #b03a33; color: #fff; font-weight: 800; }
+.key-c:active { background: #8f2e28; }
+.key-pm { background: #353858; color: #c0c8e8; font-size: 0.95rem; }
+.key-del { color: #a0b0d8; }
+.key-dot { color: #c0c8e8; }
+
+.key-op { background: #22253a; color: #b0c0d8; font-size: 1.25rem; }
+.key-op:active { background: #2e3250; }
+.key-op.active-op { background: #f5a623; color: #000; }
+
+.key-eq { background: #f5a623; color: #000; font-size: 1.4rem; font-weight: 800; }
+.key-eq:active { background: #d48f1a; }
+
+.span2 { grid-column: span 2; }
+
+/* Construction tab keys — slightly different tint */
+#tab-const .key     { background: #1e2230; color: #ede5c0; }
+#tab-const .key:active { background: #2a2e40; }
+#tab-const .key-c   { background: #4a1a10; color: #f87878; }
+#tab-const .key-pm  { background: #252030; color: #d0b880; }
+#tab-const .key-del { color: #c09060; }
+#tab-const .key-op  { background: #181810; color: #c09060; }
+#tab-const .key-op.active-op { background: #f5a623; color: #000; }
+#tab-const .key-eq  { background: #f5a623; }
+#tab-const .pad-sep { background: #3a3020; }
+#tab-const .frac-bar-key { background: #3a3020; }
+
+/* Mode toggle (IN / FT) */
+.mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mode-btn {
+  padding: 5px 0;
+  background: #1a1c28;
+  border: 1px solid #3a3020;
+  border-radius: 6px;
+  color: #c09060;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.mode-btn.active-mode { background: #f5a623; border-color: #f5a623; color: #000; }
+
+/* FT mode: mini dual-field display inside left pad */
+.ft-fields-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mini-dp {
+  flex: 1;
+  background: #1e2230;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #ede5c0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 2px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.mini-dp.active-field { background: #f5a623; color: #000; border-color: #f5a623; }
+.mini-unit { font-size: 2.4rem; color: #c09060; font-weight: 700; flex-shrink: 0; line-height: 1; }
+.mini-c {
+  background: #4a1a10; color: #f87878;
+  border: none; border-radius: 6px;
+  font-size: 0.75rem; font-weight: 800;
+  padding: 4px 7px; cursor: pointer; flex-shrink: 0;
+}
+
+/* Section labels shown above each pad */
+.pad-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 2px;
+  flex-shrink: 0;
+}
+#tab-frac .pad-label { color: #9090c0; }
+#tab-const .pad-label { color: #b08848; }
+
+.right-label-row {
+  display: flex;
+  flex-shrink: 0;
+}
+.right-label-row .pad-label {
+  flex: 1;
+  border-bottom: 1px solid transparent;
+}
+
+/* ── Sq Ft Tab ── */
+#tab-sqft .calc-display {
+  background: linear-gradient(160deg, #0e1f0e 0%, #0a170a 100%);
+  color: #6dd86d;
+  border-bottom: 1px solid #1e3a1e;
+  min-height: 100px;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+}
+#tab-sqft .disp-main { color: #6dd86d; font-size: 2.2rem; }
+#tab-sqft .disp-top  { color: #4a9a4a; }
+#tab-sqft .disp-c-btn { background: #1a3a10; color: #6dd86d; }
+
+.sqft-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 8px 6px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.sqft-dim { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+.sqft-dim-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #4a9a4a; }
+.sqft-fields { display: flex; align-items: center; gap: 3px; }
+.sq-dp {
+  background: #1a2a1a; border: 2px solid transparent; border-radius: 6px;
+  color: #c0e8c0; font-size: 1.3rem; font-weight: 800;
+  text-align: center; padding: 5px 6px; min-width: 38px;
+  cursor: pointer; transition: all 0.1s;
+}
+.sq-dp.active-sq { background: #f5a623; color: #000; border-color: #f5a623; }
+.sqft-unit { font-size: 2.4rem; color: #4a9a4a; font-weight: 700; line-height: 1; }
+.sqft-x { font-size: 1.8rem; color: #4a9a4a; font-weight: 700; flex-shrink: 0; padding-top: 18px; }
+
+.sq-numpad {
+  display: flex; flex-direction: column; flex: 1;
+  gap: 4px; min-height: 0; padding: 0 6px 6px;
+}
+.sq-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; flex: 1; }
+#tab-sqft .key     { background: #162416; color: #c0e8c0; }
+#tab-sqft .key:active { background: #1e341e; }
+#tab-sqft .key-del { color: #4a9a4a; }
+#tab-sqft .sq-adv  { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('frac',this)">Fraction</button>
+  <button class="tab" onclick="showTab('const',this)">Construction</button>
+  <button class="tab" onclick="showTab('sqft',this)">Sq Ft</button>
+</div>
+
+<!-- ════════════════════════════════
+     FRACTION TAB
+════════════════════════════════ -->
+<div id="tab-frac" class="panel active">
+
+  <div class="calc-display">
+    <div class="disp-top"  id="f-top"></div>
+    <div class="disp-main" id="f-main">0</div>
+  </div>
+
+  <div class="calc-keypad">
+    <div class="key-area">
+
+      <!-- Left: whole number -->
+      <div class="left-pad">
+        <div class="pad-label">Whole</div>
+        <div class="row2">
+          <button class="key key-c"  onclick="fClear()">C</button>
+          <button class="key key-pm" onclick="fSign()">+/−</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="fW('1')">1</button>
+          <button class="key" onclick="fW('2')">2</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="fW('3')">3</button>
+          <button class="key" onclick="fW('4')">4</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="fW('5')">5</button>
+          <button class="key" onclick="fW('6')">6</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="fW('7')">7</button>
+          <button class="key" onclick="fW('8')">8</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="fW('9')">9</button>
+          <button class="key" onclick="fW('0')">0</button>
+        </div>
+        <div class="row2">
+          <button class="key key-dot" onclick="fW('.')">.</button>
+          <button class="key key-del" onclick="fWdel()">⌫</button>
+        </div>
+      </div>
+
+      <div class="pad-sep"></div>
+
+      <!-- Right: numerator / line / denominator -->
+      <div class="right-pad">
+        <div class="right-label-row">
+          <div class="pad-label">Numerator</div>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fN('7')">7</button>
+          <button class="key" onclick="fN('8')">8</button>
+          <button class="key" onclick="fN('9')">9</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fN('4')">4</button>
+          <button class="key" onclick="fN('5')">5</button>
+          <button class="key" onclick="fN('6')">6</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fN('1')">1</button>
+          <button class="key" onclick="fN('2')">2</button>
+          <button class="key" onclick="fN('3')">3</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fN('0')">0</button>
+          <button class="key key-del span2" onclick="fNdel()">⌫</button>
+        </div>
+
+        <div class="frac-bar-key"></div>
+
+        <div class="right-label-row">
+          <div class="pad-label">Denominator</div>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fD('7')">7</button>
+          <button class="key" onclick="fD('8')">8</button>
+          <button class="key" onclick="fD('9')">9</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fD('4')">4</button>
+          <button class="key" onclick="fD('5')">5</button>
+          <button class="key" onclick="fD('6')">6</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fD('1')">1</button>
+          <button class="key" onclick="fD('2')">2</button>
+          <button class="key" onclick="fD('3')">3</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="fD('0')">0</button>
+          <button class="key key-del span2" onclick="fDdel()">⌫</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="op-row">
+      <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
+      <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
+      <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
+      <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
+      <button class="key key-eq" onclick="fEq()">=</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     CONSTRUCTION TAB
+     Left = whole inches, Right = fraction of inch
+════════════════════════════════ -->
+<div id="tab-const" class="panel">
+
+  <div class="calc-display">
+    <button class="disp-c-btn" onclick="cClear()">C</button>
+    <div class="disp-stack">
+      <div class="disp-top"  id="c-top"></div>
+      <div class="disp-main" id="c-main">0"</div>
+      <div class="disp-sub"  id="c-sub"></div>
+    </div>
+  </div>
+
+  <div class="calc-keypad">
+    <div class="key-area">
+
+      <!-- Left: inches or feet+inches -->
+      <div class="left-pad">
+        <div class="pad-label" id="c-pad-label">Inches</div>
+
+        <!-- IN / FT toggle -->
+        <div class="mode-toggle">
+          <button class="mode-btn active-mode" id="mode-in" onclick="setMode('in')">IN</button>
+          <button class="mode-btn"             id="mode-ft" onclick="setMode('ft')">FT</button>
+        </div>
+
+        <div id="in-ctrl"></div>
+
+        <!-- FT mode: feet | inches mini fields -->
+        <div class="ft-fields-row" id="ft-ctrl" style="display:none">
+          <span class="mini-dp active-field" id="dp-ft"   onclick="setFtField('ft')">0</span>
+          <span class="mini-unit">'</span>
+          <span class="mini-dp"              id="dp-ftin" onclick="setFtField('in')">0</span>
+          <span class="mini-unit">"</span>
+        </div>
+
+        <!-- Numpad (shared) -->
+        <div class="row2">
+          <button class="key" onclick="cW('1')">1</button>
+          <button class="key" onclick="cW('2')">2</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="cW('3')">3</button>
+          <button class="key" onclick="cW('4')">4</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="cW('5')">5</button>
+          <button class="key" onclick="cW('6')">6</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="cW('7')">7</button>
+          <button class="key" onclick="cW('8')">8</button>
+        </div>
+        <div class="row2">
+          <button class="key" onclick="cW('9')">9</button>
+          <button class="key" onclick="cW('0')">0</button>
+        </div>
+        <div class="row2">
+          <button class="key key-dot" id="c-dot-btn" onclick="cW('.')">.</button>
+          <button class="key key-del" onclick="cWdel()">⌫</button>
+        </div>
+        <div class="row2" id="ft-sep-row" style="display:none">
+          <button class="key" id="c-ft-sep-btn" style="color:#f5a623;font-weight:800;font-size:1.3rem" onclick="cFtAdvance()">'</button>
+          <button class="key key-del" onclick="cWdel()">⌫</button>
+        </div>
+      </div>
+
+      <div class="pad-sep"></div>
+
+      <!-- Right: fraction of inch -->
+      <div class="right-pad">
+        <div class="right-label-row">
+          <div class="pad-label">Numerator</div>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cN('7')">7</button>
+          <button class="key" onclick="cN('8')">8</button>
+          <button class="key" onclick="cN('9')">9</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cN('4')">4</button>
+          <button class="key" onclick="cN('5')">5</button>
+          <button class="key" onclick="cN('6')">6</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cN('1')">1</button>
+          <button class="key" onclick="cN('2')">2</button>
+          <button class="key" onclick="cN('3')">3</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cN('0')">0</button>
+          <button class="key key-del span2" onclick="cNdel()">⌫</button>
+        </div>
+
+        <div class="frac-bar-key"></div>
+
+        <div class="right-label-row">
+          <div class="pad-label">Denominator</div>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cD('7')">7</button>
+          <button class="key" onclick="cD('8')">8</button>
+          <button class="key" onclick="cD('9')">9</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cD('4')">4</button>
+          <button class="key" onclick="cD('5')">5</button>
+          <button class="key" onclick="cD('6')">6</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cD('1')">1</button>
+          <button class="key" onclick="cD('2')">2</button>
+          <button class="key" onclick="cD('3')">3</button>
+        </div>
+        <div class="row3">
+          <button class="key" onclick="cD('0')">0</button>
+          <button class="key key-del span2" onclick="cDdel()">⌫</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="op-row">
+      <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
+      <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
+      <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
+      <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
+      <button class="key key-eq" onclick="cEq()">=</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SQ FT TAB
+════════════════════════════════ -->
+<div id="tab-sqft" class="panel">
+
+  <div class="calc-display">
+    <button class="disp-c-btn" onclick="sqClear()">C</button>
+    <div class="disp-stack">
+      <div class="disp-top"  id="sq-top"></div>
+      <div class="disp-main" id="sq-main">0 sq ft</div>
+    </div>
+  </div>
+
+  <div class="sqft-inputs">
+    <div class="sqft-dim">
+      <div class="sqft-dim-label">Length</div>
+      <div class="sqft-fields">
+        <span class="sq-dp active-sq" id="sq-lft" onclick="setSqField('lft')">0</span>
+        <span class="sqft-unit">'</span>
+        <span class="sq-dp" id="sq-lin" onclick="setSqField('lin')">0</span>
+        <span class="sqft-unit">"</span>
+      </div>
+    </div>
+    <div class="sqft-x">×</div>
+    <div class="sqft-dim">
+      <div class="sqft-dim-label">Width</div>
+      <div class="sqft-fields">
+        <span class="sq-dp" id="sq-wft" onclick="setSqField('wft')">0</span>
+        <span class="sqft-unit">'</span>
+        <span class="sq-dp" id="sq-win" onclick="setSqField('win')">0</span>
+        <span class="sqft-unit">"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sq-numpad">
+    <div class="sq-row3">
+      <button class="key" onclick="sqW('1')">1</button>
+      <button class="key" onclick="sqW('2')">2</button>
+      <button class="key" onclick="sqW('3')">3</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="sqW('4')">4</button>
+      <button class="key" onclick="sqW('5')">5</button>
+      <button class="key" onclick="sqW('6')">6</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="sqW('7')">7</button>
+      <button class="key" onclick="sqW('8')">8</button>
+      <button class="key" onclick="sqW('9')">9</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="sqW('0')">0</button>
+      <button class="key sq-adv" onclick="sqW('\'')">'</button>
+      <button class="key key-del" onclick="sqDel()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Shared utilities ──────────────────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function gcd(a, b) {
+  a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+  while (b) { [a, b] = [b, a % b]; }
+  return a || 1;
+}
+
+// Format decimal as mixed fraction using nice denominators
+function fmtMixed(v) {
+  if (!isFinite(v)) return 'Error';
+  const neg = v < 0;
+  const abs = Math.abs(v);
+  const whole = Math.floor(abs + 1e-9);
+  const frac  = abs - whole;
+
+  let bestN = 0, bestD = 1, bestErr = Infinity;
+  for (const d of [1, 2, 4, 8, 16, 32, 64]) {
+    const n = Math.round(frac * d);
+    const err = Math.abs(n / d - frac);
+    if (err < bestErr - 1e-12) { bestErr = err; bestN = n; bestD = d; }
+  }
+  let w = whole;
+  if (bestN >= bestD) { w++; bestN = 0; bestD = 1; }
+
+  const g  = gcd(bestN, bestD);
+  const fn = bestN / g, fd = bestD / g;
+  const s  = neg ? '−' : '';
+
+  if (w > 0 && fn > 0)  return `${s}${w} ${fn}/${fd}`;
+  if (w > 0)             return `${s}${w}`;
+  if (fn > 0)            return `${s}${fn}/${fd}`;
+  return '0';
+}
+
+// Format decimal inches as total inches+fraction only (no feet)
+function fmtInchesOnly(totalIn) {
+  if (!isFinite(totalIn)) return '';
+  const neg = totalIn < 0;
+  const abs = Math.abs(totalIn);
+  const inWhole = Math.floor(abs + 1e-9);
+  const frac    = abs - inWhole;
+
+  let bestN = 0, bestD = 1, bestErr = Infinity;
+  for (const d of [1, 2, 4, 8, 16, 32, 64]) {
+    const n = Math.round(frac * d);
+    const err = Math.abs(n / d - frac);
+    if (err < bestErr - 1e-12) { bestErr = err; bestN = n; bestD = d; }
+  }
+  if (bestN >= bestD) { bestN = 0; }
+  const g = gcd(bestN, bestD);
+  const fn = bestN / g, fd = bestD / g;
+
+  let s = inWhole > 0 ? `${inWhole}` : '';
+  if (fn > 0) s += (s ? '-' : '') + `${fn}/${fd}`;
+  if (!s) s = '0';
+  return (neg ? '−' : '') + s + '"';
+}
+
+// Format decimal inches as feet+inches+fraction string
+function fmtInches(totalIn) {
+  if (!isFinite(totalIn)) return 'Error';
+  const neg = totalIn < 0;
+  const abs = Math.abs(totalIn);
+  const ft  = Math.floor(abs / 12);
+  const remIn   = abs - ft * 12;
+  const inWhole = Math.floor(remIn + 1e-9);
+  const frac    = remIn - inWhole;
+
+  let bestN = 0, bestD = 1, bestErr = Infinity;
+  for (const d of [1, 2, 4, 8, 16, 32, 64]) {
+    const n = Math.round(frac * d);
+    const err = Math.abs(n / d - frac);
+    if (err < bestErr - 1e-12) { bestErr = err; bestN = n; bestD = d; }
+  }
+  if (bestN >= bestD) { bestN = 0; }
+
+  const g  = gcd(bestN, bestD);
+  const fn = bestN / g, fd = bestD / g;
+
+  let inStr = inWhole > 0 ? `${inWhole}` : '';
+  if (fn > 0) inStr += (inStr ? '-' : '') + `${fn}/${fd}`;
+  if (!inStr) inStr = '0';
+
+  const sign = neg ? '−' : '';
+  if (ft > 0) return `${sign}${ft}' ${inStr}"`;
+  return `${sign}${inStr}"`;
+}
+
+// ─── FRACTION TAB state + logic ───────────────────────────────────────────────
+const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
+
+function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
+function fInputStr() {
+  const w=FT.whole||'0', n=FT.num, d=FT.den;
+  if(!n&&!d) return w;
+  if(n&&!d)  return `${w} ${n}/`;
+  if(!n&&d)  return `${w} 0/${d}`;
+  return `${w} ${n}/${d}`;
+}
+function fRender() {
+  const top=document.getElementById('f-top'), main=document.getElementById('f-main');
+  if(FT.phase==='A') { top.textContent=''; main.textContent=fInputStr(); }
+  else if(FT.phase==='OP') { top.textContent=FT.storedStr+' '+FT.op; main.textContent='0'; }
+  else if(FT.phase==='B')  { top.textContent=FT.storedStr+' '+FT.op; main.textContent=fInputStr(); }
+}
+function fResetInput() { FT.whole=''; FT.num=''; FT.den=''; }
+
+function fW(d) {
+  if(FT.phase==='R'){FT.phase='A';fResetInput();}
+  if(FT.phase==='OP'){FT.phase='B';fResetInput();}
+  if(d==='.'&&FT.whole.includes('.')) return;
+  if(FT.whole.length>=8) return;
+  FT.whole+=d; fRender();
+}
+function fN(d) {
+  if(FT.phase==='R'){FT.phase='A';fResetInput();}
+  if(FT.phase==='OP'){FT.phase='B';fResetInput();}
+  if(FT.num.length>=6) return;
+  FT.num+=d; fRender();
+}
+function fD(d) {
+  if(FT.phase==='R'){FT.phase='A';fResetInput();}
+  if(FT.phase==='OP'){FT.phase='B';fResetInput();}
+  if(FT.den.length>=6) return;
+  FT.den+=d; fRender();
+}
+function fWdel() { FT.whole=FT.whole.slice(0,-1); fRender(); }
+function fNdel() { FT.num=FT.num.slice(0,-1);     fRender(); }
+function fDdel() { FT.den=FT.den.slice(0,-1);     fRender(); }
+
+function fOp(btn) {
+  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
+  btn.classList.add('active-op');
+  if(FT.phase==='B') fEq(true);
+  FT.storedVal=fVal(); FT.storedStr=fInputStr(); FT.op=btn.dataset.op;
+  FT.phase='OP'; fResetInput(); fRender();
+}
+
+function fEq(chain=false) {
+  if(FT.phase==='OP') return;
+  if(FT.phase==='A') {
+    if(!FT.num && !FT.den) return;
+    const v = fVal();
+    const resStr = fmtMixed(v);
+    document.getElementById('f-top').textContent  = fInputStr() + ' =';
+    document.getElementById('f-main').textContent = resStr;
+    FT.phase='R'; FT.storedVal=v; FT.storedStr=resStr; fResetInput();
+    return;
+  }
+  const b=fVal(), bStr=fInputStr();
+  let res;
+  try {
+    if(FT.op==='+') res=FT.storedVal+b;
+    else if(FT.op==='−') res=FT.storedVal-b;
+    else if(FT.op==='×') res=FT.storedVal*b;
+    else if(FT.op==='÷') { if(b===0) throw new Error('÷ 0'); res=FT.storedVal/b; }
+  } catch(e) {
+    document.getElementById('f-top').textContent='';
+    document.getElementById('f-main').textContent=e.message;
+    FT.phase='A'; fResetInput(); return;
+  }
+  const resStr=fmtMixed(res);
+  if(!chain) {
+    document.getElementById('f-top').textContent=`${FT.storedStr} ${FT.op} ${bStr} =`;
+    document.getElementById('f-main').textContent=resStr;
+    FT.phase='R';
+  }
+  FT.storedVal=res; FT.storedStr=resStr; fResetInput();
+}
+
+function fClear() {
+  FT.phase='A'; FT.op=''; FT.storedVal=0; FT.storedStr='0'; fResetInput();
+  document.getElementById('f-top').textContent='';
+  document.getElementById('f-main').textContent='0';
+  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
+}
+
+function fSign() {
+  if(FT.whole.startsWith('-')) FT.whole=FT.whole.slice(1);
+  else FT.whole=FT.whole?'-'+FT.whole:'-0';
+  fRender();
+}
+
+// ─── CONSTRUCTION TAB state + logic ───────────────────────────────────────────
+const CT = {
+  phase: 'A',
+  mode: 'in',      // 'in' | 'ft'
+  ftField: 'ft',   // active sub-field when mode='ft': 'ft' | 'in'
+  // IN mode
+  whole: '', num: '', den: '',
+  // FT mode
+  feet: '', ftIn: '',
+  storedVal: 0, storedStr: '0"', op: '',
+};
+
+function setMode(m) {
+  CT.mode = m;
+  cResetInput();
+  CT.phase = 'A';
+  document.getElementById('mode-in').classList.toggle('active-mode', m==='in');
+  document.getElementById('mode-ft').classList.toggle('active-mode', m==='ft');
+  document.getElementById('in-ctrl').style.display    = m==='in' ? 'grid' : 'none';
+  document.getElementById('ft-ctrl').style.display    = m==='ft' ? 'flex' : 'none';
+  document.getElementById('c-dot-btn').parentElement.style.display = m==='ft' ? 'none' : 'grid';
+  document.getElementById('ft-sep-row').style.display = m==='ft' ? 'grid' : 'none';
+  document.getElementById('c-pad-label').textContent = m==='in' ? 'Inches' : 'Feet + Inches';
+  CT.storedVal = 0;
+  CT.storedStr = m==='ft' ? "0' 0\"" : '0"';
+  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
+  cRender();
+}
+
+function setFtField(f) {
+  CT.ftField = f;
+  document.getElementById('dp-ft').classList.toggle('active-field',   f==='ft');
+  document.getElementById('dp-ftin').classList.toggle('active-field', f==='in');
+}
+
+function cVal() {
+  const n = parseInt(CT.num||'0'), d = parseInt(CT.den||'0');
+  const frac = d > 0 ? n/d : 0;
+  if (CT.mode==='ft') {
+    return (parseInt(CT.feet||'0') * 12) + (parseInt(CT.ftIn||'0')) + frac;
+  }
+  return parseFloat(CT.whole||'0') + frac;
+}
+
+function cInputStr() {
+  const n=CT.num, d=CT.den;
+  const fracStr = (!n&&!d) ? '' : (n&&!d) ? `-${n}/` : (!n&&d) ? `-0/${d}` : `-${n}/${d}`;
+  if (CT.mode==='ft') {
+    const ft=CT.feet||'0', fi=CT.ftIn||'0';
+    return `${ft}' ${fi}${fracStr}"`;
+  }
+  const w=CT.whole||'0';
+  return `${w}${fracStr}"`;
+}
+
+function cRender() {
+  const top=document.getElementById('c-top'), main=document.getElementById('c-main'), sub=document.getElementById('c-sub');
+  if (CT.mode==='ft') {
+    document.getElementById('dp-ft').textContent   = CT.feet||'0';
+    document.getElementById('dp-ftin').textContent = CT.ftIn||'0';
+  }
+  const emptyDisplay = CT.mode==='ft' ? "0' 0\"" : '0"';
+  if (CT.phase==='A' || CT.phase==='B') {
+    top.textContent  = CT.phase==='B' ? CT.storedStr+' '+CT.op : '';
+    main.textContent = cInputStr();
+    const v = cVal();
+    if (v > 0) {
+      sub.textContent = CT.mode==='in' ? fmtInches(v) : fmtInchesOnly(v);
+    } else {
+      sub.textContent = '';
+    }
+  } else if (CT.phase==='OP') {
+    top.textContent  = CT.storedStr+' '+CT.op;
+    main.textContent = emptyDisplay;
+    sub.textContent  = '';
+  }
+}
+
+function cResetInput() {
+  CT.whole=''; CT.num=''; CT.den=''; CT.feet=''; CT.ftIn=''; CT.ftField='ft';
+  const dpFt   = document.getElementById('dp-ft');
+  const dpFtIn = document.getElementById('dp-ftin');
+  if (dpFt)   { dpFt.classList.add('active-field');    dpFt.textContent='0'; }
+  if (dpFtIn) { dpFtIn.classList.remove('active-field'); dpFtIn.textContent='0'; }
+}
+
+function cW(d) {
+  if(CT.phase==='R'){CT.phase='A';cResetInput();}
+  if(CT.phase==='OP'){CT.phase='B';cResetInput();}
+  if (CT.mode==='ft') {
+    if (d==='.') return;
+    if (CT.ftField==='ft') { if(CT.feet.length>=4) return; CT.feet+=d; }
+    else                   { if(CT.ftIn.length>=2) return; CT.ftIn+=d; }
+  } else {
+    if(d==='.'&&CT.whole.includes('.')) return;
+    if(CT.whole.length>=6) return;
+    CT.whole+=d;
+  }
+  cRender();
+}
+function cN(d) {
+  if(CT.phase==='R'){CT.phase='A';cResetInput();}
+  if(CT.phase==='OP'){CT.phase='B';cResetInput();}
+  if(CT.num.length>=4) return;
+  CT.num+=d; cRender();
+}
+function cD(d) {
+  if(CT.phase==='R'){CT.phase='A';cResetInput();}
+  if(CT.phase==='OP'){CT.phase='B';cResetInput();}
+  if(CT.den.length>=4) return;
+  CT.den+=d; cRender();
+}
+function cWdel() {
+  if (CT.mode==='ft') {
+    if(CT.ftField==='ft') CT.feet=CT.feet.slice(0,-1);
+    else CT.ftIn=CT.ftIn.slice(0,-1);
+  } else {
+    CT.whole=CT.whole.slice(0,-1);
+  }
+  cRender();
+}
+function cNdel() { CT.num=CT.num.slice(0,-1); cRender(); }
+function cDdel() { CT.den=CT.den.slice(0,-1); cRender(); }
+
+function cOp(btn) {
+  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
+  btn.classList.add('active-op');
+  if(CT.phase==='B') cEq(true);
+  CT.storedVal=cVal(); CT.storedStr=cInputStr(); CT.op=btn.dataset.op;
+  CT.phase='OP'; cResetInput(); cRender();
+}
+
+function cEq(chain=false) {
+  if(CT.phase==='A'||CT.phase==='OP') return;
+  const b=cVal(), bStr=cInputStr();
+  let res;
+  try {
+    if(CT.op==='+') res=CT.storedVal+b;
+    else if(CT.op==='−') res=CT.storedVal-b;
+    else if(CT.op==='×') res=CT.storedVal*b;
+    else if(CT.op==='÷') { if(b===0) throw new Error('÷ 0'); res=CT.storedVal/b; }
+  } catch(e) {
+    document.getElementById('c-top').textContent='';
+    document.getElementById('c-main').textContent=e.message;
+    document.getElementById('c-sub').textContent='';
+    CT.phase='A'; cResetInput(); return;
+  }
+  // IN mode: main=total inches, sub=feet+inches
+  // FT mode: main=feet+inches, sub=total inches
+  const mainStr = CT.mode==='in' ? fmtInchesOnly(res) : fmtInches(res);
+  const subStr  = CT.mode==='in' ? fmtInches(res)     : fmtInchesOnly(res);
+  if(!chain) {
+    document.getElementById('c-top').textContent  = `${CT.storedStr} ${CT.op} ${bStr} =`;
+    document.getElementById('c-main').textContent = mainStr;
+    document.getElementById('c-sub').textContent  = subStr;
+    CT.phase='R';
+  }
+  CT.storedVal=res; CT.storedStr=mainStr; cResetInput();
+}
+
+function cFtAdvance() {
+  setFtField('in');
+}
+
+function cClear() {
+  CT.phase='A'; CT.op=''; CT.storedVal=0;
+  CT.storedStr = CT.mode==='ft' ? "0' 0\"" : '0"';
+  cResetInput();
+  document.getElementById('c-top').textContent  = '';
+  document.getElementById('c-main').textContent = CT.storedStr;
+  document.getElementById('c-sub').textContent  = '';
+  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
+}
+
+function cSign() {
+  if(CT.mode==='ft') return;
+  if(CT.whole.startsWith('-')) CT.whole=CT.whole.slice(1);
+  else CT.whole=CT.whole?'-'+CT.whole:'-0';
+  cRender();
+}
+
+// ─── SQ FT TAB state + logic ──────────────────────────────────────────────────
+const SQ = { field: 'lft', lft: '', lin: '', wft: '', win: '' };
+
+function setSqField(f) {
+  SQ.field = f;
+  ['lft','lin','wft','win'].forEach(id =>
+    document.getElementById('sq-'+id).classList.toggle('active-sq', id===f)
+  );
+}
+
+function sqCalc() {
+  const lenIn = (parseInt(SQ.lft||'0') * 12) + parseInt(SQ.lin||'0');
+  const widIn = (parseInt(SQ.wft||'0') * 12) + parseInt(SQ.win||'0');
+  return (lenIn * widIn) / 144;
+}
+
+function sqRender() {
+  document.getElementById('sq-lft').textContent = SQ.lft || '0';
+  document.getElementById('sq-lin').textContent = SQ.lin || '0';
+  document.getElementById('sq-wft').textContent = SQ.wft || '0';
+  document.getElementById('sq-win').textContent = SQ.win || '0';
+  const sqft = sqCalc();
+  const lenStr = `${SQ.lft||'0'}' ${SQ.lin||'0'}"`;
+  const widStr = `${SQ.wft||'0'}' ${SQ.win||'0'}"`;
+  document.getElementById('sq-top').textContent  = sqft > 0 ? `${lenStr} × ${widStr}` : '';
+  document.getElementById('sq-main').textContent = sqft > 0 ? sqft.toFixed(2) + ' sq ft' : '0 sq ft';
+}
+
+function sqW(d) {
+  if (d === "'") {
+    const next = { lft:'lin', lin:'wft', wft:'win', win:'win' };
+    setSqField(next[SQ.field]);
+    return;
+  }
+  const maxLen = (SQ.field==='lin' || SQ.field==='win') ? 2 : 4;
+  if (SQ[SQ.field].length >= maxLen) return;
+  SQ[SQ.field] += d;
+  sqRender();
+}
+
+function sqDel() {
+  SQ[SQ.field] = SQ[SQ.field].slice(0,-1);
+  sqRender();
+}
+
+function sqClear() {
+  SQ.lft=''; SQ.lin=''; SQ.wft=''; SQ.win='';
+  setSqField('lft');
+  sqRender();
+}
+
+// ─── Keyboard input ───────────────────────────────────────────────────────────
+let fracKbField  = 'whole'; // 'whole' | 'num' | 'den'
+let constKbField = 'whole'; // 'whole' | 'num' | 'den'
+
+function getActiveTab() {
+  if (document.getElementById('tab-frac').classList.contains('active'))  return 'frac';
+  if (document.getElementById('tab-const').classList.contains('active')) return 'const';
+  if (document.getElementById('tab-sqft').classList.contains('active'))  return 'sqft';
+}
+
+document.addEventListener('keydown', e => {
+  const tab = getActiveTab();
+  if (!tab) return;
+  const k = e.key;
+
+  if (tab === 'frac') {
+    if (k >= '0' && k <= '9') {
+      if      (fracKbField === 'whole') fW(k);
+      else if (fracKbField === 'num')   fN(k);
+      else                              fD(k);
+    } else if (k === '.')        { fW('.'); }
+    else if (k === '/')          { fracKbField = fracKbField==='whole' ? 'num' : fracKbField==='num' ? 'den' : 'whole'; }
+    else if (k === 'Backspace')  { if(fracKbField==='whole') fWdel(); else if(fracKbField==='num') fNdel(); else fDdel(); }
+    else if (k==='Enter'||k==='=') { fEq(); fracKbField='whole'; }
+    else if (k === 'Escape')     { fClear(); fracKbField='whole'; }
+    else if (k === '+') fOp(document.querySelector('#tab-frac [data-op="+"]'));
+    else if (k === '-') fOp(document.querySelector('#tab-frac [data-op="−"]'));
+    else if (k === '*') fOp(document.querySelector('#tab-frac [data-op="×"]'));
+    else return;
+    e.preventDefault();
+  }
+
+  else if (tab === 'const') {
+    if (k >= '0' && k <= '9') {
+      if (CT.mode==='ft' || constKbField==='whole') cW(k);
+      else if (constKbField==='num') cN(k);
+      else cD(k);
+    } else if (k === "'")       { cFtAdvance(); }
+    else if (k === '/')         { if(CT.mode==='in') constKbField = constKbField==='whole' ? 'num' : constKbField==='num' ? 'den' : 'whole'; }
+    else if (k === 'Backspace') { if(CT.mode==='ft'||constKbField==='whole') cWdel(); else if(constKbField==='num') cNdel(); else cDdel(); }
+    else if (k==='Enter'||k==='=') { cEq(); constKbField='whole'; }
+    else if (k === 'Escape')    { cClear(); constKbField='whole'; }
+    else if (k === '+') cOp(document.querySelector('#tab-const [data-op="+"]'));
+    else if (k === '-') cOp(document.querySelector('#tab-const [data-op="−"]'));
+    else if (k === '*') cOp(document.querySelector('#tab-const [data-op="×"]'));
+    else return;
+    e.preventDefault();
+  }
+
+  else if (tab === 'sqft') {
+    if (k >= '0' && k <= '9') sqW(k);
+    else if (k === "'")      sqW("'");
+    else if (k === 'Backspace') sqDel();
+    else if (k === 'Escape')    sqClear();
+    else return;
+    e.preventDefault();
+  }
+});
+</script>
+</body>
+</html>
