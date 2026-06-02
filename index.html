@@ -597,7 +597,7 @@ body {
 <div id="tab-frac" class="panel active">
 
   <div class="calc-display">
-    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+    <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
   </div>
@@ -709,7 +709,7 @@ body {
 
   <div class="calc-display">
     <div class="disp-btn-col">
-      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
       <button class="disp-c-btn" onclick="cClear()">C</button>
     </div>
     <div class="disp-stack">
@@ -839,7 +839,7 @@ body {
 
   <div class="calc-display">
     <div class="disp-btn-col">
-      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
       <button class="disp-c-btn" onclick="sqClear()">C</button>
     </div>
     <div class="disp-stack">
@@ -910,7 +910,7 @@ body {
 
   <div class="calc-display">
     <div class="disp-btn-col">
-      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
       <button class="disp-c-btn" onclick="layClear()">C</button>
     </div>
     <div class="disp-stack">
@@ -1731,8 +1731,12 @@ function newProject(assignSaveId) {
 }
 
 let _pickerSaveId = null;
+let _pendingSave  = null;
+let _pendingSaveBtn = null;
+
 function openProjPicker(saveId, btn) {
   _pickerSaveId = saveId;
+  _pendingSave  = null;
   const projects = loadProjects();
   const saves = loadSaves();
   const save = saves.find(s => s.id === saveId);
@@ -1745,21 +1749,29 @@ function openProjPicker(saveId, btn) {
     `<div class="proj-picker-item new-proj" onclick="newProject(${saveId})">+ New project</div>`
   ];
   picker.innerHTML = items.join('');
+  _showPicker(picker, btn);
+}
+
+function _showPicker(picker, btn) {
   const rect = btn.getBoundingClientRect();
-  picker.style.top  = Math.min(rect.bottom + 4, window.innerHeight - 200) + 'px';
+  picker.style.top   = Math.min(rect.bottom + 4, window.innerHeight - 220) + 'px';
   picker.style.right = Math.max(window.innerWidth - rect.right, 4) + 'px';
-  picker.style.left = 'auto';
+  picker.style.left  = 'auto';
   picker.classList.remove('hidden');
   setTimeout(() => document.addEventListener('click', _closePicker, {once:true, capture:true}), 10);
 }
+
 function _closePicker(e) {
   const picker = document.getElementById('proj-picker');
   if (!picker.contains(e.target)) {
     picker.classList.add('hidden');
+    _pendingSave = null;
+    _pendingSaveBtn = null;
   } else {
     setTimeout(() => document.addEventListener('click', _closePicker, {once:true, capture:true}), 10);
   }
 }
+
 function assignToProject(saveId, projectId) {
   const saves = loadSaves();
   const save = saves.find(s => s.id === saveId);
@@ -1770,7 +1782,7 @@ function assignToProject(saveId, projectId) {
   renderProjectPills();
 }
 
-function saveCurrentResult() {
+function saveCurrentResult(btn) {
   const tab = getActiveTab();
   let entry = null;
 
@@ -1810,12 +1822,57 @@ function saveCurrentResult() {
   }
 
   if (!entry) return;
+
+  const projects = loadProjects();
+  if (projects.length === 0) {
+    // No projects exist — save immediately with no project
+    _commitSave(entry, null, btn);
+    return;
+  }
+
+  // Show project picker before committing
+  _pendingSave    = entry;
+  _pendingSaveBtn = btn;
+  const picker = document.getElementById('proj-picker');
+  const items = [
+    `<div class="proj-picker-item" onclick="confirmSave(null)">No project</div>`,
+    ...projects.map(p =>
+      `<div class="proj-picker-item" onclick="confirmSave(${p.id})">${escHtml(p.name)}</div>`
+    ),
+    `<div class="proj-picker-item new-proj" onclick="confirmSaveNewProject()">+ New project</div>`
+  ];
+  picker.innerHTML = items.join('');
+  _showPicker(picker, btn);
+}
+
+function confirmSave(projectId) {
+  if (!_pendingSave) return;
+  document.getElementById('proj-picker').classList.add('hidden');
+  _commitSave(_pendingSave, projectId, _pendingSaveBtn);
+  _pendingSave = null;
+  _pendingSaveBtn = null;
+}
+
+function confirmSaveNewProject() {
+  document.getElementById('proj-picker').classList.add('hidden');
+  const name = prompt('Project name:');
+  if (!name || !name.trim()) { _pendingSave = null; _pendingSaveBtn = null; return; }
+  const projects = loadProjects();
+  const proj = {id: Date.now(), name: name.trim()};
+  projects.push(proj);
+  storeProjects(projects);
+  _commitSave(_pendingSave, proj.id, _pendingSaveBtn);
+  _pendingSave = null;
+  _pendingSaveBtn = null;
+  renderProjectPills();
+}
+
+function _commitSave(entry, projectId, btn) {
   entry.id = Date.now();
+  entry.projectId = projectId || null;
   const saves = loadSaves();
   saves.unshift(entry);
   storeSaves(saves);
-
-  const btn = document.querySelector('.panel.active .disp-save-btn');
   if (btn) {
     btn.classList.add('saved');
     btn.textContent = 'SAVED';
