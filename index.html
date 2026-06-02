@@ -417,9 +417,6 @@ body {
 
 /* ── Save button (in display) ── */
 .disp-save-btn {
-  position: absolute;
-  top: 8px;
-  right: 10px;
   background: rgba(255,255,255,0.13);
   border: none;
   border-radius: 5px;
@@ -430,8 +427,18 @@ body {
   padding: 4px 8px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
 .disp-save-btn.saved { background: #2a6a2a; color: #80e880; }
+/* Fraction tab: no C button, so float save to top-left */
+#tab-frac .disp-save-btn { position: absolute; top: 8px; left: 10px; }
+.disp-btn-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+  align-self: center;
+}
 
 /* ── Saves tab button ── */
 .saves-tab-btn {
@@ -653,8 +660,10 @@ body {
 <div id="tab-const" class="panel">
 
   <div class="calc-display">
-    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
-    <button class="disp-c-btn" onclick="cClear()">C</button>
+    <div class="disp-btn-col">
+      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-c-btn" onclick="cClear()">C</button>
+    </div>
     <div class="disp-stack">
       <div class="disp-top"  id="c-top"></div>
       <div class="disp-main" id="c-main">0"</div>
@@ -781,8 +790,10 @@ body {
 <div id="tab-sqft" class="panel">
 
   <div class="calc-display">
-    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
-    <button class="disp-c-btn" onclick="sqClear()">C</button>
+    <div class="disp-btn-col">
+      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-c-btn" onclick="sqClear()">C</button>
+    </div>
     <div class="disp-stack">
       <div class="disp-top"  id="sq-top"></div>
       <div class="disp-main" id="sq-main">0 sq ft</div>
@@ -850,8 +861,10 @@ body {
 <div id="tab-layout" class="panel">
 
   <div class="calc-display">
-    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
-    <button class="disp-c-btn" onclick="layClear()">C</button>
+    <div class="disp-btn-col">
+      <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
+      <button class="disp-c-btn" onclick="layClear()">C</button>
+    </div>
     <div class="disp-stack">
       <div class="disp-top"  id="lay-top"></div>
       <div class="disp-main" id="lay-main">—</div>
