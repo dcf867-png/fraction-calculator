@@ -27,14 +27,14 @@ body {
 }
 .tab {
   flex: 1;
-  padding: 11px 4px;
+  padding: 11px 3px;
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
   color: #b0b0cc;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.15s;
@@ -337,6 +337,82 @@ body {
 #tab-sqft .key-del { color: #4a9a4a; }
 #tab-sqft .key-dot { color: #80c880; }
 #tab-sqft .sq-adv  { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
+
+/* ── Layout Tab ── */
+#tab-layout .calc-display {
+  background: linear-gradient(160deg, #16102a 0%, #100c20 100%);
+  color: #c0a0ff;
+  border-bottom: 1px solid #2a1f4a;
+  min-height: 100px;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+}
+#tab-layout .disp-main { color: #c0a0ff; font-size: 2.2rem; }
+#tab-layout .disp-top  { color: #7050b0; }
+#tab-layout .disp-sub  { color: #a080e8; font-size: 1.1rem; font-weight: 700; text-align: right; }
+#tab-layout .disp-c-btn { background: #2a1060; color: #c0a0ff; }
+#tab-layout .mode-btn  { border-color: #2a1f4a; color: #7050b0; background: #12082a; }
+#tab-layout .mode-btn.active-mode { background: #7b4dff; border-color: #7b4dff; color: #fff; }
+#tab-layout .key { background: #16102a; color: #d0b8ff; }
+#tab-layout .key:active { background: #241440; }
+#tab-layout .key-del { color: #7050b0; }
+
+.lay-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 5px 8px 3px;
+  flex-shrink: 0;
+}
+.lay-inputs {
+  padding: 4px 10px 5px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.lay-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.lay-label {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #6040a0;
+  width: 40px;
+  flex-shrink: 0;
+}
+.lay-dp {
+  background: #16102a;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #d0b8ff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 6px;
+  min-width: 36px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.lay-dp.active-lay { background: #f5a623; color: #000; border-color: #f5a623; }
+.lay-dp-wide { min-width: 60px; }
+.lay-dp-sm { min-width: 28px; font-size: 1.05rem; padding: 4px 3px; }
+.lay-unit { font-size: 2rem; color: #5030a0; font-weight: 700; line-height: 1; }
+.lay-unit-sm { font-size: 0.9rem; font-weight: 700; color: #5030a0; }
+.lay-fracbar { color: #7050b0; font-size: 1.3rem; font-weight: 700; }
+.lay-numpad {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  min-height: 0;
+  padding: 0 6px 6px;
+}
+.lay-adv { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
 </style>
 </head>
 <body>
@@ -345,6 +421,7 @@ body {
   <button class="tab active" onclick="showTab('frac',this)">Fraction</button>
   <button class="tab" onclick="showTab('const',this)">Construction</button>
   <button class="tab" onclick="showTab('sqft',this)">Sq Ft</button>
+  <button class="tab" onclick="showTab('layout',this)">Layout</button>
 </div>
 
 <!-- ════════════════════════════════
@@ -648,6 +725,88 @@ body {
       <button class="key sq-adv" onclick="sqW('\'')">'</button>
       <button class="key key-dot" onclick="sqW('.')">.</button>
       <button class="key key-del" onclick="sqDel()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LAYOUT TAB
+════════════════════════════════ -->
+<div id="tab-layout" class="panel">
+
+  <div class="calc-display">
+    <button class="disp-c-btn" onclick="layClear()">C</button>
+    <div class="disp-stack">
+      <div class="disp-top"  id="lay-top"></div>
+      <div class="disp-main" id="lay-main">—</div>
+      <div class="disp-sub"  id="lay-sub"></div>
+    </div>
+  </div>
+
+  <div class="lay-toggle">
+    <button class="mode-btn active-mode" id="lay-mode-divide" onclick="setLayMode('divide')">DIVIDE</button>
+    <button class="mode-btn"             id="lay-mode-boards" onclick="setLayMode('boards')">BOARDS</button>
+  </div>
+
+  <div class="lay-inputs">
+    <!-- Span row (shared by both modes) -->
+    <div class="lay-row">
+      <span class="lay-label">SPAN</span>
+      <span class="lay-dp active-lay" id="lay-sft" onclick="setLayField('sft')">0</span>
+      <span class="lay-unit">'</span>
+      <span class="lay-dp" id="lay-sin" onclick="setLayField('sin')">0</span>
+      <span class="lay-unit-sm">"</span>
+    </div>
+
+    <!-- Divide mode: number of parts -->
+    <div class="lay-row" id="lay-divide-row">
+      <span class="lay-label">PARTS</span>
+      <span class="lay-dp lay-dp-wide" id="lay-nparts" onclick="setLayField('nparts')">0</span>
+    </div>
+
+    <!-- Boards mode: board width + gap (hidden by default) -->
+    <div id="lay-boards-rows" style="display:none">
+      <div class="lay-row" style="margin-bottom:5px">
+        <span class="lay-label">BOARD</span>
+        <span class="lay-dp" id="lay-bwh" onclick="setLayField('bwh')">0</span>
+        <span class="lay-unit-sm">"</span>
+        <span class="lay-dp lay-dp-sm" id="lay-bnu" onclick="setLayField('bnu')">0</span>
+        <span class="lay-fracbar">/</span>
+        <span class="lay-dp lay-dp-sm" id="lay-bde" onclick="setLayField('bde')">0</span>
+        <span class="lay-unit-sm">"</span>
+      </div>
+      <div class="lay-row">
+        <span class="lay-label">GAP</span>
+        <span class="lay-dp" id="lay-gwh" onclick="setLayField('gwh')">0</span>
+        <span class="lay-unit-sm">"</span>
+        <span class="lay-dp lay-dp-sm" id="lay-gnu" onclick="setLayField('gnu')">0</span>
+        <span class="lay-fracbar">/</span>
+        <span class="lay-dp lay-dp-sm" id="lay-gde" onclick="setLayField('gde')">0</span>
+        <span class="lay-unit-sm">"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lay-numpad">
+    <div class="sq-row3">
+      <button class="key" onclick="layW('7')">7</button>
+      <button class="key" onclick="layW('8')">8</button>
+      <button class="key" onclick="layW('9')">9</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="layW('4')">4</button>
+      <button class="key" onclick="layW('5')">5</button>
+      <button class="key" onclick="layW('6')">6</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="layW('1')">1</button>
+      <button class="key" onclick="layW('2')">2</button>
+      <button class="key" onclick="layW('3')">3</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="layW('0')">0</button>
+      <button class="key lay-adv" onclick="layAdv()">'</button>
+      <button class="key key-del" onclick="layDel()">⌫</button>
     </div>
   </div>
 </div>
@@ -1082,14 +1241,113 @@ function sqClear() {
   sqRender();
 }
 
+// ─── LAYOUT TAB ───────────────────────────────────────────────────────────────
+const LAY = {
+  mode: 'divide', field: 'sft',
+  sft: '', sin: '', nparts: '',
+  bwh: '', bnu: '', bde: '',
+  gwh: '', gnu: '', gde: '',
+};
+
+const LAY_ADV_DIVIDE = { sft:'sin', sin:'nparts', nparts:'sft' };
+const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'sft' };
+
+const LAY_ALL_FIELDS = ['sft','sin','nparts','bwh','bnu','bde','gwh','gnu','gde'];
+
+function setLayMode(m) {
+  LAY.mode = m;
+  document.getElementById('lay-mode-divide').classList.toggle('active-mode', m==='divide');
+  document.getElementById('lay-mode-boards').classList.toggle('active-mode', m==='boards');
+  document.getElementById('lay-divide-row').style.display    = m==='divide' ? 'flex' : 'none';
+  document.getElementById('lay-boards-rows').style.display   = m==='boards' ? 'block' : 'none';
+  setLayField(m === 'divide' ? 'sft' : 'sft');
+  layRender();
+}
+
+function setLayField(f) {
+  LAY.field = f;
+  LAY_ALL_FIELDS.forEach(id => {
+    const el = document.getElementById('lay-' + id);
+    if (el) el.classList.toggle('active-lay', id === f);
+  });
+}
+
+function layW(d) {
+  const f = LAY.field;
+  const maxLen = f === 'sin' ? 2 : (f === 'bnu'||f==='bde'||f==='gnu'||f==='gde') ? 3 : f === 'sft' ? 4 : 6;
+  if (LAY[f].length >= maxLen) return;
+  LAY[f] += d;
+  layRender();
+}
+
+function layAdv() {
+  const map = LAY.mode === 'divide' ? LAY_ADV_DIVIDE : LAY_ADV_BOARDS;
+  setLayField(map[LAY.field] || 'sft');
+}
+
+function layDel() {
+  LAY[LAY.field] = LAY[LAY.field].slice(0, -1);
+  layRender();
+}
+
+function layClear() {
+  LAY_ALL_FIELDS.forEach(f => LAY[f] = '');
+  setLayField('sft');
+  layRender();
+}
+
+function layRender() {
+  LAY_ALL_FIELDS.forEach(id => {
+    const el = document.getElementById('lay-' + id);
+    if (el) el.textContent = LAY[id] || '0';
+  });
+
+  const top  = document.getElementById('lay-top');
+  const main = document.getElementById('lay-main');
+  const sub  = document.getElementById('lay-sub');
+  const spanIn = (parseInt(LAY.sft||'0') * 12) + parseInt(LAY.sin||'0');
+
+  if (LAY.mode === 'divide') {
+    const n = parseInt(LAY.nparts||'0');
+    if (spanIn > 0 && n > 0) {
+      const partIn = spanIn / n;
+      top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${n}`;
+      main.textContent = fmtInches(partIn);
+      sub.textContent  = fmtInchesOnly(partIn) + ' each';
+    } else {
+      top.textContent  = '';
+      main.textContent = '—';
+      sub.textContent  = '';
+    }
+  } else {
+    const bDe   = parseInt(LAY.bde||'0');
+    const boardIn = parseInt(LAY.bwh||'0') + (bDe > 0 ? parseInt(LAY.bnu||'0') / bDe : 0);
+    const gDe   = parseInt(LAY.gde||'0');
+    const gapIn = parseInt(LAY.gwh||'0') + (gDe > 0 ? parseInt(LAY.gnu||'0') / gDe : 0);
+    if (spanIn > 0 && boardIn > 0) {
+      const n       = Math.floor((spanIn + gapIn) / (boardIn + gapIn));
+      const usedIn  = n * boardIn + Math.max(0, n - 1) * gapIn;
+      const remIn   = Math.max(0, spanIn - usedIn);
+      top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" span`;
+      main.textContent = `${n} board${n !== 1 ? 's' : ''}`;
+      sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
+    } else {
+      top.textContent  = '';
+      main.textContent = '—';
+      sub.textContent  = '';
+    }
+  }
+}
+
 // ─── Keyboard input ───────────────────────────────────────────────────────────
 let fracKbField  = 'whole';
 let constKbField = 'whole';
 
 function getActiveTab() {
-  if (document.getElementById('tab-frac').classList.contains('active'))  return 'frac';
-  if (document.getElementById('tab-const').classList.contains('active')) return 'const';
-  if (document.getElementById('tab-sqft').classList.contains('active'))  return 'sqft';
+  if (document.getElementById('tab-frac').classList.contains('active'))   return 'frac';
+  if (document.getElementById('tab-const').classList.contains('active'))  return 'const';
+  if (document.getElementById('tab-sqft').classList.contains('active'))   return 'sqft';
+  if (document.getElementById('tab-layout').classList.contains('active')) return 'layout';
 }
 
 document.addEventListener('keydown', e => {
@@ -1137,6 +1395,15 @@ document.addEventListener('keydown', e => {
     else if (k === '.') sqW('.');
     else if (k === 'Backspace') sqDel();
     else if (k === 'Escape')    sqClear();
+    else return;
+    e.preventDefault();
+  }
+
+  else if (tab === 'layout') {
+    if (k >= '0' && k <= '9') layW(k);
+    else if (k === "'" || k === 'Tab') layAdv();
+    else if (k === 'Backspace') layDel();
+    else if (k === 'Escape')    layClear();
     else return;
     e.preventDefault();
   }
