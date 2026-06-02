@@ -525,10 +525,54 @@ body {
 .save-sub { color: #8090b0; font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
 .save-del-btn {
   background: none; border: none; color: #3a3d5a;
-  font-size: 1rem; cursor: pointer; padding: 2px 4px; flex-shrink: 0;
-  transition: color 0.1s;
+  font-size: 1rem; cursor: pointer; padding: 2px 4px;
+  transition: color 0.1s; display: block;
 }
 .save-del-btn:active { color: #f87878; }
+.save-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; align-self: flex-start; }
+.save-assign-btn {
+  background: none; border: none; color: #3a3d5a;
+  font-size: 1rem; cursor: pointer; padding: 2px 4px; display: block;
+  transition: color 0.1s;
+}
+.save-assign-btn:active { color: #8090d8; }
+.save-proj-tag {
+  font-size: 0.67rem; color: #6070a0; font-weight: 700;
+  letter-spacing: 0.04em; margin-top: 3px;
+}
+/* ── Project pills ── */
+.projects-row {
+  display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0;
+  padding: 8px 10px; border-bottom: 1px solid #1a1d30;
+  scrollbar-width: none;
+}
+.projects-row::-webkit-scrollbar { display: none; }
+.proj-pill {
+  background: #1a1e38; border: 1px solid #2a2d4a; border-radius: 20px;
+  color: #8090b8; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em;
+  padding: 5px 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.proj-pill.active { background: #f5a623; border-color: #f5a623; color: #000; }
+.proj-pill-new {
+  background: none; border: 1px dashed #2a2d4a; border-radius: 20px;
+  color: #4a4d6a; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em;
+  padding: 5px 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+/* ── Project picker dropdown ── */
+.proj-picker {
+  position: fixed; background: #1e2240; border: 1px solid #2e3260;
+  border-radius: 10px; padding: 5px; z-index: 200; min-width: 160px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.proj-picker.hidden { display: none; }
+.proj-picker-item {
+  padding: 9px 12px; color: #c0c8f0; font-size: 0.82rem; font-weight: 600;
+  border-radius: 6px; cursor: pointer; white-space: nowrap;
+}
+.proj-picker-item:active { background: #2e3260; }
+.proj-picker-item.current { color: #f5a623; }
+.proj-picker-item.new-proj { color: #6070a0; border-top: 1px solid #2a2d4a; margin-top: 3px; padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -956,8 +1000,10 @@ body {
     <button class="saves-clear-btn" id="saves-clear-btn" onclick="clearAllSaves()">CLEAR ALL</button>
     <button class="saves-close-btn" onclick="closeSaves()">CLOSE</button>
   </div>
+  <div class="projects-row" id="projects-row"></div>
   <div class="saves-list" id="saves-list"></div>
 </div>
+<div class="proj-picker hidden" id="proj-picker"></div>
 
 <script>
 // ─── Shared utilities ─────────────────────────────────────────────────────────
@@ -1573,6 +1619,10 @@ document.addEventListener('keydown', e => {
 });
 
 // ─── SAVES ────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function loadSaves() {
   try { return JSON.parse(localStorage.getItem('fc_saves') || '[]'); } catch { return []; }
 }
@@ -1580,6 +1630,14 @@ function storeSaves(arr) {
   localStorage.setItem('fc_saves', JSON.stringify(arr));
   updateSavesBadge();
 }
+function loadProjects() {
+  try { return JSON.parse(localStorage.getItem('fc_projects') || '[]'); } catch { return []; }
+}
+function storeProjects(arr) {
+  localStorage.setItem('fc_projects', JSON.stringify(arr));
+}
+
+let savesFilter = 'all';
 
 function updateSavesBadge() {
   const n = loadSaves().length;
@@ -1592,10 +1650,99 @@ function updateSavesBadge() {
 
 function openSaves() {
   document.getElementById('saves-overlay').classList.remove('hidden');
+  renderProjectPills();
   renderSavesList();
 }
 function closeSaves() {
   document.getElementById('saves-overlay').classList.add('hidden');
+  document.getElementById('proj-picker').classList.add('hidden');
+}
+
+function renderProjectPills() {
+  const projects = loadProjects();
+  const row = document.getElementById('projects-row');
+  const pills = [
+    `<button class="proj-pill${savesFilter==='all'?' active':''}" onclick="setFilter('all')">ALL</button>`,
+    ...projects.map(p =>
+      `<button class="proj-pill${savesFilter===p.id?' active':''}" onclick="setFilter(${p.id})">${escHtml(p.name)}</button>`
+    ),
+    `<button class="proj-pill-new" onclick="newProject()">+ NEW</button>`
+  ];
+  row.innerHTML = pills.join('');
+}
+
+function setFilter(id) {
+  if (savesFilter === id && id !== 'all') {
+    const projects = loadProjects();
+    const proj = projects.find(p => p.id === id);
+    if (proj && confirm(`Delete project "${proj.name}"?\n\nSaved items will be kept but unassigned.`)) {
+      storeProjects(projects.filter(p => p.id !== id));
+      const saves = loadSaves();
+      saves.forEach(s => { if (s.projectId === id) s.projectId = null; });
+      storeSaves(saves);
+      savesFilter = 'all';
+      renderProjectPills();
+      renderSavesList();
+    }
+    return;
+  }
+  savesFilter = id;
+  renderProjectPills();
+  renderSavesList();
+}
+
+function newProject(assignSaveId) {
+  const name = prompt('Project name:');
+  if (!name || !name.trim()) return;
+  const projects = loadProjects();
+  const proj = {id: Date.now(), name: name.trim()};
+  projects.push(proj);
+  storeProjects(projects);
+  if (assignSaveId != null) {
+    assignToProject(assignSaveId, proj.id);
+  } else {
+    renderProjectPills();
+  }
+}
+
+let _pickerSaveId = null;
+function openProjPicker(saveId, btn) {
+  _pickerSaveId = saveId;
+  const projects = loadProjects();
+  const saves = loadSaves();
+  const save = saves.find(s => s.id === saveId);
+  const picker = document.getElementById('proj-picker');
+  const items = [
+    `<div class="proj-picker-item${!save?.projectId?' current':''}" onclick="assignToProject(${saveId},null)">No project</div>`,
+    ...projects.map(p =>
+      `<div class="proj-picker-item${save?.projectId===p.id?' current':''}" onclick="assignToProject(${saveId},${p.id})">${escHtml(p.name)}</div>`
+    ),
+    `<div class="proj-picker-item new-proj" onclick="newProject(${saveId})">+ New project</div>`
+  ];
+  picker.innerHTML = items.join('');
+  const rect = btn.getBoundingClientRect();
+  picker.style.top  = Math.min(rect.bottom + 4, window.innerHeight - 200) + 'px';
+  picker.style.right = Math.max(window.innerWidth - rect.right, 4) + 'px';
+  picker.style.left = 'auto';
+  picker.classList.remove('hidden');
+  setTimeout(() => document.addEventListener('click', _closePicker, {once:true, capture:true}), 10);
+}
+function _closePicker(e) {
+  const picker = document.getElementById('proj-picker');
+  if (!picker.contains(e.target)) {
+    picker.classList.add('hidden');
+  } else {
+    setTimeout(() => document.addEventListener('click', _closePicker, {once:true, capture:true}), 10);
+  }
+}
+function assignToProject(saveId, projectId) {
+  const saves = loadSaves();
+  const save = saves.find(s => s.id === saveId);
+  if (save) save.projectId = projectId || null;
+  storeSaves(saves);
+  document.getElementById('proj-picker').classList.add('hidden');
+  renderSavesList();
+  renderProjectPills();
 }
 
 function saveCurrentResult() {
@@ -1653,25 +1800,39 @@ function clearAllSaves() {
 }
 
 function renderSavesList() {
-  const saves = loadSaves();
+  let saves = loadSaves();
+  const projects = loadProjects();
+  const projMap = Object.fromEntries(projects.map(p => [p.id, p.name]));
   const list     = document.getElementById('saves-list');
   const clearBtn = document.getElementById('saves-clear-btn');
+
+  if (savesFilter !== 'all') {
+    saves = saves.filter(s => s.projectId === savesFilter);
+  }
+
   clearBtn.style.display = saves.length > 0 ? 'inline-block' : 'none';
   if (saves.length === 0) {
-    list.innerHTML = '<div class="saves-empty">Nothing saved yet</div>';
+    list.innerHTML = `<div class="saves-empty">${savesFilter !== 'all' ? 'No saves in this project' : 'Nothing saved yet'}</div>`;
     return;
   }
-  list.innerHTML = saves.map(s => `
-    <div class="save-card">
-      <span class="save-badge">${s.badge}</span>
-      <div class="save-body">
-        ${s.label ? `<div class="save-label">${s.label}</div>` : ''}
-        <div class="save-result">${s.result}</div>
-        ${s.sub ? `<div class="save-sub">${s.sub}</div>` : ''}
+  list.innerHTML = saves.map(s => {
+    const projName = s.projectId ? projMap[s.projectId] : null;
+    return `
+      <div class="save-card">
+        <span class="save-badge">${s.badge}</span>
+        <div class="save-body">
+          ${s.label ? `<div class="save-label">${escHtml(s.label)}</div>` : ''}
+          <div class="save-result">${escHtml(s.result)}</div>
+          ${s.sub ? `<div class="save-sub">${escHtml(s.sub)}</div>` : ''}
+          ${projName ? `<div class="save-proj-tag">&#128193; ${escHtml(projName)}</div>` : ''}
+        </div>
+        <div class="save-actions">
+          <button class="save-assign-btn" onclick="openProjPicker(${s.id},this)">&#128193;</button>
+          <button class="save-del-btn" onclick="deleteSave(${s.id})">&#x2715;</button>
+        </div>
       </div>
-      <button class="save-del-btn" onclick="deleteSave(${s.id})">&#x2715;</button>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 updateSavesBadge();
