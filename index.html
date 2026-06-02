@@ -56,6 +56,7 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
+  position: relative;
 }
 .disp-top {
   font-size: 0.82rem;
@@ -413,6 +414,114 @@ body {
   padding: 0 6px 6px;
 }
 .lay-adv { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
+
+/* ── Save button (in display) ── */
+.disp-save-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: rgba(255,255,255,0.13);
+  border: none;
+  border-radius: 5px;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.disp-save-btn.saved { background: #2a6a2a; color: #80e880; }
+
+/* ── Saves tab button ── */
+.saves-tab-btn {
+  flex-shrink: 0;
+  width: 52px;
+  padding: 11px 4px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #5a5d80;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+}
+.saves-tab-btn.has-saves { color: #f5a623; border-bottom-color: #f5a623; }
+.saves-badge {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  background: #f5a623;
+  color: #000;
+  font-size: 0.52rem;
+  font-weight: 900;
+  border-radius: 7px;
+  padding: 1px 3px;
+  line-height: 1.4;
+  display: none;
+}
+
+/* ── Saves overlay ── */
+.saves-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0d0d1a;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.saves-overlay.hidden { display: none; }
+.saves-header {
+  display: flex;
+  align-items: center;
+  padding: 13px 14px;
+  border-bottom: 1px solid #2a2d45;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.saves-title { flex: 1; color: #f0f2ff; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.05em; }
+.saves-clear-btn {
+  background: #3a2020; border: none; border-radius: 6px;
+  color: #f87878; font-size: 0.7rem; font-weight: 800;
+  padding: 6px 10px; cursor: pointer; display: none;
+}
+.saves-close-btn {
+  background: #2c3050; border: none; border-radius: 6px;
+  color: #b0b0cc; font-size: 0.85rem; font-weight: 800;
+  padding: 6px 13px; cursor: pointer;
+}
+.saves-list {
+  flex: 1; overflow-y: auto; padding: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.saves-empty {
+  text-align: center; color: #4a4d6a;
+  font-size: 0.9rem; font-weight: 600; margin-top: 70px;
+}
+.save-card {
+  background: #1a1e38; border-radius: 10px;
+  padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px;
+}
+.save-badge {
+  background: #2c3050; border-radius: 5px; color: #8090b8;
+  font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em;
+  padding: 3px 6px; flex-shrink: 0; margin-top: 3px;
+}
+.save-body { flex: 1; min-width: 0; }
+.save-label { color: #6070a0; font-size: 0.74rem; font-weight: 600; margin-bottom: 2px; }
+.save-result { color: #f0f2ff; font-size: 1.2rem; font-weight: 800; }
+.save-sub { color: #8090b0; font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
+.save-del-btn {
+  background: none; border: none; color: #3a3d5a;
+  font-size: 1rem; cursor: pointer; padding: 2px 4px; flex-shrink: 0;
+  transition: color 0.1s;
+}
+.save-del-btn:active { color: #f87878; }
 </style>
 </head>
 <body>
@@ -422,6 +531,9 @@ body {
   <button class="tab" onclick="showTab('const',this)">Construction</button>
   <button class="tab" onclick="showTab('sqft',this)">Sq Ft</button>
   <button class="tab" onclick="showTab('layout',this)">Layout</button>
+  <button class="saves-tab-btn" id="saves-tab-btn" onclick="openSaves()">
+    SAVES<span class="saves-badge" id="saves-badge"></span>
+  </button>
 </div>
 
 <!-- ════════════════════════════════
@@ -430,6 +542,7 @@ body {
 <div id="tab-frac" class="panel active">
 
   <div class="calc-display">
+    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
   </div>
@@ -540,6 +653,7 @@ body {
 <div id="tab-const" class="panel">
 
   <div class="calc-display">
+    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
     <button class="disp-c-btn" onclick="cClear()">C</button>
     <div class="disp-stack">
       <div class="disp-top"  id="c-top"></div>
@@ -667,6 +781,7 @@ body {
 <div id="tab-sqft" class="panel">
 
   <div class="calc-display">
+    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
     <button class="disp-c-btn" onclick="sqClear()">C</button>
     <div class="disp-stack">
       <div class="disp-top"  id="sq-top"></div>
@@ -735,6 +850,7 @@ body {
 <div id="tab-layout" class="panel">
 
   <div class="calc-display">
+    <button class="disp-save-btn" onclick="saveCurrentResult()">SAVE</button>
     <button class="disp-c-btn" onclick="layClear()">C</button>
     <div class="disp-stack">
       <div class="disp-top"  id="lay-top"></div>
@@ -816,6 +932,18 @@ body {
       <button class="key key-del" onclick="layDel()">⌫</button>
     </div>
   </div>
+</div>
+
+<!-- ════════════════════════════════
+     SAVES OVERLAY
+════════════════════════════════ -->
+<div class="saves-overlay hidden" id="saves-overlay">
+  <div class="saves-header">
+    <span class="saves-title">SAVED RESULTS</span>
+    <button class="saves-clear-btn" id="saves-clear-btn" onclick="clearAllSaves()">CLEAR ALL</button>
+    <button class="saves-close-btn" onclick="closeSaves()">CLOSE</button>
+  </div>
+  <div class="saves-list" id="saves-list"></div>
 </div>
 
 <script>
@@ -1430,6 +1558,110 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
   }
 });
+
+// ─── SAVES ────────────────────────────────────────────────────────────────────
+function loadSaves() {
+  try { return JSON.parse(localStorage.getItem('fc_saves') || '[]'); } catch { return []; }
+}
+function storeSaves(arr) {
+  localStorage.setItem('fc_saves', JSON.stringify(arr));
+  updateSavesBadge();
+}
+
+function updateSavesBadge() {
+  const n = loadSaves().length;
+  const btn   = document.getElementById('saves-tab-btn');
+  const badge = document.getElementById('saves-badge');
+  btn.classList.toggle('has-saves', n > 0);
+  badge.textContent    = n > 0 ? n : '';
+  badge.style.display  = n > 0 ? 'inline' : 'none';
+}
+
+function openSaves() {
+  document.getElementById('saves-overlay').classList.remove('hidden');
+  renderSavesList();
+}
+function closeSaves() {
+  document.getElementById('saves-overlay').classList.add('hidden');
+}
+
+function saveCurrentResult() {
+  const tab = getActiveTab();
+  let entry = null;
+
+  if (tab === 'frac') {
+    const result = document.getElementById('f-main').textContent;
+    if (!result || result === '0') return;
+    entry = { badge:'FRAC',
+      label:  document.getElementById('f-top').textContent || '',
+      result, sub: '' };
+  } else if (tab === 'const') {
+    const result = document.getElementById('c-main').textContent;
+    if (!result || result === '0"' || result === "0' 0\"") return;
+    entry = { badge:'BUILD',
+      label:  document.getElementById('c-top').textContent || '',
+      result, sub: document.getElementById('c-sub').textContent || '' };
+  } else if (tab === 'sqft') {
+    const result = document.getElementById('sq-main').textContent;
+    if (!result || result === '0 sq ft') return;
+    entry = { badge:'SQ FT',
+      label:  document.getElementById('sq-top').textContent || '',
+      result, sub: document.getElementById('sq-sub').textContent || '' };
+  } else if (tab === 'layout') {
+    const result = document.getElementById('lay-main').textContent;
+    if (!result || result === '—') return;
+    entry = { badge: LAY.mode === 'divide' ? 'DIVIDE' : 'BOARDS',
+      label:  document.getElementById('lay-top').textContent || '',
+      result, sub: document.getElementById('lay-sub').textContent || '' };
+  }
+
+  if (!entry) return;
+  entry.id = Date.now();
+  const saves = loadSaves();
+  saves.unshift(entry);
+  storeSaves(saves);
+
+  const btn = document.querySelector('.panel.active .disp-save-btn');
+  if (btn) {
+    btn.classList.add('saved');
+    btn.textContent = 'SAVED';
+    setTimeout(() => { btn.classList.remove('saved'); btn.textContent = 'SAVE'; }, 900);
+  }
+}
+
+function deleteSave(id) {
+  storeSaves(loadSaves().filter(s => s.id !== id));
+  renderSavesList();
+}
+
+function clearAllSaves() {
+  storeSaves([]);
+  renderSavesList();
+}
+
+function renderSavesList() {
+  const saves = loadSaves();
+  const list     = document.getElementById('saves-list');
+  const clearBtn = document.getElementById('saves-clear-btn');
+  clearBtn.style.display = saves.length > 0 ? 'inline-block' : 'none';
+  if (saves.length === 0) {
+    list.innerHTML = '<div class="saves-empty">Nothing saved yet</div>';
+    return;
+  }
+  list.innerHTML = saves.map(s => `
+    <div class="save-card">
+      <span class="save-badge">${s.badge}</span>
+      <div class="save-body">
+        ${s.label ? `<div class="save-label">${s.label}</div>` : ''}
+        <div class="save-result">${s.result}</div>
+        ${s.sub ? `<div class="save-sub">${s.sub}</div>` : ''}
+      </div>
+      <button class="save-del-btn" onclick="deleteSave(${s.id})">&#x2715;</button>
+    </div>
+  `).join('');
+}
+
+updateSavesBadge();
 </script>
 </body>
 </html>
