@@ -775,7 +775,7 @@ body {
         <span class="lay-dp lay-dp-sm" id="lay-bde" onclick="setLayField('bde')">0</span>
         <span class="lay-unit-sm">"</span>
       </div>
-      <div class="lay-row">
+      <div class="lay-row" style="margin-bottom:5px">
         <span class="lay-label">GAP</span>
         <span class="lay-dp" id="lay-gwh" onclick="setLayField('gwh')">0</span>
         <span class="lay-unit-sm">"</span>
@@ -783,6 +783,12 @@ body {
         <span class="lay-fracbar">/</span>
         <span class="lay-dp lay-dp-sm" id="lay-gde" onclick="setLayField('gde')">0</span>
         <span class="lay-unit-sm">"</span>
+      </div>
+      <div class="lay-row">
+        <span class="lay-label">PRICE</span>
+        <span class="lay-unit-sm" style="color:#a080e8">$</span>
+        <span class="lay-dp lay-dp-wide" id="lay-price" onclick="setLayField('price')">0</span>
+        <span class="lay-unit-sm">/board</span>
       </div>
     </div>
   </div>
@@ -803,9 +809,10 @@ body {
       <button class="key" onclick="layW('2')">2</button>
       <button class="key" onclick="layW('3')">3</button>
     </div>
-    <div class="sq-row3">
+    <div class="sq-row4">
       <button class="key" onclick="layW('0')">0</button>
       <button class="key lay-adv" onclick="layAdv()">'</button>
+      <button class="key key-dot" onclick="layW('.')">.</button>
       <button class="key key-del" onclick="layDel()">⌫</button>
     </div>
   </div>
@@ -1247,12 +1254,13 @@ const LAY = {
   sft: '', sin: '', nparts: '',
   bwh: '', bnu: '', bde: '',
   gwh: '', gnu: '', gde: '',
+  price: '',
 };
 
 const LAY_ADV_DIVIDE = { sft:'sin', sin:'nparts', nparts:'sft' };
-const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'sft' };
+const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'sft' };
 
-const LAY_ALL_FIELDS = ['sft','sin','nparts','bwh','bnu','bde','gwh','gnu','gde'];
+const LAY_ALL_FIELDS = ['sft','sin','nparts','bwh','bnu','bde','gwh','gnu','gde','price'];
 
 function setLayMode(m) {
   LAY.mode = m;
@@ -1274,7 +1282,14 @@ function setLayField(f) {
 
 function layW(d) {
   const f = LAY.field;
-  const maxLen = f === 'sin' ? 2 : (f === 'bnu'||f==='bde'||f==='gnu'||f==='gde') ? 3 : f === 'sft' ? 4 : 6;
+  if (d === '.') {
+    if (f !== 'price') return;
+    if (LAY.price.includes('.')) return;
+    LAY.price += '.';
+    layRender();
+    return;
+  }
+  const maxLen = f === 'sin' ? 2 : (f === 'bnu'||f==='bde'||f==='gnu'||f==='gde') ? 3 : f === 'sft' ? 4 : 10;
   if (LAY[f].length >= maxLen) return;
   LAY[f] += d;
   layRender();
@@ -1328,9 +1343,15 @@ function layRender() {
       const n       = Math.floor((spanIn + gapIn) / (boardIn + gapIn));
       const usedIn  = n * boardIn + Math.max(0, n - 1) * gapIn;
       const remIn   = Math.max(0, spanIn - usedIn);
+      const price   = parseFloat(LAY.price || '0');
       top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" span`;
       main.textContent = `${n} board${n !== 1 ? 's' : ''}`;
-      sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
+      if (price > 0 && n > 0) {
+        const total = n * price;
+        sub.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' total';
+      } else {
+        sub.textContent = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
+      }
     } else {
       top.textContent  = '';
       main.textContent = '—';
@@ -1402,6 +1423,7 @@ document.addEventListener('keydown', e => {
   else if (tab === 'layout') {
     if (k >= '0' && k <= '9') layW(k);
     else if (k === "'" || k === 'Tab') layAdv();
+    else if (k === '.') layW('.');
     else if (k === 'Backspace') layDel();
     else if (k === 'Escape')    layClear();
     else return;
