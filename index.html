@@ -344,7 +344,7 @@ body {
   background: linear-gradient(160deg, #16102a 0%, #100c20 100%);
   color: #c0a0ff;
   border-bottom: 1px solid #2a1f4a;
-  min-height: 100px;
+  min-height: 110px;
   flex-direction: row;
   align-items: flex-end;
   gap: 10px;
@@ -352,6 +352,10 @@ body {
 #tab-layout .disp-main { color: #c0a0ff; font-size: 2.2rem; }
 #tab-layout .disp-top  { color: #7050b0; }
 #tab-layout .disp-sub  { color: #a080e8; font-size: 1.1rem; font-weight: 700; text-align: right; }
+.lay-cost-block { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+.lay-cost-line  { color: #8060c0; font-size: 0.9rem; font-weight: 700; text-align: right; }
+.lay-tax-line   { color: #8060c0; font-size: 0.9rem; font-weight: 700; text-align: right; }
+.lay-total-line { color: #c0a0ff; font-size: 1.0rem; font-weight: 800; text-align: right; border-top: 1px solid #3a2060; margin-top: 2px; padding-top: 2px; }
 #tab-layout .disp-c-btn { background: #2a1060; color: #c0a0ff; }
 #tab-layout .mode-btn  { border-color: #2a1f4a; color: #7050b0; background: #12082a; }
 #tab-layout .mode-btn.active-mode { background: #7b4dff; border-color: #7b4dff; color: #fff; }
@@ -913,6 +917,11 @@ body {
       <div class="disp-top"  id="lay-top"></div>
       <div class="disp-main" id="lay-main">—</div>
       <div class="disp-sub"  id="lay-sub"></div>
+      <div class="lay-cost-block" id="lay-cost-block" style="display:none">
+        <div class="lay-cost-line"  id="lay-cost"></div>
+        <div class="lay-tax-line"   id="lay-tax-line"></div>
+        <div class="lay-total-line" id="lay-total-line"></div>
+      </div>
     </div>
   </div>
 
@@ -957,11 +966,16 @@ body {
         <span class="lay-dp lay-dp-sm" id="lay-gde" onclick="setLayField('gde')">0</span>
         <span class="lay-unit-sm">"</span>
       </div>
-      <div class="lay-row">
+      <div class="lay-row" style="margin-bottom:5px">
         <span class="lay-label">PRICE</span>
         <span class="lay-unit-sm" style="color:#a080e8">$</span>
         <span class="lay-dp lay-dp-wide" id="lay-price" onclick="setLayField('price')">0</span>
         <span class="lay-unit-sm">/board</span>
+      </div>
+      <div class="lay-row">
+        <span class="lay-label">TAX</span>
+        <span class="lay-dp lay-dp-wide" id="lay-tax" onclick="setLayField('tax')">0</span>
+        <span class="lay-unit-sm">%</span>
       </div>
     </div>
   </div>
@@ -1441,13 +1455,13 @@ const LAY = {
   sft: '', sin: '', nparts: '',
   bwh: '', bnu: '', bde: '',
   gwh: '', gnu: '', gde: '',
-  price: '',
+  price: '', tax: '',
 };
 
 const LAY_ADV_DIVIDE = { sft:'sin', sin:'nparts', nparts:'sft' };
-const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'sft' };
+const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
 
-const LAY_ALL_FIELDS = ['sft','sin','nparts','bwh','bnu','bde','gwh','gnu','gde','price'];
+const LAY_ALL_FIELDS = ['sft','sin','nparts','bwh','bnu','bde','gwh','gnu','gde','price','tax'];
 
 function setLayMode(m) {
   LAY.mode = m;
@@ -1470,9 +1484,9 @@ function setLayField(f) {
 function layW(d) {
   const f = LAY.field;
   if (d === '.') {
-    if (f !== 'price') return;
-    if (LAY.price.includes('.')) return;
-    LAY.price += '.';
+    if (f !== 'price' && f !== 'tax') return;
+    if (LAY[f].includes('.')) return;
+    LAY[f] += '.';
     layRender();
     return;
   }
@@ -1526,20 +1540,31 @@ function layRender() {
     const boardIn = parseInt(LAY.bwh||'0') + (bDe > 0 ? parseInt(LAY.bnu||'0') / bDe : 0);
     const gDe   = parseInt(LAY.gde||'0');
     const gapIn = parseInt(LAY.gwh||'0') + (gDe > 0 ? parseInt(LAY.gnu||'0') / gDe : 0);
+    const costBlock = document.getElementById('lay-cost-block');
     if (spanIn > 0 && boardIn > 0) {
       const n       = Math.floor((spanIn + gapIn) / (boardIn + gapIn));
       const usedIn  = n * boardIn + Math.max(0, n - 1) * gapIn;
       const remIn   = Math.max(0, spanIn - usedIn);
       const price   = parseFloat(LAY.price || '0');
+      const taxPct  = parseFloat(LAY.tax || '0');
       top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" span`;
       main.textContent = `${n} board${n !== 1 ? 's' : ''}`;
       if (price > 0 && n > 0) {
-        const total = n * price;
-        sub.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' total';
+        const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        const subtotal = n * price;
+        const taxAmt   = subtotal * taxPct / 100;
+        const total    = subtotal + taxAmt;
+        sub.textContent = '';
+        costBlock.style.display = '';
+        document.getElementById('lay-cost').textContent      = `subtotal  ${fmt(subtotal)}`;
+        document.getElementById('lay-tax-line').textContent  = `tax (${LAY.tax||'0'}%)  ${fmt(taxAmt)}`;
+        document.getElementById('lay-total-line').textContent = `total  ${fmt(total)}`;
       } else {
+        costBlock.style.display = 'none';
         sub.textContent = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
       }
     } else {
+      costBlock.style.display = 'none';
       top.textContent  = '';
       main.textContent = '—';
       sub.textContent  = '';
@@ -1770,9 +1795,18 @@ function saveCurrentResult() {
   } else if (tab === 'layout') {
     const result = document.getElementById('lay-main').textContent;
     if (!result || result === '—') return;
+    const costBlock = document.getElementById('lay-cost-block');
+    let sub = document.getElementById('lay-sub').textContent || '';
+    if (costBlock && costBlock.style.display !== 'none') {
+      sub = [
+        document.getElementById('lay-cost').textContent,
+        document.getElementById('lay-tax-line').textContent,
+        document.getElementById('lay-total-line').textContent,
+      ].filter(Boolean).join('  ·  ');
+    }
     entry = { badge: LAY.mode === 'divide' ? 'DIVIDE' : 'BOARDS',
-      label:  document.getElementById('lay-top').textContent || '',
-      result, sub: document.getElementById('lay-sub').textContent || '' };
+      label: document.getElementById('lay-top').textContent || '',
+      result, sub };
   }
 
   if (!entry) return;
