@@ -510,6 +510,14 @@ body {
   flex: 1; overflow-y: auto; padding: 10px;
   display: flex; flex-direction: column; gap: 8px;
 }
+.saves-footer {
+  flex-shrink: 0; padding: 11px 16px;
+  border-top: 1px solid #2a2d45;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.saves-footer.hidden { display: none; }
+.saves-footer-label { color: #5050a0; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.07em; }
+.saves-footer-total { color: #c0a0ff; font-size: 1.25rem; font-weight: 800; }
 .saves-empty {
   text-align: center; color: #4a4d6a;
   font-size: 0.9rem; font-weight: 600; margin-top: 70px;
@@ -1016,6 +1024,10 @@ body {
   </div>
   <div class="projects-row" id="projects-row"></div>
   <div class="saves-list" id="saves-list"></div>
+  <div class="saves-footer hidden" id="saves-footer">
+    <span class="saves-footer-label">MATERIALS TOTAL</span>
+    <span class="saves-footer-total" id="saves-footer-total"></span>
+  </div>
 </div>
 <div class="proj-picker hidden" id="proj-picker"></div>
 
@@ -1809,16 +1821,19 @@ function saveCurrentResult(btn) {
     if (!result || result === '—') return;
     const costBlock = document.getElementById('lay-cost-block');
     let sub = document.getElementById('lay-sub').textContent || '';
+    let costTotal = 0;
     if (costBlock && costBlock.style.display !== 'none') {
       sub = [
         document.getElementById('lay-cost').textContent,
         document.getElementById('lay-tax-line').textContent,
         document.getElementById('lay-total-line').textContent,
       ].filter(Boolean).join('  ·  ');
+      const m = document.getElementById('lay-total-line').textContent.match(/\$([\d,]+\.?\d*)/);
+      if (m) costTotal = parseFloat(m[1].replace(/,/g, ''));
     }
     entry = { badge: LAY.mode === 'divide' ? 'DIVIDE' : 'BOARDS',
       label: document.getElementById('lay-top').textContent || '',
-      result, sub };
+      result, sub, costTotal };
   }
 
   if (!entry) return;
@@ -1894,11 +1909,26 @@ function renderSavesList() {
   let saves = loadSaves();
   const projects = loadProjects();
   const projMap = Object.fromEntries(projects.map(p => [p.id, p.name]));
-  const list     = document.getElementById('saves-list');
-  const clearBtn = document.getElementById('saves-clear-btn');
+  const list       = document.getElementById('saves-list');
+  const clearBtn   = document.getElementById('saves-clear-btn');
+  const footer     = document.getElementById('saves-footer');
+  const footerTotal = document.getElementById('saves-footer-total');
 
   if (savesFilter !== 'all') {
     saves = saves.filter(s => s.projectId === savesFilter);
+  }
+
+  // Materials total footer — only when a project is selected
+  if (savesFilter !== 'all') {
+    const total = saves.reduce((sum, s) => sum + (s.costTotal || 0), 0);
+    if (total > 0) {
+      footerTotal.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      footer.classList.remove('hidden');
+    } else {
+      footer.classList.add('hidden');
+    }
+  } else {
+    footer.classList.add('hidden');
   }
 
   clearBtn.style.display = saves.length > 0 ? 'inline-block' : 'none';
