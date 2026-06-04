@@ -566,11 +566,21 @@ body {
   transition: all 0.15s;
 }
 .proj-pill.active { background: #f5a623; border-color: #f5a623; color: #000; }
+.proj-pill .proj-pill-x {
+  margin-left: 6px; font-size: 0.85rem; opacity: 0.7; vertical-align: middle;
+}
 .proj-pill-new {
   background: none; border: 1px dashed #2a2d4a; border-radius: 20px;
   color: #4a4d6a; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em;
   padding: 5px 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
 }
+.proj-edit-btn {
+  background: none; border: none; color: #3a3d6a;
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em;
+  padding: 5px 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  margin-left: auto;
+}
+.proj-edit-btn.editing { color: #f5a623; }
 /* ── Project picker dropdown ── */
 .proj-picker {
   position: fixed; background: #1e2240; border: 1px solid #2e3260;
@@ -1693,7 +1703,10 @@ function openSaves() {
 function closeSaves() {
   document.getElementById('saves-overlay').classList.add('hidden');
   document.getElementById('proj-picker').classList.add('hidden');
+  projEditMode = false;
 }
+
+let projEditMode = false;
 
 function renderProjectPills() {
   const projects = loadProjects();
@@ -1701,29 +1714,40 @@ function renderProjectPills() {
   const pills = [
     `<button class="proj-pill${savesFilter==='all'?' active':''}" onclick="setFilter('all')">ALL</button>`,
     ...projects.map(p =>
-      `<button class="proj-pill${savesFilter===p.id?' active':''}" onclick="setFilter(${p.id})">${escHtml(p.name)}</button>`
+      projEditMode
+        ? `<button class="proj-pill" onclick="deleteProject(${p.id})">${escHtml(p.name)}<span class="proj-pill-x">&#x2715;</span></button>`
+        : `<button class="proj-pill${savesFilter===p.id?' active':''}" onclick="setFilter(${p.id})">${escHtml(p.name)}</button>`
     ),
-    `<button class="proj-pill-new" onclick="newProject()">+ NEW</button>`
+    `<button class="proj-pill-new" onclick="newProject()">+ NEW</button>`,
+    projects.length > 0
+      ? `<button class="proj-edit-btn${projEditMode?' editing':''}" onclick="toggleProjEdit()">${projEditMode ? 'DONE' : 'EDIT'}</button>`
+      : ''
   ];
   row.innerHTML = pills.join('');
 }
 
+function toggleProjEdit() {
+  projEditMode = !projEditMode;
+  renderProjectPills();
+}
+
 function setFilter(id) {
-  if (savesFilter === id && id !== 'all') {
-    const projects = loadProjects();
-    const proj = projects.find(p => p.id === id);
-    if (proj && confirm(`Delete project "${proj.name}"?\n\nSaved items will be kept but unassigned.`)) {
-      storeProjects(projects.filter(p => p.id !== id));
-      const saves = loadSaves();
-      saves.forEach(s => { if (s.projectId === id) s.projectId = null; });
-      storeSaves(saves);
-      savesFilter = 'all';
-      renderProjectPills();
-      renderSavesList();
-    }
-    return;
-  }
+  projEditMode = false;
   savesFilter = id;
+  renderProjectPills();
+  renderSavesList();
+}
+
+function deleteProject(id) {
+  const projects = loadProjects();
+  const proj = projects.find(p => p.id === id);
+  if (!proj) return;
+  storeProjects(projects.filter(p => p.id !== id));
+  const saves = loadSaves();
+  saves.forEach(s => { if (s.projectId === id) s.projectId = null; });
+  storeSaves(saves);
+  if (savesFilter === id) savesFilter = 'all';
+  projEditMode = projects.length - 1 > 0;
   renderProjectPills();
   renderSavesList();
 }
