@@ -2003,6 +2003,11 @@ function commitSaveEdit() {
     s.label  = document.getElementById('save-edit-label').value.trim();
     s.result = document.getElementById('save-edit-result').value.trim();
     s.sub    = document.getElementById('save-edit-sub').value.trim();
+    // Re-parse costTotal from sub in case this is an old save without it
+    if (!s.costTotal) {
+      const m = s.sub.match(/total\s+\$([\d,]+\.?\d*)/i);
+      if (m) s.costTotal = parseFloat(m[1].replace(/,/g, ''));
+    }
   }
   storeSaves(saves);
   closeSaveEdit();
