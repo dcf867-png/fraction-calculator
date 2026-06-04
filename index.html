@@ -525,7 +525,44 @@ body {
 .save-card {
   background: #1a1e38; border-radius: 10px;
   padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer;
 }
+.save-card:active { background: #22264a; }
+/* ── Save edit sheet ── */
+.save-edit-sheet {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  max-width: 480px; margin: 0 auto;
+  background: #1a1e38; border-top: 1px solid #2e3260;
+  border-radius: 16px 16px 0 0;
+  padding: 16px 16px 28px;
+  z-index: 300; display: flex; flex-direction: column; gap: 10px;
+}
+.save-edit-sheet.hidden { display: none; }
+.save-edit-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.save-edit-title { color: #f0f2ff; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.07em; }
+.save-edit-cancel {
+  background: none; border: none; color: #5060a0;
+  font-size: 0.8rem; font-weight: 800; cursor: pointer; padding: 4px 8px;
+}
+.save-edit-field { display: flex; flex-direction: column; gap: 4px; }
+.save-edit-field-label { color: #4a5080; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; }
+.save-edit-input {
+  background: #12152a; border: 1px solid #2a2d4a; border-radius: 8px;
+  color: #f0f2ff; font-size: 0.95rem; font-weight: 600;
+  padding: 9px 12px; width: 100%; outline: none;
+  font-family: inherit;
+}
+.save-edit-input:focus { border-color: #5050a0; }
+.save-edit-confirm {
+  background: #2e3260; border: none; border-radius: 10px;
+  color: #c0c8f0; font-size: 0.85rem; font-weight: 800;
+  padding: 12px; cursor: pointer; margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+.save-edit-confirm:active { background: #3e42a0; }
 .save-badge {
   background: #2c3050; border-radius: 5px; color: #8090b8;
   font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em;
@@ -1040,6 +1077,25 @@ body {
   </div>
 </div>
 <div class="proj-picker hidden" id="proj-picker"></div>
+<div class="save-edit-sheet hidden" id="save-edit-sheet">
+  <div class="save-edit-header">
+    <span class="save-edit-title">EDIT SAVE</span>
+    <button class="save-edit-cancel" onclick="closeSaveEdit()">CANCEL</button>
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">LABEL</span>
+    <input class="save-edit-input" id="save-edit-label" type="text" placeholder="Optional description">
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">RESULT</span>
+    <input class="save-edit-input" id="save-edit-result" type="text">
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">NOTES</span>
+    <input class="save-edit-input" id="save-edit-sub" type="text" placeholder="Optional notes">
+  </div>
+  <button class="save-edit-confirm" onclick="commitSaveEdit()">SAVE CHANGES</button>
+</div>
 
 <script>
 // ─── Shared utilities ─────────────────────────────────────────────────────────
@@ -1703,7 +1759,9 @@ function openSaves() {
 function closeSaves() {
   document.getElementById('saves-overlay').classList.add('hidden');
   document.getElementById('proj-picker').classList.add('hidden');
+  document.getElementById('save-edit-sheet').classList.add('hidden');
   projEditMode = false;
+  _editSaveId = null;
 }
 
 let projEditMode = false;
@@ -1919,6 +1977,38 @@ function _commitSave(entry, projectId, btn) {
   }
 }
 
+let _editSaveId = null;
+
+function openSaveEdit(id) {
+  const saves = loadSaves();
+  const s = saves.find(x => x.id === id);
+  if (!s) return;
+  _editSaveId = id;
+  document.getElementById('save-edit-label').value  = s.label  || '';
+  document.getElementById('save-edit-result').value = s.result || '';
+  document.getElementById('save-edit-sub').value    = s.sub    || '';
+  document.getElementById('save-edit-sheet').classList.remove('hidden');
+}
+
+function closeSaveEdit() {
+  document.getElementById('save-edit-sheet').classList.add('hidden');
+  _editSaveId = null;
+}
+
+function commitSaveEdit() {
+  if (_editSaveId === null) return;
+  const saves = loadSaves();
+  const s = saves.find(x => x.id === _editSaveId);
+  if (s) {
+    s.label  = document.getElementById('save-edit-label').value.trim();
+    s.result = document.getElementById('save-edit-result').value.trim();
+    s.sub    = document.getElementById('save-edit-sub').value.trim();
+  }
+  storeSaves(saves);
+  closeSaveEdit();
+  renderSavesList();
+}
+
 function deleteSave(id) {
   storeSaves(loadSaves().filter(s => s.id !== id));
   renderSavesList();
@@ -1959,7 +2049,7 @@ function renderSavesList() {
   list.innerHTML = saves.map(s => {
     const projName = s.projectId ? projMap[s.projectId] : null;
     return `
-      <div class="save-card">
+      <div class="save-card" onclick="openSaveEdit(${s.id})">
         <span class="save-badge">${s.badge}</span>
         <div class="save-body">
           ${s.label ? `<div class="save-label">${escHtml(s.label)}</div>` : ''}
@@ -1968,8 +2058,8 @@ function renderSavesList() {
           ${projName ? `<div class="save-proj-tag">&#128193; ${escHtml(projName)}</div>` : ''}
         </div>
         <div class="save-actions">
-          <button class="save-assign-btn" onclick="openProjPicker(${s.id},this)">&#128193;</button>
-          <button class="save-del-btn" onclick="deleteSave(${s.id})">&#x2715;</button>
+          <button class="save-assign-btn" onclick="event.stopPropagation();openProjPicker(${s.id},this)">&#128193;</button>
+          <button class="save-del-btn" onclick="event.stopPropagation();deleteSave(${s.id})">&#x2715;</button>
         </div>
       </div>
     `;
