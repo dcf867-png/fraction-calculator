@@ -1204,7 +1204,7 @@ function fInputStr() {
 function fRender() {
   const top=document.getElementById('f-top'), main=document.getElementById('f-main');
   if(FT.phase==='A') { top.textContent=''; main.textContent=fInputStr(); }
-  else if(FT.phase==='OP') { top.textContent=FT.storedStr+' '+FT.op; main.textContent='0'; }
+  else if(FT.phase==='OP') { top.textContent=FT.storedStr+' '+FT.op; main.textContent=FT.storedStr; }
   else if(FT.phase==='B')  { top.textContent=FT.storedStr+' '+FT.op; main.textContent=fInputStr(); }
 }
 function fResetInput() { FT.whole=''; FT.num=''; FT.den=''; }
@@ -1356,7 +1356,7 @@ function cRender() {
     }
   } else if (CT.phase==='OP') {
     top.textContent  = CT.storedStr+' '+CT.op;
-    main.textContent = emptyDisplay;
+    main.textContent = CT.storedStr;
     sub.textContent  = '';
   }
 }
