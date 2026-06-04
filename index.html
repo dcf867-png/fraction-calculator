@@ -1942,15 +1942,11 @@ function renderSavesList() {
     saves = saves.filter(s => s.projectId === savesFilter);
   }
 
-  // Materials total footer — only when a project is selected
+  // Materials total footer — always visible when a project is selected
   if (savesFilter !== 'all') {
     const total = saves.reduce((sum, s) => sum + (s.costTotal || 0), 0);
-    if (total > 0) {
-      footerTotal.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      footer.classList.remove('hidden');
-    } else {
-      footer.classList.add('hidden');
-    }
+    footerTotal.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    footer.classList.remove('hidden');
   } else {
     footer.classList.add('hidden');
   }
