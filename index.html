@@ -599,35 +599,45 @@ body {
   font-size: 0.67rem; color: #6070a0; font-weight: 700;
   letter-spacing: 0.04em; margin-top: 3px;
 }
-/* ── Project pills ── */
-.projects-row {
-  display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0;
-  padding: 8px 10px; border-bottom: 1px solid #1a1d30;
+/* ── Project panel (vertical sidebar) ── */
+.saves-body {
+  display: flex; flex: 1; overflow: hidden;
+}
+.proj-panel {
+  width: 108px; flex-shrink: 0;
+  background: #0b0d1c; border-right: 1px solid #1a1d30;
+  display: flex; flex-direction: column; overflow-y: auto;
   scrollbar-width: none;
 }
-.projects-row::-webkit-scrollbar { display: none; }
-.proj-pill {
-  background: #1a1e38; border: 1px solid #2a2d4a; border-radius: 20px;
-  color: #8090b8; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em;
-  padding: 5px 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  transition: all 0.15s;
+.proj-panel::-webkit-scrollbar { display: none; }
+.proj-panel-row {
+  display: flex; align-items: center;
+  padding: 10px 10px 10px 12px; gap: 4px;
+  cursor: pointer; border-bottom: 1px solid #12152a;
+  transition: background 0.12s;
 }
-.proj-pill.active { background: #f5a623; border-color: #f5a623; color: #000; }
-.proj-pill .proj-pill-x {
-  margin-left: 6px; font-size: 0.85rem; opacity: 0.7; vertical-align: middle;
+.proj-panel-row:active { background: #1a1e38; }
+.proj-panel-row.active { background: #1c2040; border-left: 3px solid #f5a623; padding-left: 9px; }
+.proj-panel-name {
+  flex: 1; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  color: #7080a8; line-height: 1.25; word-break: break-word;
 }
-.proj-pill-new {
-  background: none; border: 1px dashed #2a2d4a; border-radius: 20px;
-  color: #4a4d6a; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em;
-  padding: 5px 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+.proj-panel-row.active .proj-panel-name { color: #f5a623; }
+.proj-panel-del {
+  background: none; border: none; color: #2e3255;
+  font-size: 0.85rem; cursor: pointer; padding: 2px 3px; flex-shrink: 0;
+  line-height: 1; transition: color 0.1s;
 }
-.proj-edit-btn {
-  background: none; border: none; color: #3a3d6a;
-  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em;
-  padding: 5px 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  margin-left: auto;
+.proj-panel-del:active { color: #f87878; }
+.proj-panel-new {
+  margin: 8px; background: none; border: 1px dashed #2a2d4a; border-radius: 8px;
+  color: #4a4d6a; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em;
+  padding: 7px 4px; cursor: pointer; width: calc(100% - 16px);
 }
-.proj-edit-btn.editing { color: #f5a623; }
+.proj-panel-new:active { color: #8090b8; border-color: #5060a0; }
+.saves-right {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
 /* ── Project picker dropdown ── */
 .proj-picker {
   position: fixed; background: #1e2240; border: 1px solid #2e3260;
@@ -1079,13 +1089,17 @@ body {
     <button class="saves-clear-btn" id="saves-clear-btn" onclick="clearAllSaves()">CLEAR ALL</button>
     <button class="saves-close-btn" onclick="closeSaves()">CLOSE</button>
   </div>
-  <div class="projects-row" id="projects-row"></div>
-  <div class="saves-list" id="saves-list"></div>
-  <div class="saves-footer hidden" id="saves-footer">
-    <button class="mat-add-btn" onclick="openMatAdd()">+ MATERIAL</button>
-    <div class="saves-footer-right">
-      <span class="saves-footer-label">MATERIALS TOTAL</span>
-      <span class="saves-footer-total" id="saves-footer-total"></span>
+  <div class="saves-body">
+    <div class="proj-panel" id="proj-panel"></div>
+    <div class="saves-right">
+      <div class="saves-list" id="saves-list"></div>
+      <div class="saves-footer hidden" id="saves-footer">
+        <button class="mat-add-btn" onclick="openMatAdd()">+ MATERIAL</button>
+        <div class="saves-footer-right">
+          <span class="saves-footer-label">MATERIALS TOTAL</span>
+          <span class="saves-footer-total" id="saves-footer-total"></span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1795,37 +1809,28 @@ function closeSaves() {
   document.getElementById('proj-picker').classList.add('hidden');
   document.getElementById('save-edit-sheet').classList.add('hidden');
   document.getElementById('mat-add-sheet').classList.add('hidden');
-  projEditMode = false;
   _editSaveId = null;
 }
 
-let projEditMode = false;
-
 function renderProjectPills() {
   const projects = loadProjects();
-  const row = document.getElementById('projects-row');
-  const pills = [
-    `<button class="proj-pill${savesFilter==='all'?' active':''}" onclick="setFilter('all')">ALL</button>`,
+  const panel = document.getElementById('proj-panel');
+  const rows = [
+    `<div class="proj-panel-row${savesFilter==='all'?' active':''}" onclick="setFilter('all')">
+       <span class="proj-panel-name">ALL</span>
+     </div>`,
     ...projects.map(p =>
-      projEditMode
-        ? `<button class="proj-pill" onclick="deleteProject(${p.id})">${escHtml(p.name)}<span class="proj-pill-x">&#x2715;</span></button>`
-        : `<button class="proj-pill${savesFilter===p.id?' active':''}" onclick="setFilter(${p.id})">${escHtml(p.name)}</button>`
+      `<div class="proj-panel-row${savesFilter===p.id?' active':''}" onclick="setFilter(${p.id})">
+         <span class="proj-panel-name">${escHtml(p.name)}</span>
+         <button class="proj-panel-del" onclick="event.stopPropagation();deleteProject(${p.id})">&#x2715;</button>
+       </div>`
     ),
-    `<button class="proj-pill-new" onclick="newProject()">+ NEW</button>`,
-    projects.length > 0
-      ? `<button class="proj-edit-btn${projEditMode?' editing':''}" onclick="toggleProjEdit()">${projEditMode ? 'DONE' : 'EDIT'}</button>`
-      : ''
+    `<button class="proj-panel-new" onclick="newProject()">+ NEW</button>`,
   ];
-  row.innerHTML = pills.join('');
-}
-
-function toggleProjEdit() {
-  projEditMode = !projEditMode;
-  renderProjectPills();
+  panel.innerHTML = rows.join('');
 }
 
 function setFilter(id) {
-  projEditMode = false;
   savesFilter = id;
   renderProjectPills();
   renderSavesList();
@@ -1840,7 +1845,6 @@ function deleteProject(id) {
   saves.forEach(s => { if (s.projectId === id) s.projectId = null; });
   storeSaves(saves);
   if (savesFilter === id) savesFilter = 'all';
-  projEditMode = projects.length - 1 > 0;
   renderProjectPills();
   renderSavesList();
 }
