@@ -2112,7 +2112,9 @@ function renderSavesList() {
   const footer     = document.getElementById('saves-footer');
   const footerTotal = document.getElementById('saves-footer-total');
 
-  if (savesFilter !== 'all') {
+  if (savesFilter === 'all') {
+    saves = saves.filter(s => !s.projectId);
+  } else {
     saves = saves.filter(s => s.projectId === savesFilter);
   }
 
@@ -2123,7 +2125,7 @@ function renderSavesList() {
 
   clearBtn.style.display = saves.length > 0 ? 'inline-block' : 'none';
   if (saves.length === 0) {
-    list.innerHTML = `<div class="saves-empty">${savesFilter !== 'all' ? 'No saves in this project' : 'Nothing saved yet'}</div>`;
+    list.innerHTML = `<div class="saves-empty">${savesFilter !== 'all' ? 'No saves in this project' : 'No unassigned saves'}</div>`;
     return;
   }
   list.innerHTML = saves.map(s => {
