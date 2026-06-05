@@ -434,22 +434,36 @@ body {
   flex-shrink: 0;
 }
 .disp-save-btn.saved { background: #2a6a2a; color: #80e880; }
-/* Fraction history panel */
+/* Fraction tab: row layout to accommodate right history panel */
+#tab-frac { flex-direction: row; }
+.frac-left { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+/* Fraction history panel — right vertical sidebar */
 .frac-history {
-  flex-shrink: 0; max-height: 130px; overflow-y: auto;
-  background: #080a18; border-bottom: 1px solid #1a1d30;
-  scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
+  flex-shrink: 0; width: 112px;
+  display: flex; flex-direction: column;
+  background: #06080f; border-left: 1px solid #1a1d30;
+  transition: width 0.18s ease;
+  overflow: hidden;
 }
-.frac-history:empty { display: none; }
+.frac-history.collapsed { width: 26px; }
+.frac-history-toggle {
+  flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: #0b0d1c; border-bottom: 1px solid #1a1d30;
+  cursor: pointer; color: #3a4060; font-size: 0.75rem; user-select: none;
+}
+.frac-history-toggle:active { color: #8090c0; }
+.frac-history-list {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
+  display: flex; flex-direction: column;
+}
 .frac-history-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 5px 14px; gap: 10px; border-bottom: 1px solid #0f1120;
+  flex-shrink: 0; padding: 7px 8px; border-bottom: 1px solid #0d0f1e;
   cursor: pointer; transition: background 0.1s;
 }
-.frac-history-row:last-child { border-bottom: none; }
 .frac-history-row:active { background: #12152a; }
-.frac-history-expr { font-size: 0.72rem; color: #3a4060; font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.frac-history-result { font-size: 0.95rem; color: #8090c0; font-weight: 700; flex-shrink: 0; }
+.frac-history-expr { font-size: 0.6rem; color: #2e3555; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.frac-history-result { font-size: 0.88rem; color: #7080b8; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .disp-btn-col {
   display: flex;
   flex-direction: column;
@@ -685,12 +699,11 @@ body {
 ════════════════════════════════ -->
 <div id="tab-frac" class="panel active">
 
+  <div class="frac-left">
   <div class="calc-display">
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
   </div>
-
-  <div class="frac-history" id="frac-history"></div>
 
   <div class="calc-keypad">
     <div class="key-area">
@@ -790,6 +803,13 @@ body {
       <button class="key key-eq" onclick="fEq()">=</button>
     </div>
   </div>
+  </div><!-- /.frac-left -->
+
+  <div class="frac-history" id="frac-history">
+    <div class="frac-history-toggle" onclick="toggleFracHistory()">◀</div>
+    <div class="frac-history-list" id="frac-history-list"></div>
+  </div>
+
 </div>
 
 <!-- ════════════════════════════════
@@ -1255,26 +1275,26 @@ function fmtInches(totalIn) {
 // ─── FRACTION TAB ─────────────────────────────────────────────────────────────
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
 const fHistory = [];
+let fHistoryCollapsed = false;
 
 function fHistoryPush(expr, result) {
   fHistory.push({ expr, result, _val: FT.storedVal });
-  if (fHistory.length > 20) fHistory.shift();
   fHistoryRender();
 }
 function fHistoryRender() {
-  const el = document.getElementById('frac-history');
-  el.innerHTML = fHistory.map((h, i) =>
+  const list = document.getElementById('frac-history-list');
+  if (!list) return;
+  list.innerHTML = fHistory.map((h, i) =>
     `<div class="frac-history-row" onclick="fHistoryRecall(${i})">
-       <span class="frac-history-expr">${escHtml(h.expr)}</span>
-       <span class="frac-history-result">${escHtml(h.result)}</span>
+       <div class="frac-history-expr">${escHtml(h.expr)}</div>
+       <div class="frac-history-result">${escHtml(h.result)}</div>
      </div>`
   ).join('');
-  el.scrollTop = el.scrollHeight;
+  list.scrollTop = list.scrollHeight;
 }
 function fHistoryRecall(i) {
   const h = fHistory[i];
   if (!h) return;
-  fHistory.length = 0; fHistoryRender();
   FT.phase='A'; FT.op=''; fResetInput();
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
   FT.storedVal = h._val;
@@ -1282,6 +1302,13 @@ function fHistoryRecall(i) {
   FT.phase = 'R';
   document.getElementById('f-top').textContent = h.expr;
   document.getElementById('f-main').textContent = h.result;
+}
+function toggleFracHistory() {
+  fHistoryCollapsed = !fHistoryCollapsed;
+  const panel = document.getElementById('frac-history');
+  const toggle = panel.querySelector('.frac-history-toggle');
+  panel.classList.toggle('collapsed', fHistoryCollapsed);
+  toggle.textContent = fHistoryCollapsed ? '▶' : '◀';
 }
 
 function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
@@ -1373,8 +1400,7 @@ function fClear() {
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
-  fHistory.length = 0;
-  fHistoryRender();
+  fHistory.length = 0; fHistoryRender();
 }
 
 function fSign() {
