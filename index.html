@@ -1327,7 +1327,8 @@ function fOp(btn) {
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
   btn.classList.add('active-op');
   if(FT.phase==='B') fEq(true);
-  FT.storedVal=fVal(); FT.storedStr=fInputStr(); FT.op=btn.dataset.op;
+  if(FT.phase!=='R') { FT.storedVal=fVal(); FT.storedStr=fInputStr(); }
+  FT.op=btn.dataset.op;
   FT.phase='OP'; fResetInput(); fRender();
 }
 
