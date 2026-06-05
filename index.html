@@ -434,8 +434,22 @@ body {
   flex-shrink: 0;
 }
 .disp-save-btn.saved { background: #2a6a2a; color: #80e880; }
-/* Fraction tab: no C button, so float save to top-left */
-#tab-frac .disp-save-btn { position: absolute; top: 8px; left: 10px; }
+/* Fraction history panel */
+.frac-history {
+  flex-shrink: 0; max-height: 130px; overflow-y: auto;
+  background: #080a18; border-bottom: 1px solid #1a1d30;
+  scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
+}
+.frac-history:empty { display: none; }
+.frac-history-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 5px 14px; gap: 10px; border-bottom: 1px solid #0f1120;
+  cursor: pointer; transition: background 0.1s;
+}
+.frac-history-row:last-child { border-bottom: none; }
+.frac-history-row:active { background: #12152a; }
+.frac-history-expr { font-size: 0.72rem; color: #3a4060; font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.frac-history-result { font-size: 0.95rem; color: #8090c0; font-weight: 700; flex-shrink: 0; }
 .disp-btn-col {
   display: flex;
   flex-direction: column;
@@ -672,10 +686,11 @@ body {
 <div id="tab-frac" class="panel active">
 
   <div class="calc-display">
-    <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
   </div>
+
+  <div class="frac-history" id="frac-history"></div>
 
   <div class="calc-keypad">
     <div class="key-area">
@@ -1239,6 +1254,35 @@ function fmtInches(totalIn) {
 
 // ─── FRACTION TAB ─────────────────────────────────────────────────────────────
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
+const fHistory = [];
+
+function fHistoryPush(expr, result) {
+  fHistory.push({ expr, result, _val: FT.storedVal });
+  if (fHistory.length > 20) fHistory.shift();
+  fHistoryRender();
+}
+function fHistoryRender() {
+  const el = document.getElementById('frac-history');
+  el.innerHTML = fHistory.map((h, i) =>
+    `<div class="frac-history-row" onclick="fHistoryRecall(${i})">
+       <span class="frac-history-expr">${escHtml(h.expr)}</span>
+       <span class="frac-history-result">${escHtml(h.result)}</span>
+     </div>`
+  ).join('');
+  el.scrollTop = el.scrollHeight;
+}
+function fHistoryRecall(i) {
+  const h = fHistory[i];
+  if (!h) return;
+  fHistory.length = 0; fHistoryRender();
+  FT.phase='A'; FT.op=''; fResetInput();
+  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
+  FT.storedVal = h._val;
+  FT.storedStr = h.result;
+  FT.phase = 'R';
+  document.getElementById('f-top').textContent = h.expr;
+  document.getElementById('f-main').textContent = h.result;
+}
 
 function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
 function fInputStr() {
@@ -1293,9 +1337,11 @@ function fEq(chain=false) {
     if(!FT.num && !FT.den) return;
     const v = fVal();
     const resStr = fmtMixed(v);
-    document.getElementById('f-top').textContent  = fInputStr() + ' =';
+    const expr = fInputStr() + ' =';
+    document.getElementById('f-top').textContent  = expr;
     document.getElementById('f-main').textContent = resStr;
     FT.phase='R'; FT.storedVal=v; FT.storedStr=resStr; fResetInput();
+    fHistoryPush(expr, resStr);
     return;
   }
   const b=fVal(), bStr=fInputStr();
@@ -1312,9 +1358,11 @@ function fEq(chain=false) {
   }
   const resStr=fmtMixed(res);
   if(!chain) {
-    document.getElementById('f-top').textContent=`${FT.storedStr} ${FT.op} ${bStr} =`;
+    const expr=`${FT.storedStr} ${FT.op} ${bStr} =`;
+    document.getElementById('f-top').textContent=expr;
     document.getElementById('f-main').textContent=resStr;
     FT.phase='R';
+    fHistoryPush(expr, resStr);
   }
   FT.storedVal=res; FT.storedStr=resStr; fResetInput();
 }
@@ -1324,6 +1372,8 @@ function fClear() {
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
+  fHistory.length = 0;
+  fHistoryRender();
 }
 
 function fSign() {
