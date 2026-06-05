@@ -2116,14 +2116,10 @@ function renderSavesList() {
     saves = saves.filter(s => s.projectId === savesFilter);
   }
 
-  // Materials total footer — always visible when a project is selected
-  if (savesFilter !== 'all') {
-    const total = saves.reduce((sum, s) => sum + (s.costTotal || 0), 0);
-    footerTotal.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    footer.classList.remove('hidden');
-  } else {
-    footer.classList.add('hidden');
-  }
+  // Materials total footer — always visible
+  const total = saves.reduce((sum, s) => sum + (s.costTotal || 0), 0);
+  footerTotal.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  footer.classList.remove('hidden');
 
   clearBtn.style.display = saves.length > 0 ? 'inline-block' : 'none';
   if (saves.length === 0) {
