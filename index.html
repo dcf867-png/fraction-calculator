@@ -544,9 +544,9 @@ body {
 .const-history-toggle {
   flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
   background: #0f0e08; border-bottom: 1px solid #2a2010;
-  cursor: pointer; color: #4a3a10; font-size: 0.75rem; user-select: none;
+  cursor: pointer; color: #4a8a4a; font-size: 0.75rem; user-select: none;
 }
-.const-history-toggle:active { color: #c09060; }
+.const-history-toggle:active { color: #80e880; }
 .const-history-header {
   flex-shrink: 0; padding: 4px 6px 5px;
   font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em;
@@ -1045,8 +1045,8 @@ body {
   <div class="const-history" id="const-history">
     <div class="const-history-toggle" onclick="toggleConstHistory()">◀</div>
     <div class="const-history-header">History</div>
-    <button class="const-history-clear" onclick="cHistoryClear()">Clear</button>
     <div class="const-history-list" id="const-history-list"></div>
+    <button class="const-history-clear" id="const-history-clear-btn" onclick="cHistoryClear()">Clear</button>
   </div>
 </div>
 
@@ -1459,6 +1459,7 @@ function toggleConstHistory() {
   const toggle = panel.querySelector('.const-history-toggle');
   panel.classList.toggle('collapsed', cHistoryCollapsed);
   toggle.textContent = cHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('const-history-clear-btn').style.display = cHistoryCollapsed ? 'none' : '';
 }
 
 // ─── FRACTION TAB ─────────────────────────────────────────────────────────────
