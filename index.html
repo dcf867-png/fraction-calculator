@@ -494,9 +494,9 @@ body {
 .frac-history-toggle {
   flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
   background: #0b0d1c; border-bottom: 1px solid #1a1d30;
-  cursor: pointer; color: #3a4060; font-size: 0.75rem; user-select: none;
+  cursor: pointer; color: #4a8a4a; font-size: 0.75rem; user-select: none;
 }
-.frac-history-toggle:active { color: #8090c0; }
+.frac-history-toggle:active { color: #80e880; }
 .frac-history-header {
   flex-shrink: 0;
   padding: 4px 6px 5px;
@@ -913,8 +913,8 @@ body {
   <div class="frac-history" id="frac-history">
     <div class="frac-history-toggle" onclick="toggleFracHistory()">◀</div>
     <div class="frac-history-header">History</div>
-    <button class="frac-history-clear" onclick="fHistoryClear()">Clear</button>
     <div class="frac-history-list" id="frac-history-list"></div>
+    <button class="frac-history-clear" id="frac-history-clear-btn" onclick="fHistoryClear()">Clear</button>
   </div>
 
 </div>
@@ -1505,6 +1505,7 @@ function toggleFracHistory() {
   const toggle = panel.querySelector('.frac-history-toggle');
   panel.classList.toggle('collapsed', fHistoryCollapsed);
   toggle.textContent = fHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('frac-history-clear-btn').style.display = fHistoryCollapsed ? 'none' : '';
 }
 
 function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
