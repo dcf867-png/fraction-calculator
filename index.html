@@ -469,13 +469,21 @@ body {
   overflow: hidden;
   text-transform: uppercase;
 }
+.frac-history-clear {
+  flex-shrink: 0; padding: 4px 6px; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #3a4060;
+  background: transparent; border: none; border-bottom: 1px solid #0d0f1e;
+  cursor: pointer; white-space: nowrap; overflow: hidden; width: 100%;
+}
+.frac-history-clear:active { color: #8090c0; background: #12152a; }
 .frac-history-list {
   flex: 1; overflow-y: auto; overflow-x: hidden;
   scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
   display: flex; flex-direction: column;
 }
+.frac-history-sep { flex-shrink: 0; height: 1px; background: #1e2240; margin: 0 6px; }
 .frac-history-row {
-  flex-shrink: 0; padding: 7px 8px; border-bottom: 1px solid #0d0f1e;
+  flex-shrink: 0; padding: 7px 8px;
   cursor: pointer; transition: background 0.1s;
 }
 .frac-history-row:active { background: #12152a; }
@@ -825,6 +833,7 @@ body {
   <div class="frac-history" id="frac-history">
     <div class="frac-history-toggle" onclick="toggleFracHistory()">◀</div>
     <div class="frac-history-header">History</div>
+    <button class="frac-history-clear" onclick="fHistoryClear()">Clear</button>
     <div class="frac-history-list" id="frac-history-list"></div>
   </div>
 
@@ -1304,12 +1313,16 @@ function fHistoryRender() {
   const list = document.getElementById('frac-history-list');
   if (!list) return;
   list.innerHTML = fHistory.map((h, i) =>
+    (i > 0 ? '<div class="frac-history-sep"></div>' : '') +
     `<div class="frac-history-row" onclick="fHistoryRecall(${i})">
        <div class="frac-history-expr">${escHtml(h.expr)}</div>
        <div class="frac-history-result">${escHtml(h.result)}</div>
      </div>`
   ).join('');
   list.scrollTop = list.scrollHeight;
+}
+function fHistoryClear() {
+  fHistory.length = 0; fHistoryRender();
 }
 function fHistoryRecall(i) {
   const h = fHistory[i];
@@ -1442,7 +1455,6 @@ function fClear() {
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
-  fHistory.length = 0; fHistoryRender();
 }
 
 function fSign() {
