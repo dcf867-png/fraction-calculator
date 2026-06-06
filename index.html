@@ -1689,6 +1689,7 @@ function cVal() {
 function cInputStr() {
   const n=CT.num, d=CT.den;
   const fracStr = (!n&&!d) ? '' : (n&&!d) ? `-${n}/` : (!n&&d) ? `-0/${d}` : `-${n}/${d}`;
+  if (!CT.feet && !CT.ftIn) return fracStr ? `0${fracStr}"` : `0"`;
   return `${CT.feet||'0'}' ${CT.ftIn||'0'}${fracStr}"`;
 }
 
