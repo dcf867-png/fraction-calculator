@@ -2052,9 +2052,10 @@ function sqDrawTouchStart(e) {
       cy: (t0.clientY + t1.clientY) / 2,
       x: sqDrawViewBox.x, y: sqDrawViewBox.y, w: sqDrawViewBox.w, h: sqDrawViewBox.h
     };
-  } else if (e.touches.length === 1) {
-    sqDrawPan = { startX: e.touches[0].clientX, startY: e.touches[0].clientY,
-                  vbx: sqDrawViewBox.x, vby: sqDrawViewBox.y, moved: false };
+  } else if (e.touches.length === 1 && !sqDraw.closed) {
+    const t = e.touches[0];
+    sqDraw.hover = sqDrawSvgPos({ clientX: t.clientX, clientY: t.clientY });
+    sqDrawRender();
   }
 }
 function sqDrawTouchMove(e) {
@@ -2072,33 +2073,23 @@ function sqDrawTouchMove(e) {
       w: newW, h: newW
     };
     sqDrawApplyViewBox();
-  } else if (e.touches.length === 1 && sqDrawPan && sqDrawViewBox.w < 460) {
-    const rect = document.getElementById('sqft-draw-svg').getBoundingClientRect();
-    const scale = sqDrawViewBox.w / rect.width;
-    const dx = (e.touches[0].clientX - sqDrawPan.startX) * scale;
-    const dy = (e.touches[0].clientY - sqDrawPan.startY) * scale;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) sqDrawPan.moved = true;
-    sqDrawViewBox.x = Math.max(0, Math.min(460 - sqDrawViewBox.w, sqDrawPan.vbx - dx));
-    sqDrawViewBox.y = Math.max(0, Math.min(460 - sqDrawViewBox.h, sqDrawPan.vby - dy));
-    sqDrawApplyViewBox();
+  } else if (e.touches.length === 1 && !sqDrawPinch && !sqDraw.closed) {
+    const t = e.touches[0];
+    sqDraw.hover = sqDrawSvgPos({ clientX: t.clientX, clientY: t.clientY });
+    sqDrawRender();
   }
 }
 function sqDrawTouchEnd(e) {
   if (e.touches.length < 2) sqDrawPinch = null;
   if (e.touches.length === 0) {
     const wasPinching = sqDrawWasPinching;
-    const panned = sqDrawPan && sqDrawPan.moved;
-    sqDrawPan = null;
     sqDrawWasPinching = false;
-    if (!wasPinching && !panned && e.changedTouches.length === 1) {
-      const now = Date.now();
-      if (now - sqDrawLastTap < 300) {
-        sqDrawViewBox = { x:0, y:0, w:460, h:460 };
-        sqDrawApplyViewBox(); sqDrawLastTap = 0; return;
-      }
-      sqDrawLastTap = now;
+    sqDrawPan = null;
+    if (!wasPinching && e.changedTouches.length === 1) {
       const t = e.changedTouches[0];
       sqDrawClick({ clientX: t.clientX, clientY: t.clientY });
+      sqDraw.hover = null;
+      sqDrawRender();
     }
   }
 }
