@@ -530,6 +530,45 @@ body {
 .frac-history-row:active { background: #12152a; }
 .frac-history-expr { font-size: 0.6rem; color: #7080a8; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
 .frac-history-result { font-size: 0.88rem; color: #c0cef0; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Construction history panel */
+#tab-const { flex-direction: row; }
+.const-left { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.const-history {
+  flex-shrink: 0; width: 112px;
+  display: flex; flex-direction: column;
+  border-left: 1px solid #2a2010;
+  background: #0f0e08;
+  overflow: hidden;
+}
+.const-history.collapsed { width: 26px; }
+.const-history-toggle {
+  flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: #0f0e08; border-bottom: 1px solid #2a2010;
+  cursor: pointer; color: #4a3a10; font-size: 0.75rem; user-select: none;
+}
+.const-history-toggle:active { color: #c09060; }
+.const-history-header {
+  flex-shrink: 0; padding: 4px 6px 5px;
+  font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em;
+  color: #6a5020; text-transform: uppercase;
+}
+.const-history-clear {
+  flex-shrink: 0; margin: 6px; padding: 4px 6px; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #c09060;
+  background: transparent; border: 1px solid #3a2a10; border-radius: 3px;
+  cursor: pointer; white-space: nowrap; overflow: hidden; width: calc(100% - 12px);
+}
+.const-history-clear:active { color: #f5c060; background: #2a2010; }
+.const-history-list {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: #2a2010 transparent;
+  display: flex; flex-direction: column;
+}
+.const-history-sep { flex-shrink: 0; height: 1px; background: #2a2010; margin: 0 6px; }
+.const-history-row { flex-shrink: 0; padding: 7px 8px; cursor: pointer; transition: background 0.1s; }
+.const-history-row:active { background: #1a1508; }
+.const-history-expr { font-size: 0.6rem; color: #8a6a30; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.const-history-result { font-size: 0.88rem; color: #f0c070; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .disp-btn-col {
   display: flex;
   flex-direction: column;
@@ -884,10 +923,10 @@ body {
      CONSTRUCTION TAB
 ════════════════════════════════ -->
 <div id="tab-const" class="panel">
+  <div class="const-left">
 
   <div class="calc-display">
     <div class="disp-btn-col">
-      <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
       <button class="disp-c-btn" onclick="cClear()">C</button>
     </div>
     <div class="disp-stack">
@@ -1000,6 +1039,14 @@ body {
       <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
       <button class="key key-eq" onclick="cEq()">=</button>
     </div>
+  </div>
+  </div><!-- /.const-left -->
+
+  <div class="const-history" id="const-history">
+    <div class="const-history-toggle" onclick="toggleConstHistory()">◀</div>
+    <div class="const-history-header">History</div>
+    <button class="const-history-clear" onclick="cHistoryClear()">Clear</button>
+    <div class="const-history-list" id="const-history-list"></div>
   </div>
 </div>
 
@@ -1374,6 +1421,46 @@ function fmtInches(totalIn) {
   return `${sign}${inStr}"`;
 }
 
+// ─── CONSTRUCTION HISTORY ─────────────────────────────────────────────────────
+const cHistory = [];
+let cHistoryCollapsed = false;
+
+function cHistoryPush(expr, result) {
+  cHistory.push({ expr, result, _val: CT.storedVal });
+  cHistoryRender();
+}
+function cHistoryRender() {
+  const list = document.getElementById('const-history-list');
+  if (!list) return;
+  list.innerHTML = cHistory.map((h, i) =>
+    (i > 0 ? '<div class="const-history-sep"></div>' : '') +
+    `<div class="const-history-row" onclick="cHistoryRecall(${i})">
+       <div class="const-history-expr">${escHtml(h.expr)}</div>
+       <div class="const-history-result">${escHtml(h.result)}</div>
+     </div>`
+  ).join('');
+  list.scrollTop = list.scrollHeight;
+}
+function cHistoryClear() {
+  cHistory.length = 0; cHistoryRender();
+}
+function cHistoryRecall(i) {
+  const h = cHistory[i];
+  if (!h) return;
+  CT.phase = 'R'; CT.op = ''; CT.storedVal = h._val; CT.storedStr = h.result;
+  cResetInput();
+  document.getElementById('c-top').textContent  = h.expr;
+  document.getElementById('c-main').textContent = h.result;
+  document.getElementById('c-sub').textContent  = '';
+}
+function toggleConstHistory() {
+  cHistoryCollapsed = !cHistoryCollapsed;
+  const panel = document.getElementById('const-history');
+  const toggle = panel.querySelector('.const-history-toggle');
+  panel.classList.toggle('collapsed', cHistoryCollapsed);
+  toggle.textContent = cHistoryCollapsed ? '▶' : '◀';
+}
+
 // ─── FRACTION TAB ─────────────────────────────────────────────────────────────
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
 const fHistory = [];
@@ -1655,10 +1742,12 @@ function cEq(chain=false) {
   const mainStr = fmtInches(res);
   const subStr  = fmtInchesOnly(res);
   if(!chain) {
-    document.getElementById('c-top').textContent  = `${CT.storedStr} ${CT.op} ${bStr} =`;
+    const expr = `${CT.storedStr} ${CT.op} ${bStr} =`;
+    document.getElementById('c-top').textContent  = expr;
     document.getElementById('c-main').textContent = mainStr;
     document.getElementById('c-sub').textContent  = subStr;
     CT.phase='R';
+    cHistoryPush(expr, mainStr);
   }
   CT.storedVal=res; CT.storedStr=mainStr; cResetInput();
 }
