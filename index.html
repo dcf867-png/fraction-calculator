@@ -94,6 +94,7 @@ body {
   align-items: flex-end;
   gap: 10px;
 }
+#tab-frac  .disp-sub  { color: #7ab8d8; font-size: 1.1rem; font-weight: 600; text-align: right; min-height: 0; }
 #tab-const .disp-main { color: #f5c060; cursor: pointer; }
 #tab-const .disp-main:hover { opacity: 0.8; }
 #tab-const .disp-top  { color: #d4a060; }
@@ -811,6 +812,7 @@ body {
   <div class="calc-display">
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
+    <div class="disp-sub"  id="f-sub"></div>
   </div>
 
   <div class="calc-keypad">
@@ -1353,6 +1355,14 @@ function gcd(a, b) {
   return a || 1;
 }
 
+function fmtDecimal(v) {
+  if (!isFinite(v) || Number.isInteger(v)) return '';
+  return '= ' + parseFloat(v.toFixed(8)).toString();
+}
+function fSubSet(v) {
+  const el = document.getElementById('f-sub');
+  if (el) el.textContent = fmtDecimal(v);
+}
 function fmtMixed(v) {
   if (!isFinite(v)) return 'Error';
   const neg = v < 0;
@@ -1507,6 +1517,7 @@ function fHistoryRecall(i) {
   fTape = '';
   document.getElementById('f-top').textContent = h.expr;
   document.getElementById('f-main').textContent = h.result;
+  fSubSet(h._val);
 }
 function toggleFracHistory() {
   fHistoryCollapsed = !fHistoryCollapsed;
@@ -1569,6 +1580,7 @@ function fOp(btn) {
     } catch(e) {
       document.getElementById('f-top').textContent='';
       document.getElementById('f-main').textContent=e.message;
+      document.getElementById('f-sub').textContent='';
       FT.phase='A'; fResetInput(); fTape=''; return;
     }
     fTape += bStr + ' ';
@@ -1596,6 +1608,7 @@ function fEq() {
     const expr=fTape+fInputStr()+' =';
     document.getElementById('f-top').textContent=expr;
     document.getElementById('f-main').textContent=resStr;
+    fSubSet(v);
     FT.phase='R'; FT.storedVal=v; FT.storedStr=resStr; fResetInput();
     fTape=''; fHistoryPush(expr,resStr); return;
   }
@@ -1617,6 +1630,7 @@ function fEq() {
   FT.storedVal=res; FT.storedStr=resStr; fResetInput();
   document.getElementById('f-top').textContent=expr;
   document.getElementById('f-main').textContent=resStr;
+  fSubSet(res);
   FT.phase='R'; fTape=''; fHistoryPush(expr,resStr);
 }
 
@@ -1625,6 +1639,7 @@ function fClear() {
   fTape = '';
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
+  document.getElementById('f-sub').textContent='';
 }
 
 function fSign() {
