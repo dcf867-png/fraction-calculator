@@ -169,6 +169,7 @@ body {
   gap: 4px;
   flex-shrink: 0;
   height: 48px;
+  padding: 0 6px 4px;
 }
 
 /* ── Keys ── */
@@ -196,7 +197,6 @@ body {
 
 .key-op { background: #22253a; color: #b0c0d8; font-size: 1.25rem; }
 .key-op:active { background: #2e3250; }
-.key-op.active-op { background: #f5a623; color: #000; }
 
 .key-eq { background: #f5a623; color: #000; font-size: 1.4rem; font-weight: 800; }
 .key-eq:active { background: #d48f1a; }
@@ -210,7 +210,6 @@ body {
 #tab-const .key-pm  { background: #252030; color: #d0b880; }
 #tab-const .key-del { color: #c09060; }
 #tab-const .key-op  { background: #181810; color: #c09060; }
-#tab-const .key-op.active-op { background: #f5a623; color: #000; }
 #tab-const .key-eq  { background: #f5a623; }
 #tab-const .pad-sep { background: #3a3020; }
 #tab-const .frac-bar-key { background: #3a3020; }
@@ -809,6 +808,14 @@ body {
     <div class="disp-main" id="f-main">0</div>
   </div>
 
+  <div class="op-row">
+    <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
+    <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
+    <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
+    <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
+    <button class="key key-eq" onclick="fEq()">=</button>
+  </div>
+
   <div class="calc-keypad">
     <div class="key-area">
 
@@ -898,14 +905,6 @@ body {
         </div>
       </div>
     </div>
-
-    <div class="op-row">
-      <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
-      <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
-      <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
-      <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
-      <button class="key key-eq" onclick="fEq()">=</button>
-    </div>
   </div>
   </div><!-- /.frac-left -->
 
@@ -933,6 +932,14 @@ body {
       <div class="disp-main" id="c-main">0"</div>
       <div class="disp-sub"  id="c-sub"></div>
     </div>
+  </div>
+
+  <div class="op-row">
+    <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
+    <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
+    <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
+    <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
+    <button class="key key-eq" onclick="cEq()">=</button>
   </div>
 
   <div class="calc-keypad">
@@ -1029,14 +1036,6 @@ body {
           <button class="key key-del span2" onclick="cDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
         </div>
       </div>
-    </div>
-
-    <div class="op-row">
-      <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
-      <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
-      <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
-      <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
-      <button class="key key-eq" onclick="cEq()">=</button>
     </div>
   </div>
   </div><!-- /.const-left -->
@@ -1497,7 +1496,6 @@ function fHistoryRecall(i) {
   const h = fHistory[i];
   if (!h) return;
   FT.phase='A'; FT.op=''; fResetInput();
-  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
   FT.storedVal = h._val;
   FT.storedStr = h.result;
   FT.phase = 'R';
@@ -1554,8 +1552,6 @@ function fNdel() { FT.num=FT.num.slice(0,-1);     fRender(); }
 function fDdel() { FT.den=FT.den.slice(0,-1);     fRender(); }
 
 function fOp(btn) {
-  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
-  btn.classList.add('active-op');
   const newOp = btn.dataset.op;
   if (FT.phase==='B') {
     const b=fVal(), bStr=fInputStr();
@@ -1624,7 +1620,6 @@ function fClear() {
   fTape = '';
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
-  document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
 }
 
 function fSign() {
@@ -1725,8 +1720,6 @@ function cNdel() { CT.num=CT.num.slice(0,-1); cRender(); }
 function cDdel() { CT.den=CT.den.slice(0,-1); cRender(); }
 
 function cOp(btn) {
-  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
-  btn.classList.add('active-op');
   if(CT.phase==='B') cEq(true);
   CT.storedVal=cVal(); CT.storedStr=cInputStr(); CT.op=btn.dataset.op;
   CT.phase='OP'; cResetInput(); cRender();
@@ -1772,7 +1765,6 @@ function cClear() {
   document.getElementById('c-top').textContent  = '';
   document.getElementById('c-main').textContent = CT.storedStr;
   document.getElementById('c-sub').textContent  = '';
-  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
 }
 
 function cSign() {
