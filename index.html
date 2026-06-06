@@ -257,6 +257,8 @@ body {
 }
 .mini-dp.active-field { background: #f5a623; color: #000; border-color: #f5a623; }
 .mini-unit { font-size: 2.4rem; color: #c09060; font-weight: 700; flex-shrink: 0; line-height: 1; }
+.mini-dp-sm { flex: 0 0 28px; font-size: 0.85rem; }
+.mini-frac-unit { font-size: 1.5rem; color: #c09060; font-weight: 700; flex-shrink: 0; line-height: 1; }
 .mini-c {
   background: #4a1a10; color: #f87878;
   border: none; border-radius: 6px;
@@ -904,6 +906,10 @@ body {
           <span class="mini-dp active-field" id="dp-ft"   onclick="setFtField('ft')">0</span>
           <span class="mini-unit">'</span>
           <span class="mini-dp"              id="dp-ftin" onclick="setFtField('in')">0</span>
+          <span class="mini-frac-unit">-</span>
+          <span class="mini-dp mini-dp-sm"   id="dp-num"  onclick="setFtField('num')">0</span>
+          <span class="mini-frac-unit">/</span>
+          <span class="mini-dp mini-dp-sm"   id="dp-den"  onclick="setFtField('den')">0</span>
           <span class="mini-unit">"</span>
         </div>
 
@@ -1545,6 +1551,8 @@ function setFtField(f) {
   CT.ftField = f;
   document.getElementById('dp-ft').classList.toggle('active-field',   f==='ft');
   document.getElementById('dp-ftin').classList.toggle('active-field', f==='in');
+  document.getElementById('dp-num').classList.toggle('active-field',  f==='num');
+  document.getElementById('dp-den').classList.toggle('active-field',  f==='den');
 }
 
 function cVal() {
@@ -1563,6 +1571,8 @@ function cRender() {
   const top=document.getElementById('c-top'), main=document.getElementById('c-main'), sub=document.getElementById('c-sub');
   document.getElementById('dp-ft').textContent   = CT.feet||'0';
   document.getElementById('dp-ftin').textContent = CT.ftIn||'0';
+  document.getElementById('dp-num').textContent  = CT.num||'0';
+  document.getElementById('dp-den').textContent  = CT.den||'0';
   if (CT.phase==='A' || CT.phase==='B') {
     top.textContent  = CT.phase==='B' ? CT.storedStr+' '+CT.op : '';
     main.textContent = cInputStr();
@@ -1579,15 +1589,21 @@ function cResetInput() {
   CT.num=''; CT.den=''; CT.feet=''; CT.ftIn=''; CT.ftField='ft';
   const dpFt   = document.getElementById('dp-ft');
   const dpFtIn = document.getElementById('dp-ftin');
-  if (dpFt)   { dpFt.classList.add('active-field');     dpFt.textContent='0'; }
+  const dpNum  = document.getElementById('dp-num');
+  const dpDen  = document.getElementById('dp-den');
+  if (dpFt)   { dpFt.classList.add('active-field');      dpFt.textContent='0'; }
   if (dpFtIn) { dpFtIn.classList.remove('active-field'); dpFtIn.textContent='0'; }
+  if (dpNum)  { dpNum.classList.remove('active-field');  dpNum.textContent='0'; }
+  if (dpDen)  { dpDen.classList.remove('active-field');  dpDen.textContent='0'; }
 }
 
 function cW(d) {
   if(CT.phase==='R'){CT.phase='A';cResetInput();}
   if(CT.phase==='OP'){CT.phase='B';cResetInput();}
-  if (CT.ftField==='ft') { if(CT.feet.length>=4) return; CT.feet+=d; }
-  else                   { if(CT.ftIn.length>=2) return; CT.ftIn+=d; }
+  if      (CT.ftField==='ft')  { if(CT.feet.length>=4) return; CT.feet+=d; }
+  else if (CT.ftField==='in')  { if(CT.ftIn.length>=2) return; CT.ftIn+=d; }
+  else if (CT.ftField==='num') { if(CT.num.length>=4)  return; CT.num+=d; }
+  else if (CT.ftField==='den') { if(CT.den.length>=4)  return; CT.den+=d; }
   cRender();
 }
 function cN(d) {
@@ -1603,8 +1619,10 @@ function cD(d) {
   CT.den+=d; cRender();
 }
 function cWdel() {
-  if(CT.ftField==='ft') CT.feet=CT.feet.slice(0,-1);
-  else CT.ftIn=CT.ftIn.slice(0,-1);
+  if      (CT.ftField==='ft')  CT.feet=CT.feet.slice(0,-1);
+  else if (CT.ftField==='in')  CT.ftIn=CT.ftIn.slice(0,-1);
+  else if (CT.ftField==='num') CT.num=CT.num.slice(0,-1);
+  else if (CT.ftField==='den') CT.den=CT.den.slice(0,-1);
   cRender();
 }
 function cNdel() { CT.num=CT.num.slice(0,-1); cRender(); }
@@ -1644,7 +1662,10 @@ function cEq(chain=false) {
   CT.storedVal=res; CT.storedStr=mainStr; cResetInput();
 }
 
-function cFtAdvance() { setFtField('in'); }
+function cFtAdvance() {
+  const cycle = {ft:'in', in:'num', num:'den', den:'ft'};
+  setFtField(cycle[CT.ftField] || 'ft');
+}
 
 function cClear() {
   CT.phase='A'; CT.op=''; CT.storedVal=0;
