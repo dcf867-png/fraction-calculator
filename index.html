@@ -357,13 +357,14 @@ body {
 .sqft-panel-inner { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .sqft-draw-wrap { display: flex; flex: 1; min-height: 0; gap: 12px; padding: 10px; overflow: hidden; }
 .sqft-draw-svg-wrap { flex: 1; min-width: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: #2a4a2a transparent; }
-#sqft-draw-svg { width: 3092px; height: 576px; cursor: crosshair; display: block; flex-shrink: 0; }
+#sqft-draw-svg { width: 1562px; height: 1562px; cursor: crosshair; display: block; flex-shrink: 0; }
 .sqft-draw-sidebar { width: 162px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
 .sqft-draw-result-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #4a9a4a; }
 .sqft-draw-result-val { font-size: 1.5rem; font-weight: 800; color: #6dd86d; line-height: 1.3; }
 .sqft-draw-segs { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 5px; scrollbar-width: thin; scrollbar-color: #2a4a2a transparent; }
 .sqft-draw-hint { font-size: 0.6rem; color: #3a6a3a; font-style: italic; padding: 4px 0; }
-.sqft-draw-seg-row { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+.sqft-draw-seg-row { display: flex; align-items: center; gap: 3px; flex-shrink: 0; border-radius: 4px; padding: 1px 2px; cursor: pointer; }
+.sqft-draw-seg-selected { background: #0e2a0e; outline: 1px solid #3a7a3a; }
 .sqft-draw-seg-label { font-size: 0.6rem; font-weight: 700; color: #4a9a4a; width: 20px; flex-shrink: 0; text-align: right; }
 .sqft-draw-seg-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 0.8rem; font-weight: 700; text-align: center; padding: 3px 2px; width: 38px; -moz-appearance: textfield; }
 .sqft-draw-seg-inp::-webkit-inner-spin-button, .sqft-draw-seg-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
@@ -1080,7 +1081,7 @@ body {
 
   <div id="sqft-draw-panel" style="display:none" class="sqft-draw-wrap">
     <div class="sqft-draw-svg-wrap">
-      <svg id="sqft-draw-svg" viewBox="0 0 3092 576"
+      <svg id="sqft-draw-svg" viewBox="0 0 1562 1562"
            onclick="sqDrawClick(event)"
            onmousemove="sqDrawMove(event)"
            onmouseleave="sqDrawLeave()"></svg>
@@ -1776,11 +1777,11 @@ function setSqftSub(sub) {
   if (sub==='draw') { sqDrawRender(); sqDrawRenderSegs(); }
 }
 
-const SQDC=34, SQDM=16, SQDCOLS=90, SQDROWS=16;
+const SQDC=34, SQDM=16, SQDCOLS=45, SQDROWS=45;
 function sqGpx(gx) { return SQDM + gx*SQDC; }
 function sqGpy(gy) { return SQDM + gy*SQDC; }
 
-const sqDraw = { pts:[], closed:false, segs:[], hover:null };
+const sqDraw = { pts:[], closed:false, segs:[], hover:null, selectedSeg:null };
 
 function sqDrawSvgPos(e) {
   const svg = document.getElementById('sqft-draw-svg');
@@ -1803,18 +1804,13 @@ function sqDrawClick(e) {
   const pos = sqDrawSvgPos(e);
   if (sqDrawNearFirst(pos)) {
     sqDraw.closed = true; sqDraw.hover = null;
-    // add closing segment (last pt → first pt)
-    const a = sqDraw.pts[sqDraw.pts.length-1], b = sqDraw.pts[0];
-    const dist = Math.max(1, Math.round(Math.hypot(b.gx-a.gx, b.gy-a.gy)));
-    sqDraw.segs.push({ft:String(dist), in:'0'});
+    sqDraw.segs.push({ft:'', in:''});
     sqDrawRenderSegs(); sqDrawRender(); sqDrawUpdateArea(); return;
   }
   const last = sqDraw.pts[sqDraw.pts.length-1];
   if (last && last.gx===pos.gx && last.gy===pos.gy) return;
   if (sqDraw.pts.length >= 1) {
-    const prev = sqDraw.pts[sqDraw.pts.length-1];
-    const dist = Math.max(1, Math.round(Math.hypot(pos.gx-prev.gx, pos.gy-prev.gy)));
-    sqDraw.segs.push({ft:String(dist), in:'0'});
+    sqDraw.segs.push({ft:'', in:''});
     sqDrawRenderSegs();
   }
   sqDraw.pts.push({gx:pos.gx, gy:pos.gy});
@@ -1836,15 +1832,24 @@ function sqDrawUndo() {
 }
 
 function sqDrawClear() {
-  sqDraw.pts=[]; sqDraw.closed=false; sqDraw.segs=[]; sqDraw.hover=null;
+  sqDraw.pts=[]; sqDraw.closed=false; sqDraw.segs=[]; sqDraw.hover=null; sqDraw.selectedSeg=null;
   sqDrawRenderSegs(); sqDrawRender();
   document.getElementById('sqft-draw-area').textContent='—';
+}
+
+function sqDrawSegFocus(i, e) {
+  if (e) e.stopPropagation();
+  sqDraw.selectedSeg = i;
+  sqDrawRender();
+  sqDrawRenderSegs();
+  const inp = document.getElementById('sqft-seg-ft-'+i);
+  if (inp) { inp.scrollIntoView({block:'nearest'}); inp.focus(); inp.select(); }
 }
 
 function sqDrawRender() {
   const svg = document.getElementById('sqft-draw-svg');
   if (!svg) return;
-  let h = `<rect width="3092" height="576" fill="#080f08"/>` ;
+  let h = `<rect width="1562" height="1562" fill="#080f08"/>` ;
   // grid dots
   for (let gx=0; gx<=SQDCOLS; gx++)
     for (let gy=0; gy<=SQDROWS; gy++)
@@ -1854,10 +1859,12 @@ function sqDrawRender() {
   const edgeCount = sqDraw.closed ? n : n-1;
   for (let i=0; i<edgeCount; i++) {
     const a=sqDraw.pts[i], b=sqDraw.pts[(i+1)%n];
-    h += `<line x1="${sqGpx(a.gx)}" y1="${sqGpy(a.gy)}" x2="${sqGpx(b.gx)}" y2="${sqGpy(b.gy)}" stroke="#3a7a3a" stroke-width="2"/>`;
+    const sel = sqDraw.selectedSeg===i;
+    h += `<line x1="${sqGpx(a.gx)}" y1="${sqGpy(a.gy)}" x2="${sqGpx(b.gx)}" y2="${sqGpy(b.gy)}" stroke="${sel?'#a0e0a0':'#3a7a3a'}" stroke-width="${sel?3:2}"/>`;
     const mx=(sqGpx(a.gx)+sqGpx(b.gx))/2, my=(sqGpy(a.gy)+sqGpy(b.gy))/2;
-    h += `<circle cx="${mx}" cy="${my}" r="9" fill="#0e1f0e" stroke="#2a4a2a" stroke-width="1"/>`;
-    h += `<text x="${mx}" y="${my+4}" text-anchor="middle" font-size="8" fill="#6dd86d" font-weight="bold">${i+1}</text>`;
+    h += `<circle cx="${mx}" cy="${my}" r="14" fill="transparent" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
+    h += `<circle cx="${mx}" cy="${my}" r="9" fill="${sel?'#1a4a1a':'#0e1f0e'}" stroke="${sel?'#6dd86d':'#2a4a2a'}" stroke-width="${sel?1.5:1}" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
+    h += `<text x="${mx}" y="${my+4}" text-anchor="middle" font-size="8" fill="${sel?'#ffffff':'#6dd86d'}" font-weight="bold" style="pointer-events:none">${i+1}</text>`;
   }
   // hover preview edge
   if (!sqDraw.closed && n>=1 && sqDraw.hover) {
@@ -1886,15 +1893,16 @@ function sqDrawRenderSegs() {
   const c = document.getElementById('sqft-draw-segs');
   if (!c) return;
   if (!sqDraw.segs.length) { c.innerHTML='<div class="sqft-draw-hint">Click grid to start drawing</div>'; return; }
-  c.innerHTML = sqDraw.segs.map((s,i) =>
-    `<div class="sqft-draw-seg-row">
+  c.innerHTML = sqDraw.segs.map((s,i) => {
+    const sel = sqDraw.selectedSeg===i;
+    return `<div class="sqft-draw-seg-row${sel?' sqft-draw-seg-selected':''}" onclick="sqDrawSegFocus(${i})">
       <span class="sqft-draw-seg-label">${i+1}</span>
-      <input class="sqft-draw-seg-inp" type="number" min="0" value="${s.ft}" placeholder="0" oninput="sqDrawSegSet(${i},'ft',this.value)">
+      <input id="sqft-seg-ft-${i}" class="sqft-draw-seg-inp" type="number" min="0" value="${s.ft}" placeholder="ft" oninput="sqDrawSegSet(${i},'ft',this.value)">
       <span class="sqft-draw-seg-unit">'</span>
-      <input class="sqft-draw-seg-inp" type="number" min="0" max="11" value="${s.in}" placeholder="0" oninput="sqDrawSegSet(${i},'in',this.value)" style="width:32px">
+      <input id="sqft-seg-in-${i}" class="sqft-draw-seg-inp" type="number" min="0" max="11" value="${s.in}" placeholder="in" oninput="sqDrawSegSet(${i},'in',this.value)" style="width:32px">
       <span class="sqft-draw-seg-unit">"</span>
-    </div>`
-  ).join('');
+    </div>`;
+  }).join('');
 }
 
 function sqDrawSegSet(i, field, val) {
