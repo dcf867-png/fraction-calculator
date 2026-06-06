@@ -95,6 +95,8 @@ body {
   gap: 10px;
 }
 #tab-frac  .disp-sub  { color: #7ab8d8; font-size: 1.1rem; font-weight: 600; text-align: right; min-height: 0; }
+.round16-row { display:flex; align-items:center; gap:8px; padding:4px 6px 2px; font-size:0.85rem; color:#c8a050; cursor:pointer; user-select:none; }
+.round16-row input { width:16px; height:16px; cursor:pointer; accent-color:#f5a623; }
 #tab-const .disp-main { color: #f5c060; cursor: pointer; }
 #tab-const .disp-main:hover { opacity: 0.8; }
 #tab-const .disp-top  { color: #d4a060; }
@@ -941,6 +943,11 @@ body {
     </div>
   </div>
 
+  <label class="round16-row">
+    <input type="checkbox" id="round16-chk">
+    Round to nearest 1/16"
+  </label>
+
   <div class="calc-keypad">
     <div class="key-area">
 
@@ -1760,6 +1767,7 @@ function cEq(chain=false) {
     document.getElementById('c-sub').textContent='';
     CT.phase='A'; cResetInput(); return;
   }
+  if (document.getElementById('round16-chk')?.checked) res = Math.round(res * 16) / 16;
   const mainStr = fmtInches(res);
   const subStr  = fmtInchesOnly(res);
   if(!chain) {
