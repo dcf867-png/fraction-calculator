@@ -373,6 +373,13 @@ body {
 .sqft-draw-btns { display: flex; gap: 6px; flex-shrink: 0; }
 .sqft-draw-btn { flex: 1; padding: 7px 0; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a4a2a; background: #1a2a1a; color: #4a9a4a; cursor: pointer; }
 .sqft-draw-btn:active { background: #1e341e; color: #6dd86d; }
+.sqft-draw-price-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 0.9rem; font-weight: 700; padding: 3px 5px; width: 100%; -moz-appearance: textfield; }
+.sqft-draw-price-inp::-webkit-inner-spin-button, .sqft-draw-price-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
+.sqft-draw-price-inp:focus { outline: none; border-color: #6dd86d; }
+.sqft-draw-cost-val { font-size: 1.1rem; }
+.sqft-draw-save-btn { width: 100%; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; flex-shrink: 0; }
+.sqft-draw-save-btn:active { background: #2a5a2a; }
+.sqft-draw-save-btn.saved { background: #2a6a2a; color: #80e880; }
 
 /* ── Layout Tab ── */
 #tab-layout .calc-display {
@@ -1091,6 +1098,14 @@ body {
         <div class="sqft-draw-result-label">Area</div>
         <div class="sqft-draw-result-val" id="sqft-draw-area">—</div>
       </div>
+      <div>
+        <div class="sqft-draw-result-label">$/sq ft</div>
+        <input id="sqft-draw-price" class="sqft-draw-price-inp" type="number" min="0" step="0.01" placeholder="0.00" oninput="sqDrawUpdateCost()">
+      </div>
+      <div id="sqft-draw-cost-wrap" style="display:none">
+        <div class="sqft-draw-result-label">Total Cost</div>
+        <div class="sqft-draw-result-val sqft-draw-cost-val" id="sqft-draw-cost">—</div>
+      </div>
       <div class="sqft-draw-segs" id="sqft-draw-segs">
         <div class="sqft-draw-hint">Click grid to start drawing</div>
       </div>
@@ -1098,6 +1113,7 @@ body {
         <button class="sqft-draw-btn" onclick="sqDrawUndo()">Undo</button>
         <button class="sqft-draw-btn" onclick="sqDrawClear()">Clear</button>
       </div>
+      <button class="sqft-draw-save-btn" onclick="sqDrawSave(this)">Save</button>
     </div>
   </div><!-- /#sqft-draw-panel -->
 
@@ -1837,6 +1853,8 @@ function sqDrawClear() {
   sqDraw.pts=[]; sqDraw.closed=false; sqDraw.segs=[]; sqDraw.hover=null; sqDraw.selectedSeg=null;
   sqDrawRenderSegs(); sqDrawRender();
   document.getElementById('sqft-draw-area').textContent='—';
+  const cw = document.getElementById('sqft-draw-cost-wrap');
+  if (cw) cw.style.display='none';
 }
 
 function sqDrawSegFocus(i, e) {
@@ -1928,6 +1946,42 @@ function sqDrawUpdateArea() {
   let area=0;
   for (let i=0; i<n; i++) { const j=(i+1)%n; area+=coords[i].x*coords[j].y-coords[j].x*coords[i].y; }
   el.textContent=(Math.abs(area)/2).toFixed(2)+' sq ft';
+  sqDrawUpdateCost();
+}
+
+function sqDrawUpdateCost() {
+  const areaText = document.getElementById('sqft-draw-area').textContent;
+  const priceVal = parseFloat(document.getElementById('sqft-draw-price').value) || 0;
+  const costWrap = document.getElementById('sqft-draw-cost-wrap');
+  if (!costWrap) return;
+  if (areaText === '—' || priceVal <= 0) { costWrap.style.display='none'; return; }
+  const areaNum = parseFloat(areaText);
+  if (!areaNum) { costWrap.style.display='none'; return; }
+  document.getElementById('sqft-draw-cost').textContent = '$' + (priceVal * areaNum).toFixed(2);
+  costWrap.style.display = '';
+}
+
+function sqDrawSave(btn) {
+  const areaText = document.getElementById('sqft-draw-area').textContent;
+  if (!areaText || areaText === '—') return;
+  const priceVal = parseFloat(document.getElementById('sqft-draw-price').value) || 0;
+  const areaNum = parseFloat(areaText);
+  let sub = '', costTotal = 0;
+  if (priceVal > 0 && areaNum > 0) {
+    costTotal = priceVal * areaNum;
+    sub = `$${priceVal.toFixed(2)}/sq ft · $${costTotal.toFixed(2)} total`;
+  }
+  const entry = { badge:'DRAW', label:`${sqDraw.pts.length}-sided shape`, result:areaText, sub, costTotal };
+  const projects = loadProjects();
+  if (!projects.length) { _commitSave(entry, null, btn); return; }
+  _pendingSave = entry; _pendingSaveBtn = btn;
+  const picker = document.getElementById('proj-picker');
+  picker.innerHTML = [
+    `<div class="proj-picker-item" onclick="confirmSave(null)">No project</div>`,
+    ...projects.map(p => `<div class="proj-picker-item" onclick="confirmSave(${p.id})">${escHtml(p.name)}</div>`),
+    `<div class="proj-picker-item new-proj" onclick="confirmSaveNewProject()">+ New project</div>`
+  ].join('');
+  _showPicker(picker, btn);
 }
 
 // ─── LAYOUT TAB ───────────────────────────────────────────────────────────────
