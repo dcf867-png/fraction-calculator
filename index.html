@@ -369,8 +369,8 @@ body {
 .sqft-subtab.active-sqft-sub { background: #0e1f0e; color: #6dd86d; }
 .sqft-panel-inner { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .sqft-draw-wrap { display: flex; flex: 1; min-height: 0; gap: 12px; padding: 10px; overflow: hidden; }
-.sqft-draw-svg-wrap { flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: flex-start; }
-#sqft-draw-svg { width: 100%; height: auto; cursor: crosshair; display: block; touch-action: none; }
+.sqft-draw-svg-wrap { flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+#sqft-draw-svg { width: 100%; height: auto; max-height: 100%; cursor: crosshair; display: block; touch-action: none; }
 .sqft-draw-sidebar { width: 162px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
 .sqft-draw-result-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #4a9a4a; }
 .sqft-draw-result-val { font-size: 1.5rem; font-weight: 800; color: #6dd86d; line-height: 1.3; }
@@ -396,7 +396,8 @@ body {
 .sqft-draw-mobile-toolbar { display: none; }
 @media (pointer: coarse) {
   .sqft-draw-wrap { flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: 6px; }
-  .sqft-draw-svg-wrap { flex: none; width: 100%; align-self: center; }
+  .sqft-draw-svg-wrap { flex: none; width: 100%; aspect-ratio: 1 / 1; align-self: center; overflow: visible; }
+  #sqft-draw-svg { width: 100%; height: 100%; }
   .sqft-draw-sidebar { width: 100%; flex-shrink: 0; overflow: visible; }
   .sqft-draw-segs { flex: none; max-height: 100px; }
   .sqft-draw-mobile-toolbar { display: flex; gap: 8px; padding: 4px 0 6px; width: 100%; }
