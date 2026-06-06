@@ -257,6 +257,7 @@ body {
 }
 .mini-dp.active-field { background: #f5a623; color: #000; border-color: #f5a623; }
 .mini-unit { font-size: 2.4rem; color: #c09060; font-weight: 700; flex-shrink: 0; line-height: 1; }
+.mini-unit-label { font-size: 1rem; align-self: flex-end; padding-bottom: 3px; }
 .mini-dp-sm { flex: 0 0 28px; font-size: 0.85rem; }
 .mini-frac-unit { font-size: 1.5rem; color: #c09060; font-weight: 700; flex-shrink: 0; line-height: 1; }
 .mini-c {
@@ -904,13 +905,13 @@ body {
 
         <div class="ft-fields-row" id="ft-ctrl">
           <span class="mini-dp active-field" id="dp-ft"   onclick="setFtField('ft')">0</span>
-          <span class="mini-unit">'</span>
+          <span class="mini-unit mini-unit-label">ft</span>
           <span class="mini-dp"              id="dp-ftin" onclick="setFtField('in')">0</span>
+          <span class="mini-unit mini-unit-label">in</span>
           <span class="mini-frac-unit">-</span>
           <span class="mini-dp mini-dp-sm"   id="dp-num"  onclick="setFtField('num')">0</span>
           <span class="mini-frac-unit">/</span>
           <span class="mini-dp mini-dp-sm"   id="dp-den"  onclick="setFtField('den')">0</span>
-          <span class="mini-unit">"</span>
         </div>
 
         <div class="row2">
