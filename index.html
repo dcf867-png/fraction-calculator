@@ -1514,11 +1514,11 @@ function toggleFracHistory() {
 
 function fVal()      { const w=parseFloat(FT.whole||'0'), n=parseInt(FT.num||'0'), d=parseInt(FT.den||'0'); return w+(d>0?n/d:0); }
 function fInputStr() {
-  const w=FT.whole||'0', n=FT.num, d=FT.den;
-  if(!n&&!d) return w;
-  if(n&&!d)  return `${w} ${n}/`;
-  if(!n&&d)  return `${w} 0/${d}`;
-  return `${w} ${n}/${d}`;
+  const w=FT.whole, n=FT.num, d=FT.den;
+  if(!n&&!d) return w||'0';
+  if(n&&!d)  return w ? `${w} ${n}/` : `${n}/`;
+  if(!n&&d)  return w ? `${w} 0/${d}` : `0/${d}`;
+  return w ? `${w} ${n}/${d}` : `${n}/${d}`;
 }
 function fRender() {
   const top=document.getElementById('f-top'), main=document.getElementById('f-main');
