@@ -913,11 +913,11 @@ body {
   </div>
   </div><!-- /.frac-left -->
 
-  <div class="frac-history" id="frac-history">
-    <div class="frac-history-toggle" onclick="toggleFracHistory()">◀</div>
+  <div class="frac-history collapsed" id="frac-history">
+    <div class="frac-history-toggle" onclick="toggleFracHistory()">▶</div>
     <div class="frac-history-header">History</div>
     <div class="frac-history-list" id="frac-history-list"></div>
-    <button class="frac-history-clear" id="frac-history-clear-btn" onclick="fHistoryClear()">Clear</button>
+    <button class="frac-history-clear" id="frac-history-clear-btn" onclick="fHistoryClear()" style="display:none">Clear</button>
   </div>
 
 </div>
@@ -1045,11 +1045,11 @@ body {
   </div>
   </div><!-- /.const-left -->
 
-  <div class="const-history" id="const-history">
-    <div class="const-history-toggle" onclick="toggleConstHistory()">◀</div>
+  <div class="const-history collapsed" id="const-history">
+    <div class="const-history-toggle" onclick="toggleConstHistory()">▶</div>
     <div class="const-history-header">History</div>
     <div class="const-history-list" id="const-history-list"></div>
-    <button class="const-history-clear" id="const-history-clear-btn" onclick="cHistoryClear()">Clear</button>
+    <button class="const-history-clear" id="const-history-clear-btn" onclick="cHistoryClear()" style="display:none">Clear</button>
   </div>
 </div>
 
@@ -1433,7 +1433,7 @@ function fmtInches(totalIn) {
 
 // ─── CONSTRUCTION HISTORY ─────────────────────────────────────────────────────
 const cHistory = [];
-let cHistoryCollapsed = false;
+let cHistoryCollapsed = true;
 
 function cHistoryPush(expr, result) {
   cHistory.push({ expr, result, _val: CT.storedVal });
@@ -1475,7 +1475,7 @@ function toggleConstHistory() {
 // ─── FRACTION TAB ─────────────────────────────────────────────────────────────
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
 const fHistory = [];
-let fHistoryCollapsed = false;
+let fHistoryCollapsed = true;
 let fTape = '';
 
 function fHistoryPush(expr, result) {
