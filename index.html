@@ -444,6 +444,9 @@ body {
   flex-direction: column;
   gap: 5px;
 }
+.lay-divmode-toggle { display:flex; gap:4px; padding:2px 0 4px; }
+.lay-divmode-btn { background:none; border:1px solid #4a3070; border-radius:4px; color:#7050b0; font-size:0.7rem; font-weight:700; padding:2px 8px; cursor:pointer; letter-spacing:0.05em; }
+.lay-divmode-btn.active-divmode { background:#4a3070; color:#d0b8ff; }
 .lay-row {
   display: flex;
   align-items: center;
@@ -1226,17 +1229,29 @@ body {
       <span class="lay-unit-sm">"</span>
     </div>
 
-    <!-- Divide mode: section length -->
-    <div class="lay-row" id="lay-divide-row">
-      <span class="lay-label">SECTIONS</span>
-      <span class="lay-dp" id="lay-secft" onclick="setLayField('secft')">0</span>
-      <span class="lay-unit">'</span>
-      <span class="lay-dp" id="lay-secin" onclick="setLayField('secin')">0</span>
-      <span class="lay-unit-sm">"</span>
-      <span class="lay-dp lay-dp-sm" id="lay-secnu" onclick="setLayField('secnu')">0</span>
-      <span class="lay-fracbar">/</span>
-      <span class="lay-dp lay-dp-sm" id="lay-secde" onclick="setLayField('secde')">0</span>
-      <span class="lay-unit-sm">"</span>
+    <!-- Divide mode: sub-toggle + inputs -->
+    <div id="lay-divide-row">
+      <div class="lay-divmode-toggle">
+        <button class="lay-divmode-btn active-divmode" id="lay-dm-count" onclick="setLayDivMode('count')">BY #</button>
+        <button class="lay-divmode-btn" id="lay-dm-size" onclick="setLayDivMode('size')">BY SIZE</button>
+      </div>
+      <!-- by count -->
+      <div class="lay-row" id="lay-count-row">
+        <span class="lay-label">SECTIONS</span>
+        <span class="lay-dp lay-dp-wide" id="lay-nparts" onclick="setLayField('nparts')">0</span>
+      </div>
+      <!-- by size -->
+      <div class="lay-row" id="lay-size-row" style="display:none">
+        <span class="lay-label">SECTIONS</span>
+        <span class="lay-dp" id="lay-secft" onclick="setLayField('secft')">0</span>
+        <span class="lay-unit">'</span>
+        <span class="lay-dp" id="lay-secin" onclick="setLayField('secin')">0</span>
+        <span class="lay-unit-sm">"</span>
+        <span class="lay-dp lay-dp-sm" id="lay-secnu" onclick="setLayField('secnu')">0</span>
+        <span class="lay-fracbar">/</span>
+        <span class="lay-dp lay-dp-sm" id="lay-secde" onclick="setLayField('secde')">0</span>
+        <span class="lay-unit-sm">"</span>
+      </div>
     </div>
 
     <!-- Boards mode: board width + gap (hidden by default) -->
@@ -2225,26 +2240,38 @@ function sqDrawSave(btn) {
 
 // ─── LAYOUT TAB ───────────────────────────────────────────────────────────────
 const LAY = {
-  mode: 'divide', field: 'sft',
+  mode: 'divide', divMode: 'count', field: 'sft',
   sft: '', sin: '',
+  nparts: '',
   secft: '', secin: '', secnu: '', secde: '',
   bwh: '', bnu: '', bde: '',
   gwh: '', gnu: '', gde: '',
   price: '', tax: '',
 };
 
-const LAY_ADV_DIVIDE = { sft:'sin', sin:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
+const LAY_ADV_COUNT  = { sft:'sin', sin:'nparts', nparts:'sft' };
+const LAY_ADV_SIZE   = { sft:'sin', sin:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
 const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
 
-const LAY_ALL_FIELDS = ['sft','sin','secft','secin','secnu','secde','bwh','bnu','bde','gwh','gnu','gde','price','tax'];
+const LAY_ALL_FIELDS = ['sft','sin','nparts','secft','secin','secnu','secde','bwh','bnu','bde','gwh','gnu','gde','price','tax'];
 
 function setLayMode(m) {
   LAY.mode = m;
   document.getElementById('lay-mode-divide').classList.toggle('active-mode', m==='divide');
   document.getElementById('lay-mode-boards').classList.toggle('active-mode', m==='boards');
-  document.getElementById('lay-divide-row').style.display    = m==='divide' ? 'flex' : 'none';
+  document.getElementById('lay-divide-row').style.display    = m==='divide' ? 'block' : 'none';
   document.getElementById('lay-boards-rows').style.display   = m==='boards' ? 'block' : 'none';
-  setLayField(m === 'divide' ? 'sft' : 'sft');
+  setLayField('sft');
+  layRender();
+}
+
+function setLayDivMode(dm) {
+  LAY.divMode = dm;
+  document.getElementById('lay-dm-count').classList.toggle('active-divmode', dm==='count');
+  document.getElementById('lay-dm-size').classList.toggle('active-divmode', dm==='size');
+  document.getElementById('lay-count-row').style.display = dm==='count' ? 'flex' : 'none';
+  document.getElementById('lay-size-row').style.display  = dm==='size'  ? 'flex' : 'none';
+  setLayField('sft');
   layRender();
 }
 
@@ -2272,7 +2299,7 @@ function layW(d) {
 }
 
 function layAdv() {
-  const map = LAY.mode === 'divide' ? LAY_ADV_DIVIDE : LAY_ADV_BOARDS;
+  const map = LAY.mode === 'boards' ? LAY_ADV_BOARDS : (LAY.divMode === 'size' ? LAY_ADV_SIZE : LAY_ADV_COUNT);
   setLayField(map[LAY.field] || 'sft');
 }
 
@@ -2299,19 +2326,29 @@ function layRender() {
   const spanIn = (parseInt(LAY.sft||'0') * 12) + parseInt(LAY.sin||'0');
 
   if (LAY.mode === 'divide') {
-    const secDe = parseInt(LAY.secde||'0');
-    const secIn = (parseInt(LAY.secft||'0') * 12) + parseInt(LAY.secin||'0') + (secDe > 0 ? parseInt(LAY.secnu||'0') / secDe : 0);
-    if (spanIn > 0 && secIn > 0) {
-      const n      = Math.floor(spanIn / secIn);
-      const remIn  = spanIn - n * secIn;
-      const secStr = fmtInches(secIn);
-      top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${secStr}`;
-      main.textContent = `${n} section${n !== 1 ? 's' : ''}`;
-      sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
+    if (LAY.divMode === 'count') {
+      const n = parseInt(LAY.nparts||'0');
+      if (spanIn > 0 && n > 0) {
+        const partIn = spanIn / n;
+        top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${n}`;
+        main.textContent = fmtInches(partIn);
+        sub.textContent  = fmtInchesOnly(partIn) + ' each';
+      } else {
+        top.textContent  = ''; main.textContent = '—'; sub.textContent  = '';
+      }
     } else {
-      top.textContent  = '';
-      main.textContent = '—';
-      sub.textContent  = '';
+      const secDe = parseInt(LAY.secde||'0');
+      const secIn = (parseInt(LAY.secft||'0') * 12) + parseInt(LAY.secin||'0') + (secDe > 0 ? parseInt(LAY.secnu||'0') / secDe : 0);
+      if (spanIn > 0 && secIn > 0) {
+        const n      = Math.floor(spanIn / secIn);
+        const remIn  = spanIn - n * secIn;
+        const secStr = fmtInches(secIn);
+        top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${secStr}`;
+        main.textContent = `${n} section${n !== 1 ? 's' : ''}`;
+        sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
+      } else {
+        top.textContent  = ''; main.textContent = '—'; sub.textContent  = '';
+      }
     }
   } else {
     const bDe   = parseInt(LAY.bde||'0');
