@@ -396,8 +396,8 @@ body {
 .sqft-draw-mobile-toolbar { display: none; }
 @media (pointer: coarse) {
   .sqft-draw-wrap { flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: 6px; }
-  .sqft-draw-svg-wrap { flex: none; width: 100%; aspect-ratio: 1 / 1; align-self: center; overflow: visible; }
-  #sqft-draw-svg { width: 100%; height: 100%; }
+  .sqft-draw-svg-wrap { flex: none; width: 100%; flex-direction: column; align-items: stretch; justify-content: flex-start; overflow: visible; }
+  #sqft-draw-svg { width: 100%; height: auto; }
   .sqft-draw-sidebar { width: 100%; flex-shrink: 0; overflow: visible; }
   .sqft-draw-segs { flex: none; max-height: 100px; }
   .sqft-draw-mobile-toolbar { display: flex; gap: 8px; padding: 4px 0 6px; width: 100%; }
