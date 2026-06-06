@@ -346,9 +346,8 @@ body {
 #tab-sqft .key-dot { color: #80c880; }
 #tab-sqft .sq-adv  { color: #f5a623; font-weight: 800; font-size: 1.3rem; }
 
-/* ── Sq Ft Draw sub-tab (desktop only) ── */
-.sqft-subtabs { display: none; flex-shrink: 0; border-bottom: 1px solid #1e3a1e; }
-@media (pointer: fine) { .sqft-subtabs { display: flex; } }
+/* ── Sq Ft Draw sub-tab ── */
+.sqft-subtabs { display: flex; flex-shrink: 0; border-bottom: 1px solid #1e3a1e; }
 .sqft-subtab {
   flex: 1; padding: 6px 0; font-size: 0.65rem; font-weight: 800;
   letter-spacing: 0.12em; text-transform: uppercase;
@@ -383,6 +382,12 @@ body {
 .sqft-draw-save-btn { width: 100%; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; flex-shrink: 0; }
 .sqft-draw-save-btn:active { background: #2a5a2a; }
 .sqft-draw-save-btn.saved { background: #2a6a2a; color: #80e880; }
+@media (pointer: coarse) {
+  .sqft-draw-wrap { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+  .sqft-draw-svg-wrap { flex: none; max-width: 260px; align-self: center; }
+  .sqft-draw-sidebar { width: 100%; flex-shrink: 0; overflow: visible; }
+  .sqft-draw-segs { flex: none; max-height: 100px; }
+}
 
 /* ── Layout Tab ── */
 #tab-layout .calc-display {
@@ -1134,7 +1139,8 @@ body {
       <svg id="sqft-draw-svg" viewBox="0 0 460 460"
            onclick="sqDrawClick(event)"
            onmousemove="sqDrawMove(event)"
-           onmouseleave="sqDrawLeave()"></svg>
+           onmouseleave="sqDrawLeave()"
+           ontouchend="sqDrawTouch(event)"></svg>
     </div>
     <div class="sqft-draw-sidebar">
       <div>
@@ -1898,6 +1904,11 @@ function sqDrawMove(e) {
   sqDraw.hover = sqDrawSvgPos(e); sqDrawRender();
 }
 function sqDrawLeave() { sqDraw.hover = null; sqDrawRender(); }
+function sqDrawTouch(e) {
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  sqDrawClick({ clientX: t.clientX, clientY: t.clientY });
+}
 
 function sqDrawUndo() {
   if (sqDraw.closed) { sqDraw.closed=false; if(sqDraw.segs.length) sqDraw.segs.pop(); sqDrawRenderSegs(); sqDrawRender(); sqDrawUpdateArea(); return; }
