@@ -1227,6 +1227,10 @@ body {
       <span class="lay-unit">'</span>
       <span class="lay-dp" id="lay-sin" onclick="setLayField('sin')">0</span>
       <span class="lay-unit-sm">"</span>
+      <span class="lay-dp lay-dp-sm" id="lay-snu" onclick="setLayField('snu')">0</span>
+      <span class="lay-fracbar">/</span>
+      <span class="lay-dp lay-dp-sm" id="lay-sde" onclick="setLayField('sde')">0</span>
+      <span class="lay-unit-sm">"</span>
     </div>
 
     <!-- Divide mode: sub-toggle + inputs -->
@@ -2245,7 +2249,7 @@ function sqDrawSave(btn) {
 // ─── LAYOUT TAB ───────────────────────────────────────────────────────────────
 const LAY = {
   mode: 'divide', divMode: 'count', field: 'sft',
-  sft: '', sin: '',
+  sft: '', sin: '', snu: '', sde: '',
   nparts: '',
   secft: '', secin: '', secnu: '', secde: '',
   bft: '', bwh: '', bnu: '', bde: '',
@@ -2253,11 +2257,11 @@ const LAY = {
   price: '', tax: '',
 };
 
-const LAY_ADV_COUNT  = { sft:'sin', sin:'nparts', nparts:'sft' };
-const LAY_ADV_SIZE   = { sft:'sin', sin:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
-const LAY_ADV_BOARDS = { sft:'sin', sin:'bft', bft:'bwh', bwh:'bnu', bnu:'bde', bde:'gft', gft:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
+const LAY_ADV_COUNT  = { sft:'sin', sin:'snu', snu:'sde', sde:'nparts', nparts:'sft' };
+const LAY_ADV_SIZE   = { sft:'sin', sin:'snu', snu:'sde', sde:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
+const LAY_ADV_BOARDS = { sft:'sin', sin:'snu', snu:'sde', sde:'bft', bft:'bwh', bwh:'bnu', bnu:'bde', bde:'gft', gft:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
 
-const LAY_ALL_FIELDS = ['sft','sin','nparts','secft','secin','secnu','secde','bft','bwh','bnu','bde','gft','gwh','gnu','gde','price','tax'];
+const LAY_ALL_FIELDS = ['sft','sin','snu','sde','nparts','secft','secin','secnu','secde','bft','bwh','bnu','bde','gft','gwh','gnu','gde','price','tax'];
 
 function setLayMode(m) {
   LAY.mode = m;
@@ -2296,7 +2300,7 @@ function layW(d) {
     layRender();
     return;
   }
-  const maxLen = (f==='sin'||f==='secin') ? 2 : (f==='bnu'||f==='bde'||f==='gnu'||f==='gde'||f==='secnu'||f==='secde') ? 3 : (f==='sft'||f==='secft'||f==='bft'||f==='gft') ? 4 : (f==='bwh'||f==='gwh') ? 2 : 10;
+  const maxLen = (f==='sin'||f==='secin') ? 2 : (f==='snu'||f==='sde'||f==='bnu'||f==='bde'||f==='gnu'||f==='gde'||f==='secnu'||f==='secde') ? 3 : (f==='sft'||f==='secft'||f==='bft'||f==='gft') ? 4 : (f==='bwh'||f==='gwh') ? 2 : 10;
   if (LAY[f].length >= maxLen) return;
   LAY[f] += d;
   layRender();
@@ -2327,7 +2331,8 @@ function layRender() {
   const top  = document.getElementById('lay-top');
   const main = document.getElementById('lay-main');
   const sub  = document.getElementById('lay-sub');
-  const spanIn = (parseInt(LAY.sft||'0') * 12) + parseInt(LAY.sin||'0');
+  const sDe = parseInt(LAY.sde||'0');
+  const spanIn = (parseInt(LAY.sft||'0') * 12) + parseInt(LAY.sin||'0') + (sDe > 0 ? parseInt(LAY.snu||'0') / sDe : 0);
 
   if (LAY.mode === 'divide') {
     if (LAY.divMode === 'count') {
