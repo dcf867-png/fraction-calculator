@@ -898,16 +898,9 @@ body {
     <div class="key-area">
 
       <div class="left-pad">
-        <div class="pad-label" id="c-pad-label">Inches</div>
+        <div class="pad-label">Feet</div>
 
-        <div class="mode-toggle">
-          <button class="mode-btn active-mode" id="mode-in" onclick="setMode('in')">IN</button>
-          <button class="mode-btn"             id="mode-ft" onclick="setMode('ft')">FT</button>
-        </div>
-
-        <div id="in-ctrl"></div>
-
-        <div class="ft-fields-row" id="ft-ctrl" style="display:none">
+        <div class="ft-fields-row" id="ft-ctrl">
           <span class="mini-dp active-field" id="dp-ft"   onclick="setFtField('ft')">0</span>
           <span class="mini-unit">'</span>
           <span class="mini-dp"              id="dp-ftin" onclick="setFtField('in')">0</span>
@@ -934,11 +927,7 @@ body {
           <button class="key" onclick="cW('9')">9</button>
           <button class="key" onclick="cW('0')">0</button>
         </div>
-        <div class="row2">
-          <button class="key key-dot" id="c-dot-btn" onclick="cW('.')">.</button>
-          <button class="key key-del" onclick="cWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
-        </div>
-        <div class="row2" id="ft-sep-row" style="display:none">
+        <div class="row2" id="ft-sep-row">
           <button class="key" style="color:#f5a623;font-weight:800;font-size:1.3rem" onclick="cFtAdvance()">'</button>
           <button class="key key-del" onclick="cWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
         </div>
@@ -1545,29 +1534,12 @@ function fSign() {
 // ─── CONSTRUCTION TAB ─────────────────────────────────────────────────────────
 const CT = {
   phase: 'A',
-  mode: 'in',
   ftField: 'ft',
-  whole: '', num: '', den: '',
+  num: '', den: '',
   feet: '', ftIn: '',
-  storedVal: 0, storedStr: '0"', op: '',
+  storedVal: 0, storedStr: "0' 0\"", op: '',
 };
 
-function setMode(m) {
-  CT.mode = m;
-  cResetInput();
-  CT.phase = 'A';
-  document.getElementById('mode-in').classList.toggle('active-mode', m==='in');
-  document.getElementById('mode-ft').classList.toggle('active-mode', m==='ft');
-  document.getElementById('in-ctrl').style.display    = m==='in' ? 'grid' : 'none';
-  document.getElementById('ft-ctrl').style.display    = m==='ft' ? 'flex' : 'none';
-  document.getElementById('c-dot-btn').parentElement.style.display = m==='ft' ? 'none' : 'grid';
-  document.getElementById('ft-sep-row').style.display = m==='ft' ? 'grid' : 'none';
-  document.getElementById('c-pad-label').textContent = m==='in' ? 'Inches' : 'Feet + Inches';
-  CT.storedVal = 0;
-  CT.storedStr = m==='ft' ? "0' 0\"" : '0"';
-  document.querySelectorAll('#tab-const .key-op').forEach(b=>b.classList.remove('active-op'));
-  cRender();
-}
 
 function setFtField(f) {
   CT.ftField = f;
@@ -1578,39 +1550,24 @@ function setFtField(f) {
 function cVal() {
   const n = parseInt(CT.num||'0'), d = parseInt(CT.den||'0');
   const frac = d > 0 ? n/d : 0;
-  if (CT.mode==='ft') {
-    return (parseInt(CT.feet||'0') * 12) + (parseInt(CT.ftIn||'0')) + frac;
-  }
-  return parseFloat(CT.whole||'0') + frac;
+  return (parseInt(CT.feet||'0') * 12) + (parseInt(CT.ftIn||'0')) + frac;
 }
 
 function cInputStr() {
   const n=CT.num, d=CT.den;
   const fracStr = (!n&&!d) ? '' : (n&&!d) ? `-${n}/` : (!n&&d) ? `-0/${d}` : `-${n}/${d}`;
-  if (CT.mode==='ft') {
-    const ft=CT.feet||'0', fi=CT.ftIn||'0';
-    return `${ft}' ${fi}${fracStr}"`;
-  }
-  const w=CT.whole||'0';
-  return `${w}${fracStr}"`;
+  return `${CT.feet||'0'}' ${CT.ftIn||'0'}${fracStr}"`;
 }
 
 function cRender() {
   const top=document.getElementById('c-top'), main=document.getElementById('c-main'), sub=document.getElementById('c-sub');
-  if (CT.mode==='ft') {
-    document.getElementById('dp-ft').textContent   = CT.feet||'0';
-    document.getElementById('dp-ftin').textContent = CT.ftIn||'0';
-  }
-  const emptyDisplay = CT.mode==='ft' ? "0' 0\"" : '0"';
+  document.getElementById('dp-ft').textContent   = CT.feet||'0';
+  document.getElementById('dp-ftin').textContent = CT.ftIn||'0';
   if (CT.phase==='A' || CT.phase==='B') {
     top.textContent  = CT.phase==='B' ? CT.storedStr+' '+CT.op : '';
     main.textContent = cInputStr();
     const v = cVal();
-    if (v > 0) {
-      sub.textContent = CT.mode==='in' ? fmtInches(v) : fmtInchesOnly(v);
-    } else {
-      sub.textContent = '';
-    }
+    sub.textContent  = v > 0 ? fmtInchesOnly(v) : '';
   } else if (CT.phase==='OP') {
     top.textContent  = CT.storedStr+' '+CT.op;
     main.textContent = CT.storedStr;
@@ -1619,25 +1576,18 @@ function cRender() {
 }
 
 function cResetInput() {
-  CT.whole=''; CT.num=''; CT.den=''; CT.feet=''; CT.ftIn=''; CT.ftField='ft';
+  CT.num=''; CT.den=''; CT.feet=''; CT.ftIn=''; CT.ftField='ft';
   const dpFt   = document.getElementById('dp-ft');
   const dpFtIn = document.getElementById('dp-ftin');
-  if (dpFt)   { dpFt.classList.add('active-field');    dpFt.textContent='0'; }
+  if (dpFt)   { dpFt.classList.add('active-field');     dpFt.textContent='0'; }
   if (dpFtIn) { dpFtIn.classList.remove('active-field'); dpFtIn.textContent='0'; }
 }
 
 function cW(d) {
   if(CT.phase==='R'){CT.phase='A';cResetInput();}
   if(CT.phase==='OP'){CT.phase='B';cResetInput();}
-  if (CT.mode==='ft') {
-    if (d==='.') return;
-    if (CT.ftField==='ft') { if(CT.feet.length>=4) return; CT.feet+=d; }
-    else                   { if(CT.ftIn.length>=2) return; CT.ftIn+=d; }
-  } else {
-    if(d==='.'&&CT.whole.includes('.')) return;
-    if(CT.whole.length>=6) return;
-    CT.whole+=d;
-  }
+  if (CT.ftField==='ft') { if(CT.feet.length>=4) return; CT.feet+=d; }
+  else                   { if(CT.ftIn.length>=2) return; CT.ftIn+=d; }
   cRender();
 }
 function cN(d) {
@@ -1653,12 +1603,8 @@ function cD(d) {
   CT.den+=d; cRender();
 }
 function cWdel() {
-  if (CT.mode==='ft') {
-    if(CT.ftField==='ft') CT.feet=CT.feet.slice(0,-1);
-    else CT.ftIn=CT.ftIn.slice(0,-1);
-  } else {
-    CT.whole=CT.whole.slice(0,-1);
-  }
+  if(CT.ftField==='ft') CT.feet=CT.feet.slice(0,-1);
+  else CT.ftIn=CT.ftIn.slice(0,-1);
   cRender();
 }
 function cNdel() { CT.num=CT.num.slice(0,-1); cRender(); }
@@ -1687,8 +1633,8 @@ function cEq(chain=false) {
     document.getElementById('c-sub').textContent='';
     CT.phase='A'; cResetInput(); return;
   }
-  const mainStr = CT.mode==='in' ? fmtInchesOnly(res) : fmtInches(res);
-  const subStr  = CT.mode==='in' ? fmtInches(res)     : fmtInchesOnly(res);
+  const mainStr = fmtInches(res);
+  const subStr  = fmtInchesOnly(res);
   if(!chain) {
     document.getElementById('c-top').textContent  = `${CT.storedStr} ${CT.op} ${bStr} =`;
     document.getElementById('c-main').textContent = mainStr;
@@ -1702,7 +1648,7 @@ function cFtAdvance() { setFtField('in'); }
 
 function cClear() {
   CT.phase='A'; CT.op=''; CT.storedVal=0;
-  CT.storedStr = CT.mode==='ft' ? "0' 0\"" : '0"';
+  CT.storedStr = "0' 0\"";
   cResetInput();
   document.getElementById('c-top').textContent  = '';
   document.getElementById('c-main').textContent = CT.storedStr;
@@ -2108,8 +2054,7 @@ function layRender() {
 }
 
 // ─── Keyboard input ───────────────────────────────────────────────────────────
-let fracKbField  = 'whole';
-let constKbField = 'whole';
+let fracKbField = 'whole';
 
 function getActiveTab() {
   if (document.getElementById('tab-frac').classList.contains('active'))   return 'frac';
@@ -2142,15 +2087,11 @@ document.addEventListener('keydown', e => {
   }
 
   else if (tab === 'const') {
-    if (k >= '0' && k <= '9') {
-      if (CT.mode==='ft' || constKbField==='whole') cW(k);
-      else if (constKbField==='num') cN(k);
-      else cD(k);
-    } else if (k === "'")       { cFtAdvance(); }
-    else if (k === '/')         { if(CT.mode==='in') constKbField = constKbField==='whole' ? 'num' : constKbField==='num' ? 'den' : 'whole'; }
-    else if (k === 'Backspace') { if(CT.mode==='ft'||constKbField==='whole') cWdel(); else if(constKbField==='num') cNdel(); else cDdel(); }
-    else if (k==='Enter'||k==='=') { cEq(); constKbField='whole'; }
-    else if (k === 'Escape')    { cClear(); constKbField='whole'; }
+    if (k >= '0' && k <= '9') { cW(k); }
+    else if (k === "'")       { cFtAdvance(); }
+    else if (k === 'Backspace') { cWdel(); }
+    else if (k==='Enter'||k==='=') { cEq(); }
+    else if (k === 'Escape')    { cClear(); }
     else if (k === '+') cOp(document.querySelector('#tab-const [data-op="+"]'));
     else if (k === '-') cOp(document.querySelector('#tab-const [data-op="−"]'));
     else if (k === '*') cOp(document.querySelector('#tab-const [data-op="×"]'));
