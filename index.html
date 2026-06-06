@@ -78,6 +78,10 @@ body {
   background: linear-gradient(160deg, #6ab4cc 0%, #4a93ac 100%);
   color: #000;
 }
+#tab-frac .disp-top {
+  white-space: normal;
+  word-break: break-all;
+}
 
 /* Construction tab display: dark amber */
 #tab-const .calc-display {
@@ -452,6 +456,19 @@ body {
   cursor: pointer; color: #3a4060; font-size: 0.75rem; user-select: none;
 }
 .frac-history-toggle:active { color: #8090c0; }
+.frac-history-header {
+  flex-shrink: 0;
+  padding: 4px 6px 5px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #2e3555;
+  text-align: center;
+  border-bottom: 1px solid #0d0f1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-transform: uppercase;
+}
 .frac-history-list {
   flex: 1; overflow-y: auto; overflow-x: hidden;
   scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
@@ -807,6 +824,7 @@ body {
 
   <div class="frac-history" id="frac-history">
     <div class="frac-history-toggle" onclick="toggleFracHistory()">◀</div>
+    <div class="frac-history-header">History</div>
     <div class="frac-history-list" id="frac-history-list"></div>
   </div>
 
@@ -1276,6 +1294,7 @@ function fmtInches(totalIn) {
 const FT = { phase: 'A', whole:'', num:'', den:'', storedVal:0, storedStr:'0', op:'' };
 const fHistory = [];
 let fHistoryCollapsed = false;
+let fTape = '';
 
 function fHistoryPush(expr, result) {
   fHistory.push({ expr, result, _val: FT.storedVal });
@@ -1300,6 +1319,7 @@ function fHistoryRecall(i) {
   FT.storedVal = h._val;
   FT.storedStr = h.result;
   FT.phase = 'R';
+  fTape = h.expr + ' ';
   document.getElementById('f-top').textContent = h.expr;
   document.getElementById('f-main').textContent = h.result;
 }
@@ -1321,9 +1341,9 @@ function fInputStr() {
 }
 function fRender() {
   const top=document.getElementById('f-top'), main=document.getElementById('f-main');
-  if(FT.phase==='A') { top.textContent=''; main.textContent=fInputStr(); }
-  else if(FT.phase==='OP') { top.textContent=FT.storedStr+' '+FT.op; main.textContent=FT.storedStr; }
-  else if(FT.phase==='B')  { top.textContent=FT.storedStr+' '+FT.op; main.textContent=fInputStr(); }
+  if(FT.phase==='A') { top.textContent=fTape; main.textContent=fInputStr(); }
+  else if(FT.phase==='OP') { top.textContent=fTape+FT.storedStr+' '+FT.op; main.textContent=FT.storedStr; }
+  else if(FT.phase==='B')  { top.textContent=fTape+FT.storedStr+' '+FT.op; main.textContent=fInputStr(); }
 }
 function fResetInput() { FT.whole=''; FT.num=''; FT.den=''; }
 
@@ -1365,10 +1385,11 @@ function fEq(chain=false) {
     if(!FT.num && !FT.den) return;
     const v = fVal();
     const resStr = fmtMixed(v);
-    const expr = fInputStr() + ' =';
+    const expr = fTape + fInputStr() + ' =';
     document.getElementById('f-top').textContent  = expr;
     document.getElementById('f-main').textContent = resStr;
     FT.phase='R'; FT.storedVal=v; FT.storedStr=resStr; fResetInput();
+    fTape = expr + ' ';
     fHistoryPush(expr, resStr);
     return;
   }
@@ -1385,18 +1406,22 @@ function fEq(chain=false) {
     FT.phase='A'; fResetInput(); return;
   }
   const resStr=fmtMixed(res);
+  const expr = fTape + FT.storedStr + ' ' + FT.op + ' ' + bStr + ' =';
+  FT.storedVal=res; FT.storedStr=resStr; fResetInput();
   if(!chain) {
-    const expr=`${FT.storedStr} ${FT.op} ${bStr} =`;
     document.getElementById('f-top').textContent=expr;
     document.getElementById('f-main').textContent=resStr;
     FT.phase='R';
+    fTape = expr + ' ';
     fHistoryPush(expr, resStr);
+  } else {
+    fTape = expr + ' ';
   }
-  FT.storedVal=res; FT.storedStr=resStr; fResetInput();
 }
 
 function fClear() {
   FT.phase='A'; FT.op=''; FT.storedVal=0; FT.storedStr='0'; fResetInput();
+  fTape = '';
   document.getElementById('f-top').textContent='';
   document.getElementById('f-main').textContent='0';
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
