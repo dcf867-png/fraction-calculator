@@ -1747,13 +1747,12 @@ const sqDraw = { pts:[], closed:false, segs:[], hover:null, selectedSeg:null };
 
 function sqDrawSvgPos(e) {
   const svg = document.getElementById('sqft-draw-svg');
-  const r = svg.getBoundingClientRect();
-  const VB = SQDM*2 + SQDCOLS*SQDC;
-  const scale = VB / r.width;
-  const sx = (e.clientX - r.left) * scale;
-  const sy = (e.clientY - r.top) * scale;
-  const gx = Math.max(0, Math.min(SQDCOLS, Math.round((sx-SQDM)/SQDC)));
-  const gy = Math.max(0, Math.min(SQDROWS, Math.round((sy-SQDM)/SQDC)));
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  const sp = pt.matrixTransform(svg.getScreenCTM().inverse());
+  const gx = Math.max(0, Math.min(SQDCOLS, Math.round((sp.x - SQDM) / SQDC)));
+  const gy = Math.max(0, Math.min(SQDROWS, Math.round((sp.y - SQDM) / SQDC)));
   return { gx, gy };
 }
 
