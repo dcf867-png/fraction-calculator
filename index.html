@@ -1319,7 +1319,7 @@ function fHistoryRecall(i) {
   FT.storedVal = h._val;
   FT.storedStr = h.result;
   FT.phase = 'R';
-  fTape = h.expr + ' ';
+  fTape = '';
   document.getElementById('f-top').textContent = h.expr;
   document.getElementById('f-main').textContent = h.result;
 }
@@ -1341,9 +1341,9 @@ function fInputStr() {
 }
 function fRender() {
   const top=document.getElementById('f-top'), main=document.getElementById('f-main');
-  if(FT.phase==='A') { top.textContent=fTape; main.textContent=fInputStr(); }
-  else if(FT.phase==='OP') { top.textContent=fTape+FT.storedStr+' '+FT.op; main.textContent=FT.storedStr; }
-  else if(FT.phase==='B')  { top.textContent=fTape+FT.storedStr+' '+FT.op; main.textContent=fInputStr(); }
+  if(FT.phase==='A')  { top.textContent=fTape; main.textContent=fInputStr(); }
+  else if(FT.phase==='OP') { top.textContent=fTape; main.textContent=FT.storedStr; }
+  else if(FT.phase==='B')  { top.textContent=fTape+fInputStr(); main.textContent=fInputStr(); }
 }
 function fResetInput() { FT.whole=''; FT.num=''; FT.den=''; }
 
@@ -1373,27 +1373,50 @@ function fDdel() { FT.den=FT.den.slice(0,-1);     fRender(); }
 function fOp(btn) {
   document.querySelectorAll('#tab-frac .key-op').forEach(b=>b.classList.remove('active-op'));
   btn.classList.add('active-op');
-  if(FT.phase==='B') fEq(true);
-  if(FT.phase!=='R') { FT.storedVal=fVal(); FT.storedStr=fInputStr(); }
-  FT.op=btn.dataset.op;
-  FT.phase='OP'; fResetInput(); fRender();
+  const newOp = btn.dataset.op;
+  if (FT.phase==='B') {
+    const b=fVal(), bStr=fInputStr();
+    let res;
+    try {
+      if(FT.op==='+') res=FT.storedVal+b;
+      else if(FT.op==='−') res=FT.storedVal-b;
+      else if(FT.op==='×') res=FT.storedVal*b;
+      else if(FT.op==='÷') { if(b===0) throw new Error('÷ 0'); res=FT.storedVal/b; }
+    } catch(e) {
+      document.getElementById('f-top').textContent='';
+      document.getElementById('f-main').textContent=e.message;
+      FT.phase='A'; fResetInput(); fTape=''; return;
+    }
+    fTape += bStr + ' ';
+    FT.storedVal=res; FT.storedStr=fmtMixed(res); fResetInput();
+  } else if (FT.phase==='A') {
+    if (FT.whole||FT.num||FT.den) {
+      const s=fInputStr();
+      fTape=s+' '; FT.storedVal=fVal(); FT.storedStr=s; fResetInput();
+    }
+  } else if (FT.phase==='R') {
+    fTape=FT.storedStr+' ';
+  } else if (FT.phase==='OP') {
+    const suffix=FT.op+' ';
+    if (fTape.endsWith(suffix)) fTape=fTape.slice(0,-suffix.length);
+  }
+  fTape+=newOp+' ';
+  FT.op=newOp; FT.phase='OP'; fRender();
 }
 
-function fEq(chain=false) {
-  if(FT.phase==='OP') return;
+function fEq() {
+  if(FT.phase==='OP'||FT.phase==='R') return;
   if(FT.phase==='A') {
-    if(!FT.num && !FT.den) return;
-    const v = fVal();
-    const resStr = fmtMixed(v);
-    const expr = fTape + fInputStr() + ' =';
-    document.getElementById('f-top').textContent  = expr;
-    document.getElementById('f-main').textContent = resStr;
+    if(!FT.whole&&!FT.num&&!FT.den) return;
+    const v=fVal(), resStr=fmtMixed(v);
+    const expr=fTape+fInputStr()+' =';
+    document.getElementById('f-top').textContent=expr;
+    document.getElementById('f-main').textContent=resStr;
     FT.phase='R'; FT.storedVal=v; FT.storedStr=resStr; fResetInput();
-    fTape = expr + ' ';
-    fHistoryPush(expr, resStr);
-    return;
+    fTape=''; fHistoryPush(expr,resStr); return;
   }
   const b=fVal(), bStr=fInputStr();
+  if(!bStr) return;
   let res;
   try {
     if(FT.op==='+') res=FT.storedVal+b;
@@ -1403,21 +1426,14 @@ function fEq(chain=false) {
   } catch(e) {
     document.getElementById('f-top').textContent='';
     document.getElementById('f-main').textContent=e.message;
-    FT.phase='A'; fResetInput(); return;
+    FT.phase='A'; fResetInput(); fTape=''; return;
   }
   const resStr=fmtMixed(res);
-  const expr = fTape + FT.storedStr + ' ' + FT.op + ' ' + bStr + ' =';
+  const expr=fTape+bStr+' =';
   FT.storedVal=res; FT.storedStr=resStr; fResetInput();
-  if(!chain) {
-    document.getElementById('f-top').textContent=expr;
-    document.getElementById('f-main').textContent=resStr;
-    FT.phase='R';
-    fTape = expr + ' ';
-    fHistoryPush(expr, resStr);
-  } else {
-    fTape = expr + ' ';
-    FT.phase = 'R';
-  }
+  document.getElementById('f-top').textContent=expr;
+  document.getElementById('f-main').textContent=resStr;
+  FT.phase='R'; fTape=''; fHistoryPush(expr,resStr);
 }
 
 function fClear() {
