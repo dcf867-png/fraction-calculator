@@ -1258,6 +1258,8 @@ body {
     <div id="lay-boards-rows" style="display:none">
       <div class="lay-row" style="margin-bottom:5px">
         <span class="lay-label">BOARD WIDTH</span>
+        <span class="lay-dp" id="lay-bft" onclick="setLayField('bft')">0</span>
+        <span class="lay-unit">'</span>
         <span class="lay-dp" id="lay-bwh" onclick="setLayField('bwh')">0</span>
         <span class="lay-unit-sm">"</span>
         <span class="lay-dp lay-dp-sm" id="lay-bnu" onclick="setLayField('bnu')">0</span>
@@ -1267,6 +1269,8 @@ body {
       </div>
       <div class="lay-row" style="margin-bottom:5px">
         <span class="lay-label">GAP</span>
+        <span class="lay-dp" id="lay-gft" onclick="setLayField('gft')">0</span>
+        <span class="lay-unit">'</span>
         <span class="lay-dp" id="lay-gwh" onclick="setLayField('gwh')">0</span>
         <span class="lay-unit-sm">"</span>
         <span class="lay-dp lay-dp-sm" id="lay-gnu" onclick="setLayField('gnu')">0</span>
@@ -2244,16 +2248,16 @@ const LAY = {
   sft: '', sin: '',
   nparts: '',
   secft: '', secin: '', secnu: '', secde: '',
-  bwh: '', bnu: '', bde: '',
-  gwh: '', gnu: '', gde: '',
+  bft: '', bwh: '', bnu: '', bde: '',
+  gft: '', gwh: '', gnu: '', gde: '',
   price: '', tax: '',
 };
 
 const LAY_ADV_COUNT  = { sft:'sin', sin:'nparts', nparts:'sft' };
 const LAY_ADV_SIZE   = { sft:'sin', sin:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
-const LAY_ADV_BOARDS = { sft:'sin', sin:'bwh', bwh:'bnu', bnu:'bde', bde:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
+const LAY_ADV_BOARDS = { sft:'sin', sin:'bft', bft:'bwh', bwh:'bnu', bnu:'bde', bde:'gft', gft:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
 
-const LAY_ALL_FIELDS = ['sft','sin','nparts','secft','secin','secnu','secde','bwh','bnu','bde','gwh','gnu','gde','price','tax'];
+const LAY_ALL_FIELDS = ['sft','sin','nparts','secft','secin','secnu','secde','bft','bwh','bnu','bde','gft','gwh','gnu','gde','price','tax'];
 
 function setLayMode(m) {
   LAY.mode = m;
@@ -2292,7 +2296,7 @@ function layW(d) {
     layRender();
     return;
   }
-  const maxLen = (f==='sin'||f==='secin') ? 2 : (f==='bnu'||f==='bde'||f==='gnu'||f==='gde'||f==='secnu'||f==='secde') ? 3 : (f==='sft'||f==='secft') ? 4 : 10;
+  const maxLen = (f==='sin'||f==='secin') ? 2 : (f==='bnu'||f==='bde'||f==='gnu'||f==='gde'||f==='secnu'||f==='secde') ? 3 : (f==='sft'||f==='secft'||f==='bft'||f==='gft') ? 4 : (f==='bwh'||f==='gwh') ? 2 : 10;
   if (LAY[f].length >= maxLen) return;
   LAY[f] += d;
   layRender();
@@ -2352,9 +2356,9 @@ function layRender() {
     }
   } else {
     const bDe   = parseInt(LAY.bde||'0');
-    const boardIn = parseInt(LAY.bwh||'0') + (bDe > 0 ? parseInt(LAY.bnu||'0') / bDe : 0);
+    const boardIn = (parseInt(LAY.bft||'0') * 12) + parseInt(LAY.bwh||'0') + (bDe > 0 ? parseInt(LAY.bnu||'0') / bDe : 0);
     const gDe   = parseInt(LAY.gde||'0');
-    const gapIn = parseInt(LAY.gwh||'0') + (gDe > 0 ? parseInt(LAY.gnu||'0') / gDe : 0);
+    const gapIn = (parseInt(LAY.gft||'0') * 12) + parseInt(LAY.gwh||'0') + (gDe > 0 ? parseInt(LAY.gnu||'0') / gDe : 0);
     const costBlock = document.getElementById('lay-cost-block');
     if (spanIn > 0 && boardIn > 0) {
       const n       = Math.floor((spanIn + gapIn) / (boardIn + gapIn));
