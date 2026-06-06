@@ -94,9 +94,15 @@ body {
   align-items: flex-end;
   gap: 10px;
 }
-#tab-const .disp-main { color: #f5c060; }
+#tab-const .disp-main { color: #f5c060; cursor: pointer; }
+#tab-const .disp-main:hover { opacity: 0.8; }
 #tab-const .disp-top  { color: #d4a060; }
 #tab-const .disp-sub  { color: #d4a060; font-size: 1.1rem; font-weight: 600; text-align: right; min-height: 0; }
+.c-main-inp {
+  background: transparent; border: none; border-bottom: 2px solid #f5c060;
+  color: #f5c060; font-size: 2.6rem; font-weight: 700; font-family: inherit;
+  width: 100%; outline: none; text-align: right; padding: 0; line-height: 1.2;
+}
 .disp-stack { flex: 1; display: flex; flex-direction: column; align-items: flex-end; }
 .disp-c-btn {
   background: #4a1a10;
@@ -928,7 +934,7 @@ body {
     </div>
     <div class="disp-stack">
       <div class="disp-top"  id="c-top"></div>
-      <div class="disp-main" id="c-main">0"</div>
+      <div class="disp-main" id="c-main" onclick="cMainClick()">0"</div>
       <div class="disp-sub"  id="c-sub"></div>
     </div>
   </div>
@@ -1764,6 +1770,51 @@ function cClear() {
   document.getElementById('c-top').textContent  = '';
   document.getElementById('c-main').textContent = CT.storedStr;
   document.getElementById('c-sub').textContent  = '';
+}
+
+function cParseInput(raw) {
+  let s = raw.trim().replace(/"$/, '').trim();
+  let feet = '', ftIn = '', num = '', den = '';
+  const ftM = s.match(/^(\d+)'\s*/);
+  if (ftM) { feet = ftM[1]; s = s.slice(ftM[0].length); }
+  const frM = s.match(/(\d+)\s*\/\s*(\d+)/);
+  if (frM) {
+    num = frM[1]; den = frM[2];
+    s = (s.slice(0, frM.index) + s.slice(frM.index + frM[0].length)).trim();
+  }
+  const inM = s.match(/(\d+)/);
+  if (inM) ftIn = inM[1];
+  return { feet, ftIn, num, den };
+}
+
+function cMainClick() {
+  const el = document.getElementById('c-main');
+  if (el.querySelector('input')) return;
+  let editStr;
+  if (CT.phase === 'A' || CT.phase === 'B') {
+    const ft = CT.feet||'0', inch = CT.ftIn||'0', n = CT.num, d = CT.den;
+    editStr = !n && !d ? `${ft}' ${inch}"` : `${ft}' ${inch} ${n||'0'}/${d||''}`;
+  } else {
+    editStr = CT.storedStr.replace(/-/g, ' ');
+  }
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.value = editStr; inp.className = 'c-main-inp';
+  el.textContent = ''; el.appendChild(inp); inp.select();
+  function commit() {
+    const v = inp.value.trim();
+    if (!el.contains(inp)) return;
+    el.removeChild(inp);
+    if (!v) { cRender(); return; }
+    const p = cParseInput(v);
+    CT.phase = 'A'; CT.op = ''; CT.ftField = 'ft';
+    CT.feet = p.feet; CT.ftIn = p.ftIn; CT.num = p.num; CT.den = p.den;
+    cRender();
+  }
+  inp.addEventListener('blur', commit);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+    if (e.key === 'Escape') { if (el.contains(inp)) el.removeChild(inp); cRender(); }
+  });
 }
 
 function cSign() {
