@@ -95,8 +95,11 @@ body {
   gap: 10px;
 }
 #tab-frac  .disp-sub  { color: #7ab8d8; font-size: 1.1rem; font-weight: 600; text-align: right; min-height: 0; }
-.round16-row { display:flex; align-items:center; gap:8px; padding:4px 6px 2px; font-size:0.85rem; color:#c8a050; cursor:pointer; user-select:none; }
-.round16-row input { width:16px; height:16px; cursor:pointer; accent-color:#f5a623; }
+.round16-row { display:flex; align-items:center; gap:8px; padding:4px 6px 2px; }
+.round16-label { display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#c8a050; cursor:pointer; user-select:none; }
+.round16-label input { width:16px; height:16px; cursor:pointer; accent-color:#f5a623; flex-shrink:0; }
+.round16-dir { background:none; border:1px solid #555; border-radius:4px; color:#888; padding:1px 7px; cursor:pointer; font-size:0.8rem; line-height:1.4; transition:background 0.15s,color 0.15s; }
+.round16-dir.active { background:#f5a623; border-color:#f5a623; color:#1a1a1a; }
 #tab-const .disp-main { color: #f5c060; cursor: pointer; }
 #tab-const .disp-main:hover { opacity: 0.8; }
 #tab-const .disp-top  { color: #d4a060; }
@@ -943,10 +946,14 @@ body {
     </div>
   </div>
 
-  <label class="round16-row">
-    <input type="checkbox" id="round16-chk">
-    Round to nearest 1/16"
-  </label>
+  <div class="round16-row">
+    <label class="round16-label">
+      <input type="checkbox" id="round16-chk">
+      Round to 1/16"
+    </label>
+    <button class="round16-dir" id="round16-up" onclick="cRound16Dir('up')" title="Round up">▲</button>
+    <button class="round16-dir" id="round16-dn" onclick="cRound16Dir('dn')" title="Round down">▼</button>
+  </div>
 
   <div class="calc-keypad">
     <div class="key-area">
@@ -1752,8 +1759,34 @@ function cOp(btn) {
   CT.phase='OP'; cResetInput(); cRender();
 }
 
+let cRound16Direction = 'nearest';
+function cRound16Dir(dir) {
+  cRound16Direction = (cRound16Direction === dir) ? 'nearest' : dir;
+  document.getElementById('round16-up').classList.toggle('active', cRound16Direction === 'up');
+  document.getElementById('round16-dn').classList.toggle('active', cRound16Direction === 'dn');
+}
+function cApplyRound16(v) {
+  if (!document.getElementById('round16-chk')?.checked) return v;
+  if (cRound16Direction === 'up') return Math.ceil(v * 16) / 16;
+  if (cRound16Direction === 'dn') return Math.floor(v * 16) / 16;
+  return Math.round(v * 16) / 16;
+}
+
 function cEq(chain=false) {
-  if(CT.phase==='A'||CT.phase==='OP') return;
+  if(CT.phase==='OP') return;
+  if(CT.phase==='A') {
+    if(!CT.feet && !CT.ftIn && !CT.num) return;
+    let v = cApplyRound16(cVal());
+    const mainStr = fmtInches(v);
+    const subStr  = fmtInchesOnly(v);
+    const expr = cInputStr() + ' =';
+    document.getElementById('c-top').textContent  = expr;
+    document.getElementById('c-main').textContent = mainStr;
+    document.getElementById('c-sub').textContent  = subStr;
+    CT.phase='R'; CT.storedVal=v; CT.storedStr=mainStr; cResetInput();
+    cHistoryPush(expr, mainStr);
+    return;
+  }
   const b=cVal(), bStr=cInputStr();
   let res;
   try {
@@ -1767,7 +1800,7 @@ function cEq(chain=false) {
     document.getElementById('c-sub').textContent='';
     CT.phase='A'; cResetInput(); return;
   }
-  if (document.getElementById('round16-chk')?.checked) res = Math.round(res * 16) / 16;
+  res = cApplyRound16(res);
   const mainStr = fmtInches(res);
   const subStr  = fmtInchesOnly(res);
   if(!chain) {
