@@ -382,11 +382,17 @@ body {
 .sqft-draw-save-btn { width: 100%; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; flex-shrink: 0; }
 .sqft-draw-save-btn:active { background: #2a5a2a; }
 .sqft-draw-save-btn.saved { background: #2a6a2a; color: #80e880; }
+.sqft-draw-mobile-toolbar { display: none; }
 @media (pointer: coarse) {
   .sqft-draw-wrap { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-  .sqft-draw-svg-wrap { flex: none; max-width: 260px; align-self: center; }
+  .sqft-draw-svg-wrap { flex: none; max-width: 260px; align-self: center; width: 100%; }
   .sqft-draw-sidebar { width: 100%; flex-shrink: 0; overflow: visible; }
   .sqft-draw-segs { flex: none; max-height: 100px; }
+  .sqft-draw-mobile-toolbar { display: flex; gap: 8px; padding: 4px 0 6px; width: 100%; max-width: 260px; }
+  .sqft-draw-mobile-btn { flex: 1; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; }
+  .sqft-draw-mobile-btn:active { background: #2a5a2a; color: #80e880; }
+  .sqft-draw-mobile-btn-dim { color: #4a9a4a; border-color: #1e3a1e; background: #111e11; }
+  .sqft-draw-mobile-btn-dim:active { background: #1a2a1a; color: #6dd86d; }
 }
 
 /* ── Layout Tab ── */
@@ -1123,6 +1129,10 @@ body {
 
   <div id="sqft-draw-panel" style="display:none" class="sqft-draw-wrap">
     <div class="sqft-draw-svg-wrap">
+      <div class="sqft-draw-mobile-toolbar">
+        <button class="sqft-draw-mobile-btn" onclick="sqDrawUndo()">&#8617; Undo</button>
+        <button class="sqft-draw-mobile-btn sqft-draw-mobile-btn-dim" onclick="sqDrawClear()">Clear</button>
+      </div>
       <svg id="sqft-draw-svg" viewBox="0 0 460 460"
            onclick="sqDrawClick(event)"
            onmousemove="sqDrawMove(event)"
@@ -1853,7 +1863,7 @@ function sqGpy(gy) { return SQDM + gy*SQDC; }
 
 const sqDraw = { pts:[], closed:false, segs:[], hover:null, selectedSeg:null };
 let sqDrawViewBox = { x:0, y:0, w:460, h:460 };
-let sqDrawPinch = null, sqDrawPan = null, sqDrawLastTap = 0;
+let sqDrawPinch = null, sqDrawPan = null, sqDrawLastTap = 0, sqDrawWasPinching = false;
 function sqDrawApplyViewBox() {
   const svg = document.getElementById('sqft-draw-svg');
   if (svg) svg.setAttribute('viewBox', `${sqDrawViewBox.x} ${sqDrawViewBox.y} ${sqDrawViewBox.w} ${sqDrawViewBox.h}`);
@@ -1901,6 +1911,7 @@ function sqDrawMove(e) {
 function sqDrawLeave() { sqDraw.hover = null; sqDrawRender(); }
 function sqDrawTouchStart(e) {
   if (e.touches.length === 2) {
+    sqDrawWasPinching = true;
     sqDrawPan = null;
     const t0 = e.touches[0], t1 = e.touches[1];
     sqDrawPinch = {
@@ -1941,12 +1952,13 @@ function sqDrawTouchMove(e) {
   }
 }
 function sqDrawTouchEnd(e) {
-  const pinching = sqDrawPinch !== null;
   if (e.touches.length < 2) sqDrawPinch = null;
   if (e.touches.length === 0) {
+    const wasPinching = sqDrawWasPinching;
     const panned = sqDrawPan && sqDrawPan.moved;
     sqDrawPan = null;
-    if (!pinching && !panned && e.changedTouches.length === 1) {
+    sqDrawWasPinching = false;
+    if (!wasPinching && !panned && e.changedTouches.length === 1) {
       const now = Date.now();
       if (now - sqDrawLastTap < 300) {
         sqDrawViewBox = { x:0, y:0, w:460, h:460 };
