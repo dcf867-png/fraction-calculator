@@ -169,7 +169,6 @@ body {
   gap: 4px;
   flex-shrink: 0;
   height: 48px;
-  padding: 0 6px 4px;
 }
 
 /* ── Keys ── */
@@ -808,14 +807,6 @@ body {
     <div class="disp-main" id="f-main">0</div>
   </div>
 
-  <div class="op-row">
-    <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
-    <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
-    <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
-    <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
-    <button class="key key-eq" onclick="fEq()">=</button>
-  </div>
-
   <div class="calc-keypad">
     <div class="key-area">
 
@@ -905,6 +896,14 @@ body {
         </div>
       </div>
     </div>
+
+    <div class="op-row">
+      <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
+      <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
+      <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
+      <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
+      <button class="key key-eq" onclick="fEq()">=</button>
+    </div>
   </div>
   </div><!-- /.frac-left -->
 
@@ -932,14 +931,6 @@ body {
       <div class="disp-main" id="c-main">0"</div>
       <div class="disp-sub"  id="c-sub"></div>
     </div>
-  </div>
-
-  <div class="op-row">
-    <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
-    <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
-    <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
-    <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
-    <button class="key key-eq" onclick="cEq()">=</button>
   </div>
 
   <div class="calc-keypad">
@@ -1036,6 +1027,14 @@ body {
           <button class="key key-del span2" onclick="cDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
         </div>
       </div>
+    </div>
+
+    <div class="op-row">
+      <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
+      <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
+      <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
+      <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
+      <button class="key key-eq" onclick="cEq()">=</button>
     </div>
   </div>
   </div><!-- /.const-left -->
