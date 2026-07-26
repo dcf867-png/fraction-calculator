@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Fraction Calculator</title>
+<title>Handyman Calculator</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -181,6 +181,7 @@ body {
   gap: 4px;
   flex-shrink: 0;
   height: 48px;
+  padding: 0 6px;
 }
 
 /* ── Keys ── */
@@ -369,67 +370,225 @@ body {
 .sqft-subtab.active-sqft-sub { background: #0e1f0e; color: #6dd86d; }
 .sqft-panel-inner { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .sqft-draw-wrap { display: flex; flex: 1; min-height: 0; gap: 12px; padding: 10px; overflow: hidden; }
-.sqft-draw-svg-wrap { flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.sqft-draw-svg-wrap { flex: 1; min-width: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; }
 #sqft-draw-svg { width: 100%; height: auto; max-height: 100%; cursor: crosshair; display: block; touch-action: none; }
 .sqft-draw-sidebar { width: 162px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
-.sqft-draw-result-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #4a9a4a; }
-.sqft-draw-result-val { font-size: 1.5rem; font-weight: 800; color: #6dd86d; line-height: 1.3; }
+.sqft-draw-result-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #4a9a4a; }
+.sqft-draw-result-val { font-size: 1.8rem; font-weight: 800; color: #6dd86d; line-height: 1.3; }
 .sqft-draw-segs { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 5px; scrollbar-width: thin; scrollbar-color: #2a4a2a transparent; }
-.sqft-draw-hint { font-size: 0.6rem; color: #3a6a3a; font-style: italic; padding: 4px 0; }
+.sqft-draw-hint { font-size: 0.78rem; color: #3a6a3a; font-style: italic; padding: 4px 0; }
 .sqft-draw-seg-row { display: flex; align-items: center; gap: 3px; flex-shrink: 0; border-radius: 4px; padding: 1px 2px; cursor: pointer; }
 .sqft-draw-seg-selected { background: #0e2a0e; outline: 1px solid #3a7a3a; }
-.sqft-draw-seg-label { font-size: 0.6rem; font-weight: 700; color: #4a9a4a; width: 20px; flex-shrink: 0; text-align: right; }
-.sqft-draw-seg-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 0.8rem; font-weight: 700; text-align: center; padding: 3px 2px; width: 38px; -moz-appearance: textfield; }
+.sqft-draw-seg-label { font-size: 0.78rem; font-weight: 700; color: #4a9a4a; width: 24px; flex-shrink: 0; text-align: right; }
+.sqft-draw-seg-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 1rem; font-weight: 700; text-align: center; padding: 3px 2px; width: 42px; -moz-appearance: textfield; }
 .sqft-draw-seg-inp::-webkit-inner-spin-button, .sqft-draw-seg-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
 .sqft-draw-seg-inp:focus { outline: none; border-color: #6dd86d; }
-.sqft-draw-seg-unit { font-size: 0.75rem; color: #4a9a4a; font-weight: 700; }
-.sqft-draw-btns { display: flex; gap: 6px; flex-shrink: 0; }
-.sqft-draw-btn { flex: 1; padding: 7px 0; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a4a2a; background: #1a2a1a; color: #4a9a4a; cursor: pointer; }
-.sqft-draw-btn:active { background: #1e341e; color: #6dd86d; }
-.sqft-draw-price-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 0.9rem; font-weight: 700; padding: 3px 5px; width: 100%; -moz-appearance: textfield; }
+.sqft-draw-seg-unit { font-size: 0.95rem; color: #4a9a4a; font-weight: 700; }
+.sqft-draw-price-inp { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 1.1rem; font-weight: 700; padding: 3px 5px; width: 100%; -moz-appearance: textfield; }
 .sqft-draw-price-inp::-webkit-inner-spin-button, .sqft-draw-price-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
 .sqft-draw-price-inp:focus { outline: none; border-color: #6dd86d; }
-.sqft-draw-cost-val { font-size: 1.1rem; }
-.sqft-draw-save-btn { width: 100%; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; flex-shrink: 0; }
+.sqft-draw-cost-val { font-size: 1.4rem; }
+.sqft-draw-save-btn { width: 100%; padding: 8px 0; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; flex-shrink: 0; }
 .sqft-draw-save-btn:active { background: #2a5a2a; }
 .sqft-draw-save-btn.saved { background: #2a6a2a; color: #80e880; }
-.sqft-draw-mobile-toolbar { display: none; }
+.sqft-draw-mobile-toolbar { display: flex; gap: 8px; padding: 4px 0 6px; width: 100%; }
+.sqft-draw-mobile-btn { flex: 1; padding: 8px 0; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; }
+.sqft-draw-mobile-btn:active { background: #2a5a2a; color: #80e880; }
+.sqft-draw-mobile-btn-dim { color: #4a9a4a; border-color: #1e3a1e; background: #111e11; }
+.sqft-draw-mobile-btn-dim:active { background: #1a2a1a; color: #6dd86d; }
 @media (pointer: coarse) {
   .sqft-draw-wrap { flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: 6px; }
-  .sqft-draw-svg-wrap { flex: none; width: 100%; flex-direction: column; align-items: stretch; justify-content: flex-start; overflow: visible; }
+  .sqft-draw-svg-wrap { flex: none; width: 100%; overflow: visible; }
   #sqft-draw-svg { width: 100%; height: auto; }
   .sqft-draw-sidebar { width: 100%; flex-shrink: 0; overflow: visible; }
   .sqft-draw-segs { flex: none; max-height: 100px; }
-  .sqft-draw-mobile-toolbar { display: flex; gap: 8px; padding: 4px 0 6px; width: 100%; }
-  .sqft-draw-mobile-btn { flex: 1; padding: 8px 0; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 5px; border: 1px solid #2a5a2a; background: #1a3a1a; color: #6dd86d; cursor: pointer; }
-  .sqft-draw-mobile-btn:active { background: #2a5a2a; color: #80e880; }
-  .sqft-draw-mobile-btn-dim { color: #4a9a4a; border-color: #1e3a1e; background: #111e11; }
-  .sqft-draw-mobile-btn-dim:active { background: #1a2a1a; color: #6dd86d; }
 }
+
+/* Desktop draw: expand to fill viewport width */
+@media (pointer: fine) {
+  body.draw-active {
+    max-width: min(95vw, 1200px);
+    transition: max-width 0.15s ease;
+  }
+  body.draw-active .sqft-draw-wrap {
+    gap: 20px;
+    padding: 16px;
+  }
+  body.draw-active .sqft-draw-sidebar {
+    width: 220px;
+  }
+  .sqft-draw-zoom-hint {
+    font-size: 0.7rem;
+    color: #2a5a2a;
+    font-style: italic;
+    text-align: center;
+    padding: 3px 0 0;
+  }
+}
+@media (pointer: coarse) {
+  .sqft-draw-zoom-hint { display: none; }
+}
+
+/* Shape picker */
+.sqft-shape-bar { display: flex; gap: 3px; flex-shrink: 0; }
+.sqft-shape-btn { flex: 1; padding: 6px 2px; background: #0a140a; border: 1px solid #1e3a1e; border-radius: 6px; color: #4a8a4a; font-size: 0.68rem; font-weight: 800; cursor: pointer; letter-spacing: 0.03em; text-transform: uppercase; }
+.sqft-shape-btn.active-shape { background: #1a3a1a; border-color: #4a8a4a; color: #6dd86d; }
+.sqft-shape-form { display: flex; flex-direction: column; gap: 7px; }
+.sqft-shape-seg-row { display: flex; align-items: center; gap: 4px; }
+.sqft-shape-seg-label { font-size: 0.72rem; color: #4a8a4a; min-width: 44px; font-weight: 700; }
+.sqft-shape-seg-inp { width: 40px; background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 4px; color: #c0e8c0; font-size: 0.95rem; font-weight: 700; text-align: center; padding: 4px 3px; -moz-appearance: textfield; }
+.sqft-shape-seg-inp::-webkit-inner-spin-button, .sqft-shape-seg-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
+.sqft-shape-seg-inp:focus { outline: none; border-color: #6dd86d; }
+.sqft-shape-seg-unit { font-size: 0.9rem; color: #4a9a4a; font-weight: 700; }
+.sqft-circle-toggle { display: flex; gap: 4px; }
+.sqft-circle-mode-btn { flex: 1; padding: 5px 3px; background: #0a140a; border: 1px solid #1e3a1e; border-radius: 5px; color: #4a8a4a; font-size: 0.7rem; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 0.03em; }
+.sqft-circle-mode-btn.active-circle-mode { background: #1a3a1a; border-color: #4a8a4a; color: #6dd86d; }
+.sqft-shape-section { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
+
+/* Region sign toggle */
+.sqft-sign-toggle { display: flex; gap: 3px; flex-shrink: 0; }
+.sqft-sign-btn { flex: 1; padding: 5px 2px; border-radius: 5px; border: 1px solid #1e3a1e; background: #0a140a; font-size: 0.68rem; font-weight: 800; cursor: pointer; letter-spacing: 0.02em; text-transform: uppercase; }
+.sqft-sign-btn-add { color: #3a7a3a; }
+.sqft-sign-btn-sub { color: #7a3a3a; }
+.sqft-sign-btn-add.active-sign-add { background: #0e2a0e; border-color: #3a8a3a; color: #6dd86d; }
+.sqft-sign-btn-sub.active-sign-sub { background: #2a0e0e; border-color: #8a3a3a; color: #e86d6d; }
+/* Add region button */
+.sqft-add-region-btn { width: 100%; padding: 6px 0; background: #0a1f0a; border: 1px solid #2a5a2a; border-radius: 5px; color: #6dd86d; font-size: 0.73rem; font-weight: 800; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
+.sqft-add-region-btn:active { background: #1a3a1a; }
+/* Regions list */
+.sqft-regions-wrap { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; border-top: 1px solid #1e3a1e; padding-top: 6px; }
+.sqft-regions-header { display: flex; align-items: center; justify-content: space-between; }
+.sqft-regions-clear-btn { font-size: 0.65rem; font-weight: 800; background: none; border: none; color: #5a3a3a; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0; }
+.sqft-regions-clear-btn:hover { color: #e86d6d; }
+.sqft-regions-list { display: flex; flex-direction: column; gap: 3px; max-height: 110px; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #2a4a2a transparent; }
+.sqft-region-row { display: flex; align-items: center; gap: 4px; padding: 2px 1px; font-size: 0.72rem; }
+.sqft-region-sign-btn { width: 20px; height: 20px; border-radius: 50%; border: 1px solid; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: none; padding: 0; line-height: 1; }
+.sqft-region-sign-btn.sign-add { color: #6dd86d; border-color: #3a7a3a; }
+.sqft-region-sign-btn.sign-sub { color: #e86d6d; border-color: #7a3a3a; }
+.sqft-region-area { flex: 1; color: #a0c8a0; font-size: 0.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sqft-region-del { background: none; border: none; color: #4a6a4a; font-size: 1rem; cursor: pointer; flex-shrink: 0; padding: 0 2px; line-height: 1; }
+.sqft-region-del:hover { color: #e86d6d; }
+.sqft-net-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #4a9a4a; }
+.sqft-net-val { font-size: 1.5rem; font-weight: 800; color: #6dd86d; line-height: 1.25; }
+
+/* Object inspector */
+.sqft-inspector { display: flex; flex-direction: column; gap: 6px; background: #0a1a0a; border: 1px solid #2a5a2a; border-radius: 7px; padding: 8px; flex-shrink: 0; }
+.sqft-insp-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.sqft-insp-type { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #6dd86d; }
+.sqft-insp-close { background: none; border: none; color: #4a6a4a; font-size: 1rem; cursor: pointer; line-height: 1; padding: 0 2px; }
+.sqft-insp-close:hover { color: #e86d6d; }
+.sqft-insp-area { font-size: 1.5rem; font-weight: 800; color: #6dd86d; line-height: 1.2; }
+.sqft-insp-segs { overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 5px; max-height: 120px; scrollbar-width: thin; scrollbar-color: #2a4a2a transparent; }
+.sqft-del-btn { width: 100%; padding: 5px 0; background: #1a0a0a; border: 1px solid #5a2a2a; border-radius: 5px; color: #e86d6d; font-size: 0.7rem; font-weight: 800; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
+.sqft-del-btn:active { background: #2a1010; }
+.sqft-place-btn { width: 100%; padding: 6px 0; background: #0a1f0a; border: 1px solid #2a5a2a; border-radius: 5px; color: #6dd86d; font-size: 0.73rem; font-weight: 800; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
+.sqft-place-btn:active { background: #1a3a1a; }
+.sqft-net-row { flex-shrink: 0; border-top: 1px solid #1e3a1e; padding-top: 6px; }
+
+/* ── Standard Calc Tab ── */
+#tab-calc { flex-direction: row; }
+.calc-left { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.calc-history {
+  flex-shrink: 0; width: 112px;
+  display: flex; flex-direction: column;
+  background: #0a0a1a; border-left: 1px solid #1a1d30;
+  overflow: hidden; transition: width 0.18s ease;
+}
+.calc-history.collapsed { width: 26px; }
+.calc-history-toggle {
+  flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: #0b0d1c; border-bottom: 1px solid #1a1d30;
+  cursor: pointer; color: #4a6a9a; font-size: 0.75rem; user-select: none;
+}
+.calc-history-toggle:active { color: #8090d8; }
+.calc-history-header {
+  flex-shrink: 0; padding: 4px 6px 5px;
+  font-size: 0.55rem; font-weight: 800; letter-spacing: 0.15em; color: #4a5080;
+  text-align: center; text-transform: uppercase; border-bottom: 1px solid #0d0f1e;
+  white-space: nowrap; overflow: hidden;
+}
+.calc-history-clear {
+  flex-shrink: 0; margin: 6px; padding: 4px 6px; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #6090d8;
+  background: #ffffff; border: 1px solid #2a2d4a; border-radius: 4px;
+  cursor: pointer; white-space: nowrap; overflow: hidden; width: calc(100% - 12px);
+}
+.calc-history-clear:active { color: #4060c0; background: #e8eeff; }
+.calc-history-list {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: #2a2d4a transparent;
+  display: flex; flex-direction: column;
+}
+.calc-history-sep { flex-shrink: 0; height: 1px; background: #1e2240; margin: 0 6px; }
+.calc-history-row { flex-shrink: 0; padding: 7px 8px; cursor: pointer; transition: background 0.1s; }
+.calc-history-row:active { background: #12152a; }
+.calc-history-expr { font-size: 0.6rem; color: #7080a8; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.calc-history-result { font-size: 0.88rem; color: #c0cef0; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tab-calc .calc-display {
+  background: linear-gradient(160deg, #252545 0%, #1a1a35 100%);
+  color: #f0f2ff;
+  border-bottom: 1px solid #2a2d45;
+}
+#tab-calc .disp-top  { color: #7080a8; }
+#tab-calc .disp-main { color: #f0f2ff; }
+#tab-calc .key-op { background: #22253a; color: #b0c0d8; font-size: 1.35rem; }
+#tab-calc .key-op:active { background: #2e3250; }
+.std-numpad { display: flex; flex-direction: column; flex: 1; padding: 6px; gap: 4px; min-height: 0; }
+.std-row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; flex: 1; }
+
+/* Sq Ft multi-row */
+#sq-rows-container { display: flex; flex-direction: column; gap: 5px; padding: 6px 8px 2px; flex-shrink: 0; }
+.sq-row-wrap { display: flex; align-items: center; gap: 5px; }
+.sq-row-label { font-size: 0.65rem; font-weight: 800; color: #3a7a3a; width: 14px; text-align: right; flex-shrink: 0; }
+.sq-row-dims { flex: 1; display: flex; align-items: center; gap: 3px; }
+.sq-unit-sm { font-size: 1.6rem; color: #4a9a4a; font-weight: 700; flex-shrink: 0; line-height: 1; }
+.sq-x-sm { font-size: 1.2rem; color: #4a9a4a; font-weight: 700; flex-shrink: 0; padding: 0 3px; }
+.sq-row-del { background: none; border: none; color: #3a5a3a; font-size: 1.1rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; line-height: 1; }
+.sq-row-del:active { color: #f87878; }
+.sq-add-row-btn { display: inline-flex; align-items: center; justify-content: center; align-self: flex-start; margin: 2px 8px 2px; padding: 2px 10px; background: none; border: 1px dashed #2a4a2a; border-radius: 6px; color: #3a7a3a; font-size: 1.2rem; font-weight: 800; cursor: pointer; flex-shrink: 0; }
+.sq-add-row-btn:active { background: #0e2a0e; color: #6dd86d; }
+.sq-sign-btn { width: 22px; height: 22px; border-radius: 5px; border: 1px solid #2a4a2a; background: none; color: #4aaa4a; font-size: 1rem; font-weight: 800; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
+.sq-sign-btn.sq-sign-minus { color: #e05050; border-color: #5a2a2a; }
+.sq-sign-btn:active { opacity: 0.7; }
+.sq-row-total { font-size: 0.68rem; color: #3a7a3a; min-width: 36px; text-align: right; flex-shrink: 0; padding-right: 2px; }
+.sq-row-total.sq-row-total-minus { color: #b05050; }
+
+/* Sq Ft calc - fraction-style dimension display */
+.sq-dims-display { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 10px; flex-shrink: 0; }
+.sq-dim-block { display: flex; flex-direction: column; align-items: stretch; background: #0a140a; border: 1px solid #1e3a1e; border-radius: 8px; overflow: hidden; flex: 1; }
+.sq-dim-ft { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 8px; }
+.sq-dim-in { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 8px; }
+.sq-dim-bar { height: 2px; background: #2a5a2a; flex-shrink: 0; }
+.sq-dim-val { font-size: 1.8rem; font-weight: 700; color: #c0e8c0; min-width: 36px; text-align: center; cursor: pointer; border-radius: 4px; padding: 2px 4px; line-height: 1; }
+.sq-dim-val.active-sq { background: #f5a623; color: #000; }
+.sq-dim-unit { font-size: 0.85rem; font-weight: 800; color: #4a8a4a; flex-shrink: 0; }
+.sq-times-sep { font-size: 1.6rem; color: #4a9a4a; font-weight: 700; flex-shrink: 0; }
+#tab-sqft .key-op { background: #0e1e0e; color: #60d060; }
+#tab-sqft .key-op:active { background: #1a3a1a; }
 
 /* ── Layout Tab ── */
 #tab-layout .calc-display {
   background: linear-gradient(160deg, #16102a 0%, #100c20 100%);
-  color: #c0a0ff;
+  color: #ffffff;
   border-bottom: 1px solid #2a1f4a;
   min-height: 110px;
   flex-direction: row;
   align-items: flex-end;
   gap: 10px;
 }
-#tab-layout .disp-main { color: #c0a0ff; font-size: 2.2rem; }
-#tab-layout .disp-top  { color: #7050b0; }
-#tab-layout .disp-sub  { color: #a080e8; font-size: 1.1rem; font-weight: 700; text-align: right; }
+#tab-layout .disp-main { color: #ffffff; font-size: 2.2rem; }
+#tab-layout .disp-top  { color: #aaaaaa; }
+#tab-layout .disp-sub  { color: #dddddd; font-size: 1.1rem; font-weight: 700; text-align: right; }
 .lay-cost-block { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
-.lay-cost-line  { color: #8060c0; font-size: 0.9rem; font-weight: 700; text-align: right; }
-.lay-tax-line   { color: #8060c0; font-size: 0.9rem; font-weight: 700; text-align: right; }
-.lay-total-line { color: #c0a0ff; font-size: 1.0rem; font-weight: 800; text-align: right; border-top: 1px solid #3a2060; margin-top: 2px; padding-top: 2px; }
-#tab-layout .disp-c-btn { background: #2a1060; color: #c0a0ff; }
-#tab-layout .mode-btn  { border-color: #2a1f4a; color: #7050b0; background: #12082a; }
+.lay-cost-line  { color: #cccccc; font-size: 0.9rem; font-weight: 700; text-align: right; }
+.lay-tax-line   { color: #cccccc; font-size: 0.9rem; font-weight: 700; text-align: right; }
+.lay-total-line { color: #ffffff; font-size: 1.0rem; font-weight: 800; text-align: right; border-top: 1px solid #444; margin-top: 2px; padding-top: 2px; }
+#tab-layout .disp-c-btn { background: #2a1060; color: #ffffff; }
+#tab-layout .mode-btn  { border-color: #2a1f4a; color: #aaaaaa; background: #12082a; }
 #tab-layout .mode-btn.active-mode { background: #7b4dff; border-color: #7b4dff; color: #fff; }
-#tab-layout .key { background: #16102a; color: #d0b8ff; }
+#tab-layout .key { background: #16102a; color: #ffffff; }
 #tab-layout .key:active { background: #241440; }
-#tab-layout .key-del { color: #7050b0; }
+#tab-layout .key-del { color: #aaaaaa; }
 
 .lay-toggle {
   display: grid;
@@ -445,9 +604,7 @@ body {
   flex-direction: column;
   gap: 5px;
 }
-.lay-divmode-toggle { display:flex; gap:4px; padding:2px 0 4px; }
-.lay-divmode-btn { background:none; border:1px solid #4a3070; border-radius:4px; color:#7050b0; font-size:0.7rem; font-weight:700; padding:2px 8px; cursor:pointer; letter-spacing:0.05em; }
-.lay-divmode-btn.active-divmode { background:#4a3070; color:#d0b8ff; }
+.lay-label-lg { width: 76px; }
 .lay-row {
   display: flex;
   align-items: center;
@@ -457,7 +614,7 @@ body {
   font-size: 0.58rem;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: #6040a0;
+  color: #aaaaaa;
   width: 56px;
   flex-shrink: 0;
   text-align: center;
@@ -466,7 +623,7 @@ body {
   background: #16102a;
   border: 2px solid transparent;
   border-radius: 6px;
-  color: #d0b8ff;
+  color: #ffffff;
   font-size: 1.25rem;
   font-weight: 800;
   text-align: center;
@@ -478,9 +635,11 @@ body {
 .lay-dp.active-lay { background: #f5a623; color: #000; border-color: #f5a623; }
 .lay-dp-wide { min-width: 60px; }
 .lay-dp-sm { min-width: 28px; font-size: 1.05rem; padding: 4px 3px; }
-.lay-unit { font-size: 2rem; color: #5030a0; font-weight: 700; line-height: 1; }
-.lay-unit-sm { font-size: 0.9rem; font-weight: 700; color: #5030a0; }
-.lay-fracbar { color: #7050b0; font-size: 1.3rem; font-weight: 700; }
+.lay-unit { font-size: 2rem; color: #aaaaaa; font-weight: 700; line-height: 1; }
+.lay-unit-sm { font-size: 0.9rem; font-weight: 700; color: #aaaaaa; }
+.lay-fracbar { color: #cccccc; font-size: 1.3rem; font-weight: 700; }
+.lay-fields-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 5px; }
+.lay-divide-hint { font-size: 0.78rem; font-style: italic; color: #ccc; text-align: center; padding: 3px 0 5px; }
 .lay-numpad {
   display: flex;
   flex-direction: column;
@@ -596,6 +755,92 @@ body {
 .const-history-row:active { background: #1a1508; }
 .const-history-expr { font-size: 0.6rem; color: #8a6a30; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
 .const-history-result { font-size: 0.88rem; color: #f0c070; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Sqft calc history panel */
+#sqft-calc-panel { flex-direction: row; }
+#sqft-linft-panel { flex-direction: row; }
+.sqft-calc-left { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.sqft-history {
+  flex-shrink: 0; width: 110px;
+  display: flex; flex-direction: column;
+  border-left: 1px solid #1e3a1e;
+  background: #0a150a;
+  overflow: hidden;
+  transition: width 0.18s ease;
+}
+.sqft-history.collapsed { width: 26px; }
+.sqft-history-toggle {
+  flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: #0a150a; border-bottom: 1px solid #1e3a1e;
+  cursor: pointer; color: #3a7a3a; font-size: 0.75rem; user-select: none;
+}
+.sqft-history-toggle:active { color: #6dd86d; }
+.sqft-history-header {
+  flex-shrink: 0; padding: 4px 6px 5px;
+  font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em;
+  color: #3a6a3a; text-transform: uppercase; white-space: nowrap; overflow: hidden;
+  border-bottom: 1px solid #0e2a0e;
+}
+.sqft-history-clear {
+  flex-shrink: 0; margin: 6px; padding: 4px 6px; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #4a9a4a;
+  background: transparent; border: 1px solid #1e3a1e; border-radius: 4px;
+  cursor: pointer; white-space: nowrap; overflow: hidden; width: calc(100% - 12px);
+}
+.sqft-history-clear:active { color: #6dd86d; background: #0e2a0e; }
+.sqft-history-list {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: #1e3a1e transparent;
+  display: flex; flex-direction: column;
+}
+.sqft-history-sep { flex-shrink: 0; height: 1px; background: #1e3a1e; margin: 0 6px; }
+.sqft-history-row { flex-shrink: 0; padding: 7px 8px; cursor: pointer; transition: background 0.1s; }
+.sqft-history-row:active { background: #0e2a0e; }
+.sqft-history-expr { font-size: 0.6rem; color: #3a7a3a; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.sqft-history-result { font-size: 0.88rem; color: #80d860; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Layout history panel */
+#tab-layout { flex-direction: row; }
+.lay-left { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.lay-history {
+  flex-shrink: 0; width: 110px;
+  display: flex; flex-direction: column;
+  border-left: 1px solid #2a1f4a;
+  background: #0e0a1e;
+  overflow: hidden;
+  transition: width 0.18s ease;
+}
+.lay-history.collapsed { width: 26px; }
+.lay-history-toggle {
+  flex-shrink: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: #0e0a1e; border-bottom: 1px solid #2a1f4a;
+  cursor: pointer; color: #6040a0; font-size: 0.75rem; user-select: none;
+}
+.lay-history-toggle:active { color: #c0a0ff; }
+.lay-history-header {
+  flex-shrink: 0; padding: 4px 6px 5px;
+  font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em;
+  color: #4a3080; text-transform: uppercase; white-space: nowrap; overflow: hidden;
+  border-bottom: 1px solid #1a1030;
+}
+.lay-history-clear {
+  flex-shrink: 0; margin: 6px; padding: 4px 6px; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #8060c0;
+  background: transparent; border: 1px solid #2a1f4a; border-radius: 4px;
+  cursor: pointer; white-space: nowrap; overflow: hidden; width: calc(100% - 12px);
+}
+.lay-history-clear:active { color: #c0a0ff; background: #1a1030; }
+.lay-history-list {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: #2a1f4a transparent;
+  display: flex; flex-direction: column;
+}
+.lay-history-sep { flex-shrink: 0; height: 1px; background: #2a1f4a; margin: 0 6px; }
+.lay-history-row { flex-shrink: 0; padding: 7px 8px; cursor: pointer; transition: background 0.1s; }
+.lay-history-row:active { background: #1a1030; }
+.lay-history-expr { font-size: 0.6rem; color: #5a3090; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.lay-history-result { font-size: 0.88rem; color: #c0a0ff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 .disp-btn-col {
   display: flex;
   flex-direction: column;
@@ -653,6 +898,96 @@ body {
 .saves-close-btn {
   display: none !important;
 }
+.saves-export-btn {
+  background: #1a2a1a; border: none; border-radius: 6px;
+  color: #7fc96f; font-size: 0.7rem; font-weight: 800;
+  padding: 6px 10px; cursor: pointer;
+}
+.saves-export-btn:active { opacity: 0.7; }
+
+/* Export sheet */
+.export-sheet {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
+  background: #1a1a2e; border-top: 2px solid #f5a623;
+  border-radius: 16px 16px 0 0;
+  padding: 18px 16px 28px;
+  z-index: 200;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.export-sheet.hidden { display: none; }
+.export-sheet-title { color: #f0f2ff; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.05em; }
+.export-sheet-sub { color: #7070a0; font-size: 0.72rem; margin-top: 2px; margin-bottom: 2px; }
+.export-type-row { display: flex; gap: 6px; }
+.export-type-btn {
+  flex: 1; padding: 8px 4px;
+  background: #16213e; border: 1px solid #2a2d45;
+  border-radius: 8px; color: #5060a0;
+  font-size: 0.72rem; font-weight: 800; cursor: pointer; letter-spacing: 0.04em;
+}
+.export-type-btn.active { background: #1a2e1a; border-color: #3a7a3a; color: #7fc96f; }
+.export-field {
+  background: #16213e; border: 1px solid #2a2d45;
+  border-radius: 8px; color: #f0f2ff;
+  font-size: 0.82rem; padding: 10px 12px; outline: none;
+}
+.export-field::placeholder { color: #303358; }
+.export-field:focus { border-color: #f5a623; }
+.export-section-label {
+  color: #303358; font-size: 0.68rem; font-weight: 800;
+  letter-spacing: 0.08em; margin-bottom: -4px; margin-top: 2px;
+}
+.export-btn-row { display: flex; gap: 10px; }
+.export-format-btn {
+  flex: 1; padding: 14px 8px;
+  background: #16213e; border: 1px solid #2a2d45;
+  border-radius: 10px; color: #f0f2ff;
+  font-size: 0.82rem; font-weight: 800; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.export-format-btn:active { background: #1e2540; }
+.export-format-icon { font-size: 1.5rem; line-height: 1; }
+.export-cancel-btn {
+  margin-top: 2px; padding: 12px;
+  background: none; border: 1px solid #2a2d45;
+  border-radius: 10px; color: #7070a0;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer;
+}
+
+/* Print styles */
+@media print {
+  body > *:not(#print-view) { display: none !important; }
+  #print-view { display: block !important; padding: 0; margin: 0; }
+}
+#print-view { display: none; }
+.print-doc { max-width: 680px; margin: 0 auto; font-family: system-ui, sans-serif; color: #111; }
+.print-doc-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 24px; border-bottom: 3px solid #111; padding-bottom: 16px;
+}
+.print-doc-type { font-size: 38px; font-weight: 900; letter-spacing: -0.02em; }
+.print-doc-info { text-align: right; font-size: 13px; line-height: 1.8; color: #444; }
+.print-doc-info strong { color: #111; }
+.print-items { width: 100%; border-collapse: collapse; }
+.print-items th {
+  text-align: left; font-size: 10px; font-weight: 800;
+  letter-spacing: 0.1em; color: #999;
+  border-bottom: 1px solid #ddd; padding: 6px 8px;
+}
+.print-items th:last-child { text-align: right; }
+.print-items td { padding: 10px 8px; border-bottom: 1px solid #eee; vertical-align: top; page-break-inside: avoid; }
+.print-items td:last-child { text-align: right; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.print-item-type { font-size: 10px; font-weight: 800; color: #bbb; letter-spacing: 0.1em; }
+.print-item-item { font-size: 14px; font-weight: 700; color: #111; margin-top: 2px; }
+.print-item-label { font-size: 12px; color: #555; margin-top: 1px; }
+.print-item-result { font-size: 15px; font-weight: 700; margin: 2px 0; }
+.print-item-notes { font-size: 11px; color: #888; }
+.print-total-row td {
+  border-bottom: none; border-top: 2px solid #111;
+  padding-top: 12px; font-weight: 800; font-size: 15px;
+}
+.print-total-row td:first-child { font-size: 11px; letter-spacing: 0.1em; color: #666; }
+.print-footer { margin-top: 48px; font-size: 11px; color: #ccc; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
 .saves-list {
   flex: 1; overflow-y: auto; padding: 10px;
   display: flex; flex-direction: column; gap: 8px;
@@ -672,6 +1007,10 @@ body {
   padding: 8px 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
 }
 .mat-add-btn:active { background: #1e2240; color: #a0b0e0; }
+.labor-mode-row { display: flex; gap: 6px; }
+.labor-mode-btn { flex: 1; background: #12152a; border: 1px solid #2a2d4a; border-radius: 8px; color: #5060a0; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; padding: 8px 4px; cursor: pointer; }
+.labor-mode-btn.active { background: #2e3260; border-color: #5060a0; color: #c0c8f0; }
+.saves-footer-btns { display: flex; gap: 6px; flex-shrink: 0; }
 .mat-total-preview {
   text-align: right; color: #7060b0; font-size: 0.85rem; font-weight: 700; min-height: 18px;
 }
@@ -713,6 +1052,7 @@ body {
   font-family: inherit;
 }
 .save-edit-input:focus { border-color: #5050a0; }
+.save-edit-select { appearance: none; cursor: pointer; }
 .save-edit-confirm {
   background: #2e3260; border: none; border-radius: 10px;
   color: #c0c8f0; font-size: 0.85rem; font-weight: 800;
@@ -726,6 +1066,7 @@ body {
   padding: 3px 6px; flex-shrink: 0; margin-top: 3px;
 }
 .save-body { flex: 1; min-width: 0; }
+.save-item  { color: #a0b4ff; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.04em; margin-bottom: 2px; }
 .save-label { color: #6070a0; font-size: 0.74rem; font-weight: 600; margin-bottom: 2px; }
 .save-result { color: #f0f2ff; font-size: 1.2rem; font-weight: 800; }
 .save-sub { color: #8090b0; font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
@@ -804,7 +1145,8 @@ body {
 <body>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('frac',this)">Fraction</button>
+  <button class="tab active" onclick="showTab('calc',this)">Calc</button>
+  <button class="tab" onclick="showTab('frac',this)">Fraction</button>
   <button class="tab" onclick="showTab('const',this)">Construction</button>
   <button class="tab" onclick="showTab('sqft',this)">Sq Ft</button>
   <button class="tab" onclick="showTab('layout',this)">Layout</button>
@@ -814,15 +1156,73 @@ body {
 </div>
 
 <!-- ════════════════════════════════
+     CALC TAB
+════════════════════════════════ -->
+<div id="tab-calc" class="panel active">
+  <div class="calc-left">
+  <div class="calc-display" id="calc-display">
+    <div class="disp-top" id="calc-top"></div>
+    <div class="disp-main" id="calc-main">0</div>
+  </div>
+  <div class="std-numpad">
+    <div class="std-row4">
+      <button class="key key-c"  onclick="calcClear()">C</button>
+      <button class="key key-pm" onclick="calcSign()">+/−</button>
+      <button class="key key-del" onclick="calcDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
+      <button class="key key-op" onclick="calcOp('÷')">÷</button>
+    </div>
+    <div class="std-row4">
+      <button class="key" onclick="calcDigit('7')">7</button>
+      <button class="key" onclick="calcDigit('8')">8</button>
+      <button class="key" onclick="calcDigit('9')">9</button>
+      <button class="key key-op" onclick="calcOp('×')">×</button>
+    </div>
+    <div class="std-row4">
+      <button class="key" onclick="calcDigit('4')">4</button>
+      <button class="key" onclick="calcDigit('5')">5</button>
+      <button class="key" onclick="calcDigit('6')">6</button>
+      <button class="key key-op" onclick="calcOp('−')">−</button>
+    </div>
+    <div class="std-row4">
+      <button class="key" onclick="calcDigit('1')">1</button>
+      <button class="key" onclick="calcDigit('2')">2</button>
+      <button class="key" onclick="calcDigit('3')">3</button>
+      <button class="key key-op" onclick="calcOp('+')">+</button>
+    </div>
+    <div class="std-row4">
+      <button class="key span2" onclick="calcDigit('0')">0</button>
+      <button class="key key-dot" onclick="calcDigit('.')">.</button>
+      <button class="key key-eq" onclick="calcEq()">=</button>
+    </div>
+  </div>
+  </div><!-- /.calc-left -->
+
+  <div class="calc-history collapsed" id="calc-history">
+    <div class="calc-history-toggle" onclick="toggleCalcHistory()">▶</div>
+    <div class="calc-history-header">History</div>
+    <div class="calc-history-list" id="calc-history-list"></div>
+    <button class="calc-history-clear" id="calc-history-clear-btn" onclick="calcHistoryClear()" style="display:none">Clear</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
      FRACTION TAB
 ════════════════════════════════ -->
-<div id="tab-frac" class="panel active">
+<div id="tab-frac" class="panel">
 
   <div class="frac-left">
   <div class="calc-display">
     <div class="disp-top"  id="f-top"></div>
     <div class="disp-main" id="f-main">0</div>
     <div class="disp-sub"  id="f-sub"></div>
+  </div>
+
+  <div class="op-row">
+    <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
+    <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
+    <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
+    <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
+    <button class="key key-eq" onclick="fEq()">=</button>
   </div>
 
   <div class="calc-keypad">
@@ -857,7 +1257,7 @@ body {
         </div>
         <div class="row2">
           <button class="key key-dot" onclick="fW('.')">.</button>
-          <button class="key key-del" onclick="fWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del" onclick="fWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
       </div>
 
@@ -885,7 +1285,7 @@ body {
         </div>
         <div class="row3">
           <button class="key" onclick="fN('0')">0</button>
-          <button class="key key-del span2" onclick="fNdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del span2" onclick="fNdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
 
         <div class="frac-bar-key"></div>
@@ -910,18 +1310,11 @@ body {
         </div>
         <div class="row3">
           <button class="key" onclick="fD('0')">0</button>
-          <button class="key key-del span2" onclick="fDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del span2" onclick="fDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
       </div>
     </div>
 
-    <div class="op-row">
-      <button class="key key-op" data-op="+" onclick="fOp(this)">+</button>
-      <button class="key key-op" data-op="−" onclick="fOp(this)">−</button>
-      <button class="key key-op" data-op="×" onclick="fOp(this)">×</button>
-      <button class="key key-op" data-op="÷" onclick="fOp(this)">÷</button>
-      <button class="key key-eq" onclick="fEq()">=</button>
-    </div>
   </div>
   </div><!-- /.frac-left -->
 
@@ -949,6 +1342,14 @@ body {
       <div class="disp-main" id="c-main" onclick="cMainClick()">0"</div>
       <div class="disp-sub"  id="c-sub"></div>
     </div>
+  </div>
+
+  <div class="op-row">
+    <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
+    <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
+    <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
+    <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
+    <button class="key key-eq" onclick="cEq()">=</button>
   </div>
 
   <div class="round16-row">
@@ -999,7 +1400,7 @@ body {
         </div>
         <div class="row2" id="ft-sep-row">
           <button class="key" style="color:#f5a623;font-weight:800;font-size:1rem" onclick="cFtAdvance()">next</button>
-          <button class="key key-del" onclick="cWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del" onclick="cWdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
       </div>
 
@@ -1026,7 +1427,7 @@ body {
         </div>
         <div class="row3">
           <button class="key" onclick="cN('0')">0</button>
-          <button class="key key-del span2" onclick="cNdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del span2" onclick="cNdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
 
         <div class="frac-bar-key"></div>
@@ -1051,18 +1452,11 @@ body {
         </div>
         <div class="row3">
           <button class="key" onclick="cD('0')">0</button>
-          <button class="key key-del span2" onclick="cDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+          <button class="key key-del span2" onclick="cDdel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
         </div>
       </div>
     </div>
 
-    <div class="op-row">
-      <button class="key key-op" data-op="+" onclick="cOp(this)">+</button>
-      <button class="key key-op" data-op="−" onclick="cOp(this)">−</button>
-      <button class="key key-op" data-op="×" onclick="cOp(this)">×</button>
-      <button class="key key-op" data-op="÷" onclick="cOp(this)">÷</button>
-      <button class="key key-eq" onclick="cEq()">=</button>
-    </div>
   </div>
   </div><!-- /.const-left -->
 
@@ -1081,10 +1475,12 @@ body {
 
   <div class="sqft-subtabs">
     <button class="sqft-subtab active-sqft-sub" id="sqft-sub-calc" onclick="setSqftSub('calc')">CALC</button>
+    <button class="sqft-subtab" id="sqft-sub-linft" onclick="setSqftSub('linft')">LIN FT</button>
     <button class="sqft-subtab" id="sqft-sub-draw" onclick="setSqftSub('draw')">DRAW</button>
   </div>
 
   <div id="sqft-calc-panel" class="sqft-panel-inner">
+  <div class="sqft-calc-left">
 
   <div class="calc-display">
     <div class="disp-btn-col">
@@ -1098,24 +1494,36 @@ body {
     </div>
   </div>
 
-  <div class="sqft-inputs">
-    <div class="sqft-dim">
-      <div class="sqft-dim-label">Length</div>
-      <div class="sqft-fields">
-        <span class="sq-dp active-sq" id="sq-lft" onclick="setSqField('lft')">0</span>
-        <span class="sqft-unit">'</span>
-        <span class="sq-dp" id="sq-lin" onclick="setSqField('lin')">0</span>
-        <span class="sqft-unit">"</span>
+  <div class="op-row">
+    <button class="key key-op" onclick="sqPressOp('+')">+</button>
+    <button class="key key-op" onclick="sqPressOp('−')">−</button>
+    <button class="key key-op" onclick="sqPressOp('×')">×</button>
+    <button class="key key-op" onclick="sqPressOp('÷')">÷</button>
+    <button class="key key-eq" onclick="sqPressEquals()">=</button>
+  </div>
+
+  <div class="sq-dims-display">
+    <div class="sq-dim-block">
+      <div class="sq-dim-ft">
+        <span class="sq-dim-val" id="sq-d-lft" onclick="setSqField('lft')">0</span>
+        <span class="sq-dim-unit">ft</span>
+      </div>
+      <div class="sq-dim-bar"></div>
+      <div class="sq-dim-in">
+        <span class="sq-dim-val" id="sq-d-lin" onclick="setSqField('lin')">0</span>
+        <span class="sq-dim-unit">in</span>
       </div>
     </div>
-    <div class="sqft-x">×</div>
-    <div class="sqft-dim">
-      <div class="sqft-dim-label">Width</div>
-      <div class="sqft-fields">
-        <span class="sq-dp" id="sq-wft" onclick="setSqField('wft')">0</span>
-        <span class="sqft-unit">'</span>
-        <span class="sq-dp" id="sq-win" onclick="setSqField('win')">0</span>
-        <span class="sqft-unit">"</span>
+    <span class="sq-times-sep">×</span>
+    <div class="sq-dim-block">
+      <div class="sq-dim-ft">
+        <span class="sq-dim-val" id="sq-d-wft" onclick="setSqField('wft')">0</span>
+        <span class="sq-dim-unit">ft</span>
+      </div>
+      <div class="sq-dim-bar"></div>
+      <div class="sq-dim-in">
+        <span class="sq-dim-val" id="sq-d-win" onclick="setSqField('win')">0</span>
+        <span class="sq-dim-unit">in</span>
       </div>
     </div>
   </div>
@@ -1143,24 +1551,104 @@ body {
       <button class="key" onclick="sqW('8')">8</button>
       <button class="key" onclick="sqW('9')">9</button>
     </div>
-    <div class="sq-row4">
+    <div class="sq-row3">
       <button class="key" onclick="sqW('0')">0</button>
-      <button class="key sq-adv" onclick="sqW('\'')">'</button>
-      <button class="key key-dot" onclick="sqW('.')">.</button>
-      <button class="key key-del" onclick="sqDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+      <button class="key sq-adv" onclick="sqW('\'')">NEXT</button>
+      <button class="key key-del" onclick="sqDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
     </div>
   </div>
 
+  </div><!-- /.sqft-calc-left -->
+  <div class="sqft-history collapsed" id="sqft-history">
+    <div class="sqft-history-toggle" onclick="toggleSqHistory()">▶</div>
+    <div class="sqft-history-header">History</div>
+    <div class="sqft-history-list" id="sqft-history-list"></div>
+    <button class="sqft-history-clear" id="sqft-history-clear-btn" onclick="sqHistoryClear()" style="display:none">Clear</button>
+  </div>
   </div><!-- /#sqft-calc-panel -->
+
+  <div id="sqft-linft-panel" class="sqft-panel-inner" style="display:none">
+  <div class="sqft-calc-left">
+
+  <div class="calc-display">
+    <div class="disp-btn-col">
+      <button class="disp-save-btn" onclick="saveCurrentResult(this)">SAVE</button>
+      <button class="disp-c-btn" onclick="lfClear()">Clear</button>
+    </div>
+    <div class="disp-stack">
+      <div class="disp-top"  id="lf-top"></div>
+      <div class="disp-main" id="lf-main">0 lin ft</div>
+      <div class="disp-sub"  id="lf-sub"></div>
+    </div>
+  </div>
+
+  <div class="op-row">
+    <button class="key key-op" onclick="lfPressOp('+')">+</button>
+    <button class="key key-op" onclick="lfPressOp('−')">−</button>
+    <button class="key key-op" onclick="lfPressOp('×')">×</button>
+    <button class="key key-op" onclick="lfPressOp('÷')">÷</button>
+    <button class="key key-eq" onclick="lfPressEquals()">=</button>
+  </div>
+
+  <div class="sq-dims-display">
+    <div class="sq-dim-block">
+      <div class="sq-dim-ft">
+        <span class="sq-dim-val" id="lf-d-lft" onclick="setLfField('lft')">0</span>
+        <span class="sq-dim-unit">ft</span>
+      </div>
+      <div class="sq-dim-bar"></div>
+      <div class="sq-dim-in">
+        <span class="sq-dim-val" id="lf-d-lin" onclick="setLfField('lin')">0</span>
+        <span class="sq-dim-unit">in</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sq-rate-row">
+    <span class="sq-dollar">$</span>
+    <span class="sq-dp sq-rate-dp" id="lf-rate" onclick="setLfField('rate')">0</span>
+    <span class="sq-rate-unit">/lin ft</span>
+    <span class="sq-rate-hint">(optional)</span>
+  </div>
+
+  <div class="sq-numpad">
+    <div class="sq-row3">
+      <button class="key" onclick="lfW('1')">1</button>
+      <button class="key" onclick="lfW('2')">2</button>
+      <button class="key" onclick="lfW('3')">3</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="lfW('4')">4</button>
+      <button class="key" onclick="lfW('5')">5</button>
+      <button class="key" onclick="lfW('6')">6</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="lfW('7')">7</button>
+      <button class="key" onclick="lfW('8')">8</button>
+      <button class="key" onclick="lfW('9')">9</button>
+    </div>
+    <div class="sq-row3">
+      <button class="key" onclick="lfW('0')">0</button>
+      <button class="key sq-adv" onclick="lfW('\'')">NEXT</button>
+      <button class="key key-del" onclick="lfDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
+    </div>
+  </div>
+
+  </div><!-- /.sqft-calc-left -->
+  <div class="sqft-history collapsed" id="lf-history">
+    <div class="sqft-history-toggle" onclick="toggleLfHistory()">▶</div>
+    <div class="sqft-history-header">History</div>
+    <div class="sqft-history-list" id="lf-history-list"></div>
+    <button class="sqft-history-clear" id="lf-history-clear-btn" onclick="lfHistoryClear()" style="display:none">Clear</button>
+  </div>
+  </div><!-- /#sqft-linft-panel -->
 
   <div id="sqft-draw-panel" style="display:none" class="sqft-draw-wrap">
     <div class="sqft-draw-svg-wrap">
-      <div class="sqft-draw-mobile-toolbar">
-        <button class="sqft-draw-mobile-btn" onclick="sqDrawUndo()">&#8617; Undo</button>
-        <button class="sqft-draw-mobile-btn sqft-draw-mobile-btn-dim" onclick="sqDrawClear()">Clear</button>
-      </div>
       <svg id="sqft-draw-svg" viewBox="0 0 460 460"
-           onclick="sqDrawClick(event)"
+           onclick="sqBgClick(event)"
+           onmousedown="sqSvgMouseDown(event)"
+           onmouseup="sqSvgMouseUp(event)"
            onmousemove="sqDrawMove(event)"
            onmouseleave="sqDrawLeave()"
            ontouchstart="sqDrawTouchStart(event)"
@@ -1168,10 +1656,204 @@ body {
            ontouchend="sqDrawTouchEnd(event)"></svg>
     </div>
     <div class="sqft-draw-sidebar">
-      <div>
+      <!-- Shape mode picker -->
+      <div class="sqft-shape-bar">
+        <button class="sqft-shape-btn active-shape" id="sqft-shapebtn-free" onclick="sqDrawSetShape('free')">Free</button>
+        <button class="sqft-shape-btn" id="sqft-shapebtn-sq" onclick="sqDrawSetShape('sq')">Sq</button>
+        <button class="sqft-shape-btn" id="sqft-shapebtn-rect" onclick="sqDrawSetShape('rect')">Rect</button>
+        <button class="sqft-shape-btn" id="sqft-shapebtn-tri" onclick="sqDrawSetShape('tri')">Tri</button>
+        <button class="sqft-shape-btn" id="sqft-shapebtn-circle" onclick="sqDrawSetShape('circle')">Circle</button>
+      </div>
+
+      <!-- Inspector: shown when an object is selected -->
+      <div id="sqft-inspector" class="sqft-inspector" style="display:none">
+        <div class="sqft-insp-header">
+          <span class="sqft-insp-type" id="sqft-insp-label">Shape</span>
+          <button class="sqft-insp-close" onclick="sqDeselectObj()" title="Deselect">✕</button>
+        </div>
+        <div class="sqft-sign-toggle">
+          <button class="sqft-sign-btn sqft-sign-btn-add" id="sqft-insp-sign-add" onclick="sqSelSetSign('+')">+ Add</button>
+          <button class="sqft-sign-btn sqft-sign-btn-sub" id="sqft-insp-sign-sub" onclick="sqSelSetSign('-')">− Sub</button>
+        </div>
+        <div class="sqft-draw-result-label">Area</div>
+        <div class="sqft-insp-area" id="sqft-insp-area">—</div>
+        <!-- Seg list for free shapes -->
+        <div id="sqft-insp-segs" class="sqft-insp-segs" style="display:none"></div>
+        <!-- Dimension form for selected preset -->
+        <div id="sqft-insp-form" style="display:none">
+          <div id="sqft-insp-form-sq" class="sqft-shape-form" style="display:none">
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Side</span>
+              <input type="number" id="sqft-insp-sq-sft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-sq-sin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+          </div>
+          <div id="sqft-insp-form-rect" class="sqft-shape-form" style="display:none">
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Length</span>
+              <input type="number" id="sqft-insp-rect-lft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-rect-lin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Width</span>
+              <input type="number" id="sqft-insp-rect-wft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-rect-win" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+          </div>
+          <div id="sqft-insp-form-tri" class="sqft-shape-form" style="display:none">
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Side A</span>
+              <input type="number" id="sqft-insp-tri-aft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-tri-ain" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Side B</span>
+              <input type="number" id="sqft-insp-tri-bft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-tri-bin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+            <div class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Side C</span>
+              <input type="number" id="sqft-insp-tri-cft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-tri-cin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+          </div>
+          <div id="sqft-insp-form-circle" class="sqft-shape-form" style="display:none">
+            <div class="sqft-circle-toggle">
+              <button class="sqft-circle-mode-btn" id="sqft-insp-circle-btn-radius" onclick="sqInspSetCircleMode('radius')">Radius</button>
+              <button class="sqft-circle-mode-btn" id="sqft-insp-circle-btn-circum" onclick="sqInspSetCircleMode('circum')">Circumference</button>
+            </div>
+            <div id="sqft-insp-circle-radius-row" class="sqft-shape-seg-row">
+              <span class="sqft-shape-seg-label">Radius</span>
+              <input type="number" id="sqft-insp-circle-rft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-circle-rin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+            <div id="sqft-insp-circle-circum-row" class="sqft-shape-seg-row" style="display:none">
+              <span class="sqft-shape-seg-label">Circum.</span>
+              <input type="number" id="sqft-insp-circle-cft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">'</span>
+              <input type="number" id="sqft-insp-circle-cin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqInspFormCalc()">
+              <span class="sqft-shape-seg-unit">"</span>
+            </div>
+          </div>
+        </div>
+        <button class="sqft-del-btn" onclick="sqDeleteSelected()">Delete Shape</button>
+      </div>
+
+      <!-- Freehand drawing controls (visible when Free mode + nothing selected) -->
+      <div id="sqft-freehand-section" style="display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:hidden">
+        <div class="sqft-draw-segs" id="sqft-draw-segs">
+          <div class="sqft-draw-hint">Click grid to draw · Close shape to add</div>
+        </div>
+        <div class="sqft-draw-mobile-toolbar" style="flex-shrink:0">
+          <button class="sqft-draw-mobile-btn" onclick="sqDrawUndo()">&#8617; Undo</button>
+          <button class="sqft-draw-mobile-btn sqft-draw-mobile-btn-dim" onclick="sqDrawClear()">Clear</button>
+        </div>
+      </div>
+
+      <!-- Preset shape form (visible when Sq/Rect/Tri/Circle mode + nothing selected) -->
+      <div id="sqft-shape-section" class="sqft-shape-section" style="display:none">
         <div class="sqft-draw-result-label">Area</div>
         <div class="sqft-draw-result-val" id="sqft-draw-area">—</div>
+        <!-- Square -->
+        <div id="sqft-shapeform-sq" class="sqft-shape-form" style="display:none">
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Side</span>
+            <input type="number" id="sqft-sq-sft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-sq-sin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+        </div>
+        <!-- Rectangle -->
+        <div id="sqft-shapeform-rect" class="sqft-shape-form" style="display:none">
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Length</span>
+            <input type="number" id="sqft-rect-lft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-rect-lin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Width</span>
+            <input type="number" id="sqft-rect-wft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-rect-win" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+        </div>
+        <!-- Triangle -->
+        <div id="sqft-shapeform-tri" class="sqft-shape-form" style="display:none">
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Side A</span>
+            <input type="number" id="sqft-tri-aft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-tri-ain" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Side B</span>
+            <input type="number" id="sqft-tri-bft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-tri-bin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+          <div class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Side C</span>
+            <input type="number" id="sqft-tri-cft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-tri-cin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+        </div>
+        <!-- Circle -->
+        <div id="sqft-shapeform-circle" class="sqft-shape-form" style="display:none">
+          <div class="sqft-circle-toggle">
+            <button class="sqft-circle-mode-btn active-circle-mode" id="sqft-circle-btn-radius" onclick="sqSetCircleMode('radius')">Radius</button>
+            <button class="sqft-circle-mode-btn" id="sqft-circle-btn-circum" onclick="sqSetCircleMode('circum')">Circumference</button>
+          </div>
+          <div id="sqft-circle-radius-row" class="sqft-shape-seg-row">
+            <span class="sqft-shape-seg-label">Radius</span>
+            <input type="number" id="sqft-circle-rft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-circle-rin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+          <div id="sqft-circle-circum-row" class="sqft-shape-seg-row" style="display:none">
+            <span class="sqft-shape-seg-label">Circum.</span>
+            <input type="number" id="sqft-circle-cft" class="sqft-shape-seg-inp" min="0" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">'</span>
+            <input type="number" id="sqft-circle-cin" class="sqft-shape-seg-inp" min="0" max="11" placeholder="0" oninput="sqShapeCalc()">
+            <span class="sqft-shape-seg-unit">"</span>
+          </div>
+        </div>
+        <button class="sqft-place-btn" onclick="sqAddPresetToCanvas()">Add to Canvas</button>
+        <div class="sqft-draw-mobile-toolbar">
+          <button class="sqft-draw-mobile-btn sqft-draw-mobile-btn-dim" onclick="sqShapeClear()">Clear</button>
+        </div>
       </div>
+
+      <!-- Net total (shown when 2+ objects or sign mix) -->
+      <div id="sqft-net-wrap" class="sqft-net-row" style="display:none">
+        <div class="sqft-net-label">Net Total · <span id="sqft-obj-count"></span></div>
+        <div class="sqft-net-val" id="sqft-net-area">—</div>
+        <button class="sqft-regions-clear-btn" onclick="sqClearAllObjects()" style="margin-top:2px">Clear all shapes</button>
+      </div>
+
+      <!-- Price and cost -->
       <div>
         <div class="sqft-draw-result-label">$/sq ft</div>
         <input id="sqft-draw-price" class="sqft-draw-price-inp" type="number" min="0" step="0.01" placeholder="0.00" oninput="sqDrawUpdateCost()">
@@ -1180,14 +1862,8 @@ body {
         <div class="sqft-draw-result-label">Total Cost</div>
         <div class="sqft-draw-result-val sqft-draw-cost-val" id="sqft-draw-cost">—</div>
       </div>
-      <div class="sqft-draw-segs" id="sqft-draw-segs">
-        <div class="sqft-draw-hint">Click grid to start drawing</div>
-      </div>
-      <div class="sqft-draw-btns">
-        <button class="sqft-draw-btn" onclick="sqDrawUndo()">Undo</button>
-        <button class="sqft-draw-btn" onclick="sqDrawClear()">Clear</button>
-      </div>
       <button class="sqft-draw-save-btn" onclick="sqDrawSave(this)">Save</button>
+      <div class="sqft-draw-zoom-hint" id="sqft-zoom-hint">Scroll to zoom · Drag objects to move</div>
     </div>
   </div><!-- /#sqft-draw-panel -->
 
@@ -1197,6 +1873,7 @@ body {
      LAYOUT TAB
 ════════════════════════════════ -->
 <div id="tab-layout" class="panel">
+<div class="lay-left">
 
   <div class="calc-display">
     <div class="disp-btn-col">
@@ -1224,38 +1901,40 @@ body {
     <!-- Span row (shared by both modes) -->
     <div class="lay-row">
       <span class="lay-label">SPAN/LENGTH</span>
-      <span class="lay-dp active-lay" id="lay-sft" onclick="setLayField('sft')">0</span>
-      <span class="lay-unit">'</span>
-      <span class="lay-dp" id="lay-sin" onclick="setLayField('sin')">0</span>
-      <span class="lay-unit-sm">"</span>
-      <span class="lay-dp lay-dp-sm" id="lay-snu" onclick="setLayField('snu')">0</span>
-      <span class="lay-fracbar">/</span>
-      <span class="lay-dp lay-dp-sm" id="lay-sde" onclick="setLayField('sde')">0</span>
-      <span class="lay-unit-sm">"</span>
+      <span class="lay-fields-center">
+        <span class="lay-dp active-lay" id="lay-sft" onclick="setLayField('sft')">0</span>
+        <span class="lay-unit">'</span>
+        <span class="lay-dp" id="lay-sin" onclick="setLayField('sin')">0</span>
+        <span class="lay-unit-sm">"</span>
+        <span class="lay-dp lay-dp-sm" id="lay-snu" onclick="setLayField('snu')">0</span>
+        <span class="lay-fracbar">/</span>
+        <span class="lay-dp lay-dp-sm" id="lay-sde" onclick="setLayField('sde')">0</span>
+        <span class="lay-unit-sm">"</span>
+      </span>
     </div>
 
-    <!-- Divide mode: sub-toggle + inputs -->
+    <div id="lay-divide-hint" class="lay-divide-hint">Divide by number of sections or section width</div>
+
+    <!-- Divide mode: both inputs always visible -->
     <div id="lay-divide-row">
-      <div class="lay-divmode-toggle">
-        <button class="lay-divmode-btn active-divmode" id="lay-dm-count" onclick="setLayDivMode('count')">BY #</button>
-        <button class="lay-divmode-btn" id="lay-dm-size" onclick="setLayDivMode('size')">BY SIZE</button>
+      <div class="lay-row">
+        <span class="lay-label lay-label-lg">NUMBER OF SECTIONS</span>
+        <span class="lay-fields-center">
+          <span class="lay-dp lay-dp-wide" id="lay-nparts" onclick="setLayField('nparts')">0</span>
+        </span>
       </div>
-      <!-- by count -->
-      <div class="lay-row" id="lay-count-row">
-        <span class="lay-label">SECTIONS</span>
-        <span class="lay-dp lay-dp-wide" id="lay-nparts" onclick="setLayField('nparts')">0</span>
-      </div>
-      <!-- by size -->
-      <div class="lay-row" id="lay-size-row" style="display:none">
-        <span class="lay-label">SECTIONS</span>
-        <span class="lay-dp" id="lay-secft" onclick="setLayField('secft')">0</span>
-        <span class="lay-unit">'</span>
-        <span class="lay-dp" id="lay-secin" onclick="setLayField('secin')">0</span>
-        <span class="lay-unit-sm">"</span>
-        <span class="lay-dp lay-dp-sm" id="lay-secnu" onclick="setLayField('secnu')">0</span>
-        <span class="lay-fracbar">/</span>
-        <span class="lay-dp lay-dp-sm" id="lay-secde" onclick="setLayField('secde')">0</span>
-        <span class="lay-unit-sm">"</span>
+      <div class="lay-row">
+        <span class="lay-label lay-label-lg">SECTION WIDTH</span>
+        <span class="lay-fields-center">
+          <span class="lay-dp" id="lay-secft" onclick="setLayField('secft')">0</span>
+          <span class="lay-unit">'</span>
+          <span class="lay-dp" id="lay-secin" onclick="setLayField('secin')">0</span>
+          <span class="lay-unit-sm">"</span>
+          <span class="lay-dp lay-dp-sm" id="lay-secnu" onclick="setLayField('secnu')">0</span>
+          <span class="lay-fracbar">/</span>
+          <span class="lay-dp lay-dp-sm" id="lay-secde" onclick="setLayField('secde')">0</span>
+          <span class="lay-unit-sm">"</span>
+        </span>
       </div>
     </div>
 
@@ -1285,7 +1964,7 @@ body {
       </div>
       <div class="lay-row" style="margin-bottom:5px">
         <span class="lay-label">PRICE</span>
-        <span class="lay-unit-sm" style="color:#a080e8">$</span>
+        <span class="lay-unit-sm">$</span>
         <span class="lay-dp lay-dp-wide" id="lay-price" onclick="setLayField('price')">0</span>
         <span class="lay-unit-sm">/board</span>
       </div>
@@ -1313,13 +1992,19 @@ body {
       <button class="key" onclick="layW('2')">2</button>
       <button class="key" onclick="layW('3')">3</button>
     </div>
-    <div class="sq-row4">
+    <div class="sq-row3">
       <button class="key" onclick="layW('0')">0</button>
-      <button class="key lay-adv" onclick="layAdv()">'</button>
-      <button class="key key-dot" onclick="layW('.')">.</button>
-      <button class="key key-del" onclick="layDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/></svg></button>
+      <button class="key lay-adv" onclick="layAdv()">NEXT</button>
+      <button class="key key-del" onclick="layDel()"><svg viewBox="0 0 24 17" width="22" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M1 8.5 L6.5 1 L22.5 1 Q24 1 24 2.5 L24 14.5 Q24 16 22.5 16 L6.5 16 Z"/><line x1="12" y1="5.5" x2="20" y2="11.5"/><line x1="20" y1="5.5" x2="12" y2="11.5"/></svg></button>
     </div>
   </div>
+</div><!-- /.lay-left -->
+<div class="lay-history collapsed" id="lay-history">
+  <div class="lay-history-toggle" onclick="toggleLayHistory()">▶</div>
+  <div class="lay-history-header">History</div>
+  <div class="lay-history-list" id="lay-history-list"></div>
+  <button class="lay-history-clear" id="lay-history-clear-btn" onclick="layHistoryClear()" style="display:none">Clear</button>
+</div>
 </div>
 
 <!-- ════════════════════════════════
@@ -1328,6 +2013,7 @@ body {
 <div class="panel" id="tab-saves">
   <div class="saves-header">
     <span class="saves-title">SAVED RESULTS</span>
+    <button class="saves-export-btn" onclick="openExport()">EXPORT</button>
     <button class="saves-clear-btn" id="saves-clear-btn" onclick="clearAllSaves()">CLEAR ALL</button>
   </div>
   <div class="saves-body">
@@ -1335,9 +2021,12 @@ body {
     <div class="saves-right">
       <div class="saves-list" id="saves-list"></div>
       <div class="saves-footer hidden" id="saves-footer">
-        <button class="mat-add-btn" onclick="openMatAdd()">+ MATERIAL</button>
+        <div class="saves-footer-btns">
+          <button class="mat-add-btn" onclick="openMatAdd()">+ MATERIAL</button>
+          <button class="mat-add-btn" onclick="openLaborAdd()">+ LABOR</button>
+        </div>
         <div class="saves-footer-right">
-          <span class="saves-footer-label">MATERIALS TOTAL</span>
+          <span class="saves-footer-label">JOB TOTAL</span>
           <span class="saves-footer-total" id="saves-footer-total"></span>
         </div>
       </div>
@@ -1362,13 +2051,46 @@ body {
     <span class="save-edit-field-label">COST PER UNIT ($)</span>
     <input class="save-edit-input" id="mat-cost" type="text" inputmode="decimal" placeholder="0.00" oninput="matPreview()">
   </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">TAX (%)</span>
+    <input class="save-edit-input" id="mat-tax" type="text" inputmode="decimal" placeholder="0" oninput="matPreview()">
+  </div>
   <div class="mat-total-preview" id="mat-total-preview"></div>
   <button class="save-edit-confirm" onclick="commitMatAdd()">ADD TO PROJECT</button>
+</div>
+<div class="save-edit-sheet hidden" id="labor-add-sheet">
+  <div class="save-edit-header">
+    <span class="save-edit-title">ADD LABOR</span>
+    <button class="save-edit-cancel" onclick="closeLaborAdd()">CANCEL</button>
+  </div>
+  <div class="labor-mode-row">
+    <button class="labor-mode-btn active" id="labor-mode-hourly" onclick="setLaborMode('hourly')">HOURLY</button>
+    <button class="labor-mode-btn" id="labor-mode-sqft" onclick="setLaborMode('sqft')">SQ FT</button>
+    <button class="labor-mode-btn" id="labor-mode-linft" onclick="setLaborMode('linft')">LIN FT</button>
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">DESCRIPTION</span>
+    <input class="save-edit-input" id="labor-desc" type="text" placeholder="e.g. Demo, Install, Cleanup">
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label" id="labor-qty-label">HOURS</span>
+    <input class="save-edit-input" id="labor-hours" type="text" inputmode="decimal" placeholder="0" oninput="laborPreview()">
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label" id="labor-rate-label">RATE ($/HR)</span>
+    <input class="save-edit-input" id="labor-rate" type="text" inputmode="decimal" placeholder="0.00" oninput="laborPreview()">
+  </div>
+  <div class="mat-total-preview" id="labor-total-preview"></div>
+  <button class="save-edit-confirm" onclick="commitLaborAdd()">ADD TO PROJECT</button>
 </div>
 <div class="save-edit-sheet hidden" id="save-edit-sheet">
   <div class="save-edit-header">
     <span class="save-edit-title">EDIT SAVE</span>
     <button class="save-edit-cancel" onclick="closeSaveEdit()">CANCEL</button>
+  </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">ITEM</span>
+    <input class="save-edit-input" id="save-edit-item" type="text" placeholder="e.g. Gutter, Fascia, Ridge cap">
   </div>
   <div class="save-edit-field">
     <span class="save-edit-field-label">LABEL</span>
@@ -1382,8 +2104,41 @@ body {
     <span class="save-edit-field-label">NOTES</span>
     <input class="save-edit-input" id="save-edit-sub" type="text" placeholder="Optional notes">
   </div>
+  <div class="save-edit-field">
+    <span class="save-edit-field-label">PROJECT</span>
+    <select class="save-edit-input save-edit-select" id="save-edit-project"></select>
+  </div>
   <button class="save-edit-confirm" onclick="commitSaveEdit()">SAVE CHANGES</button>
 </div>
+
+<!-- Export sheet -->
+<div class="export-sheet hidden" id="export-sheet">
+  <div class="export-sheet-title">EXPORT DOCUMENT</div>
+  <div class="export-sheet-sub" id="export-sheet-sub"></div>
+  <div class="export-type-row">
+    <button class="export-type-btn active" onclick="setExportDocType('ESTIMATE',this)">ESTIMATE</button>
+    <button class="export-type-btn" onclick="setExportDocType('RECEIPT',this)">RECEIPT</button>
+    <button class="export-type-btn" onclick="setExportDocType('INVOICE',this)">INVOICE</button>
+  </div>
+  <input class="export-field" id="export-job-name" type="text" placeholder="Job name (optional)">
+  <input class="export-field" id="export-customer" type="text" placeholder="Customer name (optional)">
+  <div class="export-section-label">FORMAT</div>
+  <div class="export-btn-row">
+    <button class="export-format-btn" onclick="exportPDF()">
+      <span class="export-format-icon">🖨️</span>PDF
+    </button>
+    <button class="export-format-btn" onclick="exportCSV()">
+      <span class="export-format-icon">📊</span>CSV
+    </button>
+    <button class="export-format-btn" onclick="exportJSON()">
+      <span class="export-format-icon">📋</span>JSON
+    </button>
+  </div>
+  <button class="export-cancel-btn" onclick="closeExport()">CANCEL</button>
+</div>
+
+<!-- Print-only view -->
+<div id="print-view"></div>
 
 <script>
 // ─── Shared utilities ─────────────────────────────────────────────────────────
@@ -1392,6 +2147,7 @@ function showTab(name, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
+  if (name !== 'sqft') document.body.classList.remove('draw-active');
   if (name === 'saves') { renderProjectPills(); renderSavesList(); }
 }
 
@@ -1700,7 +2456,7 @@ const CT = {
   ftField: 'ft',
   num: '', den: '',
   feet: '', ftIn: '',
-  storedVal: 0, storedStr: "0' 0\"", op: '',
+  storedVal: 0, storedStr: "0' 0\"", storedExpr: '', op: '',
 };
 
 
@@ -1732,12 +2488,12 @@ function cRender() {
   document.getElementById('dp-num').textContent  = CT.num||'0';
   document.getElementById('dp-den').textContent  = CT.den||'0';
   if (CT.phase==='A' || CT.phase==='B') {
-    top.textContent  = CT.phase==='B' ? CT.storedStr+' '+CT.op : '';
+    top.textContent  = CT.phase==='B' ? CT.storedExpr+' '+CT.op : '';
     main.textContent = cInputStr();
     const v = cVal();
     sub.textContent  = v > 0 ? fmtInchesOnly(v) : '';
   } else if (CT.phase==='OP') {
-    top.textContent  = CT.storedStr+' '+CT.op;
+    top.textContent  = CT.storedExpr+' '+CT.op;
     main.textContent = CT.storedStr;
     sub.textContent  = '';
   }
@@ -1787,9 +2543,22 @@ function cNdel() { CT.num=CT.num.slice(0,-1); cRender(); }
 function cDdel() { CT.den=CT.den.slice(0,-1); cRender(); }
 
 function cOp(btn) {
-  if(CT.phase==='B') cEq(true);
-  CT.storedVal=cVal(); CT.storedStr=cInputStr(); CT.op=btn.dataset.op;
-  CT.phase='OP'; cResetInput(); cRender();
+  if (CT.phase === 'B') {
+    cEq(true);
+    // storedVal/storedStr/storedExpr already updated by cEq — don't overwrite
+  } else if (CT.phase === 'R') {
+    // continuing from a previous result — storedVal/storedStr already correct
+    CT.storedExpr = CT.storedStr;
+  } else {
+    // phase A or OP — capture current input
+    CT.storedVal = cVal();
+    CT.storedStr = cInputStr();
+    CT.storedExpr = cInputStr();
+  }
+  CT.op = btn.dataset.op;
+  CT.phase = 'OP';
+  cResetInput();
+  cRender();
 }
 
 let cRound16Direction = 'nearest';
@@ -1816,7 +2585,7 @@ function cEq(chain=false) {
     document.getElementById('c-top').textContent  = expr;
     document.getElementById('c-main').textContent = mainStr;
     document.getElementById('c-sub').textContent  = subStr;
-    CT.phase='R'; CT.storedVal=v; CT.storedStr=mainStr; cResetInput();
+    CT.phase='R'; CT.storedVal=v; CT.storedStr=mainStr; CT.storedExpr=mainStr; cResetInput();
     cHistoryPush(expr, mainStr);
     return;
   }
@@ -1836,13 +2605,16 @@ function cEq(chain=false) {
   res = cApplyRound16(res);
   const mainStr = fmtInches(res);
   const subStr  = fmtInchesOnly(res);
+  const fullExpr = `${CT.storedExpr} ${CT.op} ${bStr}`;
   if(!chain) {
-    const expr = `${CT.storedStr} ${CT.op} ${bStr} =`;
+    const expr = fullExpr + ' =';
     document.getElementById('c-top').textContent  = expr;
     document.getElementById('c-main').textContent = mainStr;
     document.getElementById('c-sub').textContent  = subStr;
     CT.phase='R';
     cHistoryPush(expr, mainStr);
+  } else {
+    CT.storedExpr = fullExpr;
   }
   CT.storedVal=res; CT.storedStr=mainStr; cResetInput();
 }
@@ -1854,7 +2626,7 @@ function cFtAdvance() {
 
 function cClear() {
   CT.phase='A'; CT.op=''; CT.storedVal=0;
-  CT.storedStr = "0' 0\"";
+  CT.storedStr = "0' 0\""; CT.storedExpr = '';
   cResetInput();
   document.getElementById('c-top').textContent  = '';
   document.getElementById('c-main').textContent = CT.storedStr;
@@ -1914,37 +2686,91 @@ function cSign() {
 }
 
 // ─── SQ FT TAB ────────────────────────────────────────────────────────────────
-const SQ = { field: 'lft', lft: '', lin: '', wft: '', win: '', rate: '' };
+let sqCurrent = { lft: '', lin: '', wft: '', win: '' };
+let sqRate = '';
+let sqActiveField = 'lft'; // 'lft'|'lin'|'wft'|'win'|'rate'
+let sqAccum = 0;
+let sqPendingOp = '';
+let sqFresh = true;
+let sqExprStr = '';
 
-function setSqField(f) {
-  SQ.field = f;
-  ['lft','lin','wft','win','rate'].forEach(id =>
-    document.getElementById('sq-'+id).classList.toggle('active-sq', id===f)
-  );
+function setSqField(field) {
+  sqActiveField = field;
+  sqRenderRow();
 }
 
-function sqCalc() {
-  const lenIn = (parseInt(SQ.lft||'0') * 12) + parseInt(SQ.lin||'0');
-  const widIn = (parseInt(SQ.wft||'0') * 12) + parseInt(SQ.win||'0');
+function sqCalcCurrent() {
+  const lenIn = (parseInt(sqCurrent.lft || '0') * 12) + parseInt(sqCurrent.lin || '0');
+  const widIn = (parseInt(sqCurrent.wft || '0') * 12) + parseInt(sqCurrent.win || '0');
   return (lenIn * widIn) / 144;
 }
 
+function sqApplyOp(a, op, b) {
+  if (op === '+') return a + b;
+  if (op === '−') return a - b;
+  if (op === '×') return a * b;
+  if (op === '÷') return b === 0 ? 0 : a / b;
+  return b;
+}
+
+function sqPressOp(op) {
+  const cur = sqCalcCurrent();
+  if (!sqFresh) {
+    sqAccum = sqPendingOp ? sqApplyOp(sqAccum, sqPendingOp, cur) : cur;
+  }
+  sqPendingOp = op;
+  sqExprStr = sqAccum.toFixed(1) + ' ' + op;
+  sqCurrent = { lft: '', lin: '', wft: '', win: '' };
+  sqActiveField = 'lft';
+  sqFresh = true;
+  sqRender();
+}
+
+function sqPressEquals() {
+  if (sqFresh && !sqPendingOp) return;
+  const cur = sqCalcCurrent();
+  const result = sqPendingOp
+    ? (sqFresh ? sqAccum : sqApplyOp(sqAccum, sqPendingOp, cur))
+    : cur;
+  const rate = parseFloat(sqRate || '0');
+  const histExpr = (sqPendingOp && !sqFresh)
+    ? `${sqAccum.toFixed(1)} ${sqPendingOp} ${cur.toFixed(1)}`
+    : result.toFixed(1);
+  const histResult = result.toFixed(2) + ' sq ft' + (rate > 0 ? ' · $' + (result * rate).toFixed(2) : '');
+  sqHistoryPush(histExpr, histResult, { result, rate: sqRate });
+  sqAccum = result;
+  sqPendingOp = '';
+  sqExprStr = '';
+  sqFresh = true;
+  sqCurrent = { lft: '', lin: '', wft: '', win: '' };
+  sqActiveField = 'lft';
+  sqRender();
+}
+
+function sqRenderRow() {
+  ['lft', 'lin', 'wft', 'win'].forEach(f => {
+    const el = document.getElementById('sq-d-' + f);
+    if (!el) return;
+    el.textContent = sqCurrent[f] || '0';
+    el.classList.toggle('active-sq', sqActiveField === f);
+  });
+  const rateEl = document.getElementById('sq-rate');
+  if (rateEl) {
+    rateEl.textContent = sqRate || '0';
+    rateEl.classList.toggle('active-sq', sqActiveField === 'rate');
+  }
+}
+
 function sqRender() {
-  document.getElementById('sq-lft').textContent  = SQ.lft  || '0';
-  document.getElementById('sq-lin').textContent  = SQ.lin  || '0';
-  document.getElementById('sq-wft').textContent  = SQ.wft  || '0';
-  document.getElementById('sq-win').textContent  = SQ.win  || '0';
-  document.getElementById('sq-rate').textContent = SQ.rate || '0';
-  const sqft = sqCalc();
-  const lenStr = `${SQ.lft||'0'}' ${SQ.lin||'0'}"`;
-  const widStr = `${SQ.wft||'0'}' ${SQ.win||'0'}"`;
-  document.getElementById('sq-top').textContent  = sqft > 0 ? `${lenStr} × ${widStr}` : '';
-  document.getElementById('sq-main').textContent = sqft > 0 ? sqft.toFixed(2) + ' sq ft' : '0 sq ft';
-  const rate = parseFloat(SQ.rate || '0');
-  if (sqft > 0 && rate > 0) {
-    const cost = sqft * rate;
+  sqRenderRow();
+  const cur = sqCalcCurrent();
+  const rate = parseFloat(sqRate || '0');
+  document.getElementById('sq-top').textContent = sqExprStr;
+  const mainVal = sqFresh ? sqAccum : cur;
+  document.getElementById('sq-main').textContent = mainVal.toFixed(2) + ' sq ft';
+  if (sqFresh && !sqPendingOp && sqAccum > 0 && rate > 0) {
     const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    document.getElementById('sq-sub').textContent = fmt(cost);
+    document.getElementById('sq-sub').textContent = fmt(sqAccum * rate);
   } else {
     document.getElementById('sq-sub').textContent = '';
   }
@@ -1952,40 +2778,279 @@ function sqRender() {
 
 function sqW(d) {
   if (d === "'") {
-    const next = { lft:'lin', lin:'wft', wft:'win', win:'rate', rate:'rate' };
-    setSqField(next[SQ.field]);
-    return;
-  }
-  if (d === '.') {
-    if (SQ.field !== 'rate') return;
-    if (SQ.rate.includes('.')) return;
-    SQ.rate += '.';
+    const cycle = { lft: 'lin', lin: 'wft', wft: 'win', win: 'lft' };
+    sqActiveField = cycle[sqActiveField] || 'lft';
     sqRender();
     return;
   }
-  const maxLen = SQ.field === 'rate' ? 10 : (SQ.field==='lin' || SQ.field==='win') ? 2 : 4;
-  if (SQ[SQ.field].length >= maxLen) return;
-  SQ[SQ.field] += d;
+  if (d === '.') {
+    if (sqActiveField === 'rate' && !sqRate.includes('.')) { sqRate += '.'; sqRender(); }
+    return;
+  }
+  if (sqActiveField === 'rate') {
+    sqRate += d;
+  } else {
+    sqFresh = false;
+    sqCurrent[sqActiveField] += d;
+  }
   sqRender();
 }
 
 function sqDel() {
-  SQ[SQ.field] = SQ[SQ.field].slice(0,-1);
+  if (sqActiveField === 'rate') {
+    sqRate = sqRate.slice(0, -1);
+  } else {
+    sqCurrent[sqActiveField] = (sqCurrent[sqActiveField] || '').slice(0, -1);
+  }
   sqRender();
 }
 
 function sqClear() {
-  SQ.lft=''; SQ.lin=''; SQ.wft=''; SQ.win=''; SQ.rate='';
-  setSqField('lft');
+  sqCurrent = { lft: '', lin: '', wft: '', win: '' };
+  sqRate = '';
+  sqActiveField = 'lft';
+  sqAccum = 0;
+  sqPendingOp = '';
+  sqFresh = true;
+  sqExprStr = '';
   sqRender();
 }
 
+// ─── LINEAR FT TAB ────────────────────────────────────────────────────────────
+let lfCurrent = { lft: '', lin: '' };
+let lfRate = '';
+let lfActiveField = 'lft';
+let lfAccum = 0;
+let lfPendingOp = '';
+let lfFresh = true;
+let lfExprStr = '';
+
+function setLfField(field) {
+  lfActiveField = field;
+  lfRenderDim();
+}
+
+function lfCalcCurrent() {
+  return parseInt(lfCurrent.lft || '0') + parseInt(lfCurrent.lin || '0') / 12;
+}
+
+function lfApplyOp(a, op, b) {
+  if (op === '+') return a + b;
+  if (op === '−') return a - b;
+  if (op === '×') return a * b;
+  if (op === '÷') return b === 0 ? 0 : a / b;
+  return b;
+}
+
+function lfPressOp(op) {
+  const cur = lfCalcCurrent();
+  if (!lfFresh) {
+    lfAccum = lfPendingOp ? lfApplyOp(lfAccum, lfPendingOp, cur) : cur;
+  }
+  lfPendingOp = op;
+  lfExprStr = lfAccum.toFixed(1) + ' ' + op;
+  lfCurrent = { lft: '', lin: '' };
+  lfActiveField = 'lft';
+  lfFresh = true;
+  lfRender();
+}
+
+function lfPressEquals() {
+  if (lfFresh && !lfPendingOp) return;
+  const cur = lfCalcCurrent();
+  const result = lfPendingOp
+    ? (lfFresh ? lfAccum : lfApplyOp(lfAccum, lfPendingOp, cur))
+    : cur;
+  const rate = parseFloat(lfRate || '0');
+  const histExpr = (lfPendingOp && !lfFresh)
+    ? `${lfAccum.toFixed(1)} ${lfPendingOp} ${cur.toFixed(1)}`
+    : result.toFixed(1);
+  const histResult = result.toFixed(2) + ' lin ft' + (rate > 0 ? ' · $' + (result * rate).toFixed(2) : '');
+  lfHistoryPush(histExpr, histResult, { result, rate: lfRate });
+  lfAccum = result;
+  lfPendingOp = '';
+  lfExprStr = '';
+  lfFresh = true;
+  lfCurrent = { lft: '', lin: '' };
+  lfActiveField = 'lft';
+  lfRender();
+}
+
+function lfRenderDim() {
+  ['lft', 'lin'].forEach(f => {
+    const el = document.getElementById('lf-d-' + f);
+    if (!el) return;
+    el.textContent = lfCurrent[f] || '0';
+    el.classList.toggle('active-sq', lfActiveField === f);
+  });
+  const rateEl = document.getElementById('lf-rate');
+  if (rateEl) {
+    rateEl.textContent = lfRate || '0';
+    rateEl.classList.toggle('active-sq', lfActiveField === 'rate');
+  }
+}
+
+function lfRender() {
+  lfRenderDim();
+  const cur = lfCalcCurrent();
+  const rate = parseFloat(lfRate || '0');
+  document.getElementById('lf-top').textContent = lfExprStr;
+  const mainVal = lfFresh ? lfAccum : cur;
+  document.getElementById('lf-main').textContent = mainVal.toFixed(2) + ' lin ft';
+  if (lfFresh && !lfPendingOp && lfAccum > 0 && rate > 0) {
+    const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    document.getElementById('lf-sub').textContent = fmt(lfAccum * rate);
+  } else {
+    document.getElementById('lf-sub').textContent = '';
+  }
+}
+
+function lfW(d) {
+  if (d === "'") {
+    const cycle = { lft: 'lin', lin: 'rate', rate: 'lft' };
+    lfActiveField = cycle[lfActiveField] || 'lft';
+    lfRender();
+    return;
+  }
+  if (d === '.') {
+    if (lfActiveField === 'rate' && !lfRate.includes('.')) { lfRate += '.'; lfRender(); }
+    return;
+  }
+  if (lfActiveField === 'rate') {
+    lfRate += d;
+  } else {
+    lfFresh = false;
+    lfCurrent[lfActiveField] += d;
+  }
+  lfRender();
+}
+
+function lfDel() {
+  if (lfActiveField === 'rate') {
+    lfRate = lfRate.slice(0, -1);
+  } else {
+    lfCurrent[lfActiveField] = (lfCurrent[lfActiveField] || '').slice(0, -1);
+  }
+  lfRender();
+}
+
+function lfClear() {
+  lfCurrent = { lft: '', lin: '' };
+  lfRate = '';
+  lfActiveField = 'lft';
+  lfAccum = 0;
+  lfPendingOp = '';
+  lfFresh = true;
+  lfExprStr = '';
+  lfRender();
+}
+
+// ─── LF HISTORY ───────────────────────────────────────────────────────────────
+const lfHistory = [];
+let lfHistoryCollapsed = true;
+
+function lfHistoryPush(expr, result, state) {
+  lfHistory.push({ expr, result, _state: state });
+  lfHistoryRender();
+  document.getElementById('lf-history-clear-btn').style.display = lfHistoryCollapsed ? 'none' : '';
+}
+function lfHistoryRender() {
+  const list = document.getElementById('lf-history-list');
+  if (!list) return;
+  list.innerHTML = lfHistory.map((h, i) =>
+    (i > 0 ? '<div class="sqft-history-sep"></div>' : '') +
+    `<div class="sqft-history-row" onclick="lfHistoryRecall(${i})">
+       <div class="sqft-history-expr">${escHtml(h.expr)}</div>
+       <div class="sqft-history-result">${escHtml(h.result)}</div>
+     </div>`
+  ).join('');
+  list.scrollTop = list.scrollHeight;
+}
+function lfHistoryClear() {
+  lfHistory.length = 0;
+  lfHistoryRender();
+  document.getElementById('lf-history-clear-btn').style.display = 'none';
+}
+function lfHistoryRecall(i) {
+  const h = lfHistory[i];
+  if (!h) return;
+  lfCurrent = { lft: '', lin: '' };
+  lfRate = h._state.rate || '';
+  lfAccum = h._state.result || 0;
+  lfPendingOp = '';
+  lfExprStr = '';
+  lfFresh = true;
+  lfActiveField = 'lft';
+  lfRender();
+}
+function toggleLfHistory() {
+  lfHistoryCollapsed = !lfHistoryCollapsed;
+  const panel = document.getElementById('lf-history');
+  panel.classList.toggle('collapsed', lfHistoryCollapsed);
+  panel.querySelector('.sqft-history-toggle').textContent = lfHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('lf-history-clear-btn').style.display = lfHistoryCollapsed || lfHistory.length === 0 ? 'none' : '';
+}
+
+// ─── SQ FT CALC HISTORY ────────────────────────────────────────────────────────
+const sqHistory = [];
+let sqHistoryCollapsed = true;
+
+function sqHistoryPush(expr, result, state) {
+  sqHistory.push({ expr, result, _state: state });
+  sqHistoryRender();
+  document.getElementById('sqft-history-clear-btn').style.display = sqHistoryCollapsed ? 'none' : '';
+}
+function sqHistoryRender() {
+  const list = document.getElementById('sqft-history-list');
+  if (!list) return;
+  list.innerHTML = sqHistory.map((h, i) =>
+    (i > 0 ? '<div class="sqft-history-sep"></div>' : '') +
+    `<div class="sqft-history-row" onclick="sqHistoryRecall(${i})">
+       <div class="sqft-history-expr">${escHtml(h.expr)}</div>
+       <div class="sqft-history-result">${escHtml(h.result)}</div>
+     </div>`
+  ).join('');
+  list.scrollTop = list.scrollHeight;
+}
+function sqHistoryClear() {
+  sqHistory.length = 0;
+  sqHistoryRender();
+  document.getElementById('sqft-history-clear-btn').style.display = 'none';
+}
+function sqHistoryRecall(i) {
+  const h = sqHistory[i];
+  if (!h) return;
+  sqCurrent = { lft: '', lin: '', wft: '', win: '' };
+  sqRate = h._state.rate || '';
+  sqAccum = h._state.result || 0;
+  sqPendingOp = '';
+  sqExprStr = '';
+  sqFresh = true;
+  sqActiveField = 'lft';
+  sqRender();
+}
+function toggleSqHistory() {
+  sqHistoryCollapsed = !sqHistoryCollapsed;
+  const panel = document.getElementById('sqft-history');
+  const toggle = panel.querySelector('.sqft-history-toggle');
+  panel.classList.toggle('collapsed', sqHistoryCollapsed);
+  toggle.textContent = sqHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('sqft-history-clear-btn').style.display = sqHistoryCollapsed || sqHistory.length === 0 ? 'none' : '';
+}
+
 // ─── SQ FT DRAW SUB-TAB ───────────────────────────────────────────────────────
+let sqftActiveSub = 'calc';
 function setSqftSub(sub) {
-  document.getElementById('sqft-calc-panel').style.display = sub==='calc' ? '' : 'none';
-  document.getElementById('sqft-draw-panel').style.display = sub==='draw' ? '' : 'none';
-  document.getElementById('sqft-sub-calc').classList.toggle('active-sqft-sub', sub==='calc');
-  document.getElementById('sqft-sub-draw').classList.toggle('active-sqft-sub', sub==='draw');
+  sqftActiveSub = sub;
+  if (sub === 'calc') sqRender();
+  if (sub === 'linft') lfRender();
+  document.getElementById('sqft-calc-panel').style.display  = sub==='calc'  ? '' : 'none';
+  document.getElementById('sqft-linft-panel').style.display = sub==='linft' ? '' : 'none';
+  document.getElementById('sqft-draw-panel').style.display  = sub==='draw'  ? '' : 'none';
+  document.getElementById('sqft-sub-calc').classList.toggle('active-sqft-sub',  sub==='calc');
+  document.getElementById('sqft-sub-linft').classList.toggle('active-sqft-sub', sub==='linft');
+  document.getElementById('sqft-sub-draw').classList.toggle('active-sqft-sub',  sub==='draw');
+  document.body.classList.toggle('draw-active', sub==='draw');
   if (sub==='draw') { sqDrawRender(); sqDrawRenderSegs(); }
 }
 
@@ -2018,13 +3083,16 @@ function sqDrawNearFirst(pos) {
   return Math.abs(pos.gx-f.gx)<=1 && Math.abs(pos.gy-f.gy)<=1;
 }
 
-function sqDrawClick(e) {
+function sqBgClick(e) {
+  if (sqDrawShapeMode !== 'free') return; // preset mode: no bg click
+  if (sqDragState && sqDragState.didDrag) { sqDragState = null; return; }
   if (sqDraw.closed) return;
   const pos = sqDrawSvgPos(e);
   if (sqDrawNearFirst(pos)) {
     sqDraw.closed = true; sqDraw.hover = null;
     sqDraw.segs.push({ft:'', in:''});
-    sqDrawRenderSegs(); sqDrawRender(); sqDrawUpdateArea(); return;
+    sqDrawRenderSegs(); sqDrawRender(); sqDrawUpdateArea();
+    sqCommitFreehand(); return;
   }
   const last = sqDraw.pts[sqDraw.pts.length-1];
   if (last && last.gx===pos.gx && last.gy===pos.gy) return;
@@ -2033,18 +3101,113 @@ function sqDrawClick(e) {
     sqDrawRenderSegs();
   }
   sqDraw.pts.push({gx:pos.gx, gy:pos.gy});
+  // If last 3 points are collinear, drop the middle and merge its two segments
+  const n = sqDraw.pts.length;
+  if (n >= 3) {
+    const a = sqDraw.pts[n-3], b = sqDraw.pts[n-2], c = sqDraw.pts[n-1];
+    if ((b.gx-a.gx)*(c.gy-a.gy) === (b.gy-a.gy)*(c.gx-a.gx)) {
+      const sa = sqDraw.segs[n-3], sb = sqDraw.segs[n-2];
+      const aft = parseFloat(sa.ft)||0, ain = parseFloat(sa.in)||0;
+      const bft = parseFloat(sb.ft)||0, bin = parseFloat(sb.in)||0;
+      let merged;
+      if (aft||ain||bft||bin) {
+        const totalIn = aft*12 + ain + bft*12 + bin;
+        const mft = Math.floor(totalIn/12);
+        const min = Math.round((totalIn - mft*12)*100)/100;
+        merged = { ft: mft>0 ? String(mft) : '', in: min>0 ? String(min) : '' };
+      } else {
+        merged = { ft:'', in:'' };
+      }
+      sqDraw.pts.splice(n-2, 1);
+      sqDraw.segs.splice(n-3, 2, merged);
+      sqDrawRenderSegs();
+    }
+  }
   sqDrawRender();
 }
 
-function sqDrawMove(e) {
-  if (sqDraw.closed) return;
-  sqDraw.hover = sqDrawSvgPos(e); sqDrawRender();
+let sqDrawMousePan = null;
+let sqDragState = null; // { objId, startSvgX, startSvgY, origData, didDrag }
+
+function sqSvgRawCoords(e) {
+  const svg = document.getElementById('sqft-draw-svg');
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
 }
-function sqDrawLeave() { sqDraw.hover = null; sqDrawRender(); }
+
+function sqSvgMouseDown(e) {
+  if (e.button === 1) { // middle-click pan
+    sqDrawMousePan = { startX: e.clientX, startY: e.clientY, vbX: sqDrawViewBox.x, vbY: sqDrawViewBox.y };
+    e.preventDefault(); return;
+  }
+}
+function sqSvgMouseUp(e) {
+  if (sqDragState) { sqDragState = null; }
+  sqDrawMousePan = null;
+}
+
+function sqObjDragStart(id, e) {
+  e.stopPropagation();
+  const sp = sqSvgRawCoords(e);
+  const obj = sqObjects.find(o => o.id === id);
+  if (!obj) return;
+  sqDragState = {
+    objId: id,
+    startSvgX: sp.x, startSvgY: sp.y,
+    didDrag: false,
+    origPts: obj.pts ? obj.pts.map(p => ({...p})) : null,
+    origCx: obj.cx, origCy: obj.cy,
+  };
+  sqSelectObj(id);
+}
+
+function sqObjClick(id, e) {
+  e.stopPropagation();
+  if (sqDragState && sqDragState.didDrag) return;
+  sqSelectObj(id);
+}
+
+function sqDrawMove(e) {
+  if (sqDrawMousePan) {
+    const rect = document.getElementById('sqft-draw-svg').getBoundingClientRect();
+    const dx = (e.clientX - sqDrawMousePan.startX) * sqDrawViewBox.w / rect.width;
+    const dy = (e.clientY - sqDrawMousePan.startY) * sqDrawViewBox.h / rect.height;
+    sqDrawViewBox.x = Math.max(0, Math.min(460 - sqDrawViewBox.w, sqDrawMousePan.vbX - dx));
+    sqDrawViewBox.y = Math.max(0, Math.min(460 - sqDrawViewBox.h, sqDrawMousePan.vbY - dy));
+    sqDrawApplyViewBox();
+    return;
+  }
+  if (sqDragState) {
+    const sp = sqSvgRawCoords(e);
+    const dx = sp.x - sqDragState.startSvgX;
+    const dy = sp.y - sqDragState.startSvgY;
+    if (Math.hypot(dx, dy) > 3) sqDragState.didDrag = true;
+    if (!sqDragState.didDrag) return;
+    const obj = sqObjects.find(o => o.id === sqDragState.objId);
+    if (!obj) return;
+    if (obj.type === 'free' && sqDragState.origPts) {
+      const dgx = Math.round(dx / SQDC);
+      const dgy = Math.round(dy / SQDC);
+      obj.pts = sqDragState.origPts.map(p => ({
+        gx: Math.max(0, Math.min(SQDCOLS, p.gx + dgx)),
+        gy: Math.max(0, Math.min(SQDROWS, p.gy + dgy)),
+      }));
+    } else {
+      obj.cx = Math.max(20, Math.min(440, sqDragState.origCx + dx));
+      obj.cy = Math.max(20, Math.min(440, sqDragState.origCy + dy));
+    }
+    sqDrawRender();
+    return;
+  }
+  if (sqDrawShapeMode === 'free' && !sqDraw.closed) {
+    sqDraw.hover = sqDrawSvgPos(e); sqDrawRender();
+  }
+}
+function sqDrawLeave() { sqDrawMousePan = null; sqDraw.hover = null; sqDrawRender(); }
 function sqDrawTouchStart(e) {
   if (e.touches.length === 2) {
     sqDrawWasPinching = true;
-    sqDrawPan = null;
+    sqDrawPan = null; sqDragState = null;
     const t0 = e.touches[0], t1 = e.touches[1];
     sqDrawPinch = {
       dist: Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY),
@@ -2052,10 +3215,21 @@ function sqDrawTouchStart(e) {
       cy: (t0.clientY + t1.clientY) / 2,
       x: sqDrawViewBox.x, y: sqDrawViewBox.y, w: sqDrawViewBox.w, h: sqDrawViewBox.h
     };
-  } else if (e.touches.length === 1 && !sqDraw.closed) {
+  } else if (e.touches.length === 1) {
     const t = e.touches[0];
-    sqDraw.hover = sqDrawSvgPos({ clientX: t.clientX, clientY: t.clientY });
-    sqDrawRender();
+    const sp = sqSvgRawCoords({ clientX: t.clientX, clientY: t.clientY });
+    const hitId = sqHitTestObjects(sp.x, sp.y);
+    if (hitId !== null) {
+      const obj = sqObjects.find(o => o.id === hitId);
+      sqDragState = {
+        objId: hitId, startSvgX: sp.x, startSvgY: sp.y, didDrag: false,
+        origPts: obj && obj.pts ? obj.pts.map(p => ({...p})) : null,
+        origCx: obj ? obj.cx : 0, origCy: obj ? obj.cy : 0,
+      };
+    } else if (sqDrawShapeMode === 'free' && !sqDraw.closed) {
+      sqDraw.hover = sqDrawSvgPos({ clientX: t.clientX, clientY: t.clientY });
+      sqDrawRender();
+    }
   }
 }
 function sqDrawTouchMove(e) {
@@ -2073,7 +3247,10 @@ function sqDrawTouchMove(e) {
       w: newW, h: newW
     };
     sqDrawApplyViewBox();
-  } else if (e.touches.length === 1 && !sqDrawPinch && !sqDraw.closed) {
+  } else if (e.touches.length === 1 && sqDragState) {
+    const t = e.touches[0];
+    sqDrawMove({ clientX: t.clientX, clientY: t.clientY });
+  } else if (e.touches.length === 1 && !sqDrawPinch && sqDrawShapeMode === 'free' && !sqDraw.closed) {
     const t = e.touches[0];
     sqDraw.hover = sqDrawSvgPos({ clientX: t.clientX, clientY: t.clientY });
     sqDrawRender();
@@ -2087,7 +3264,14 @@ function sqDrawTouchEnd(e) {
     sqDrawPan = null;
     if (!wasPinching && e.changedTouches.length === 1) {
       const t = e.changedTouches[0];
-      sqDrawClick({ clientX: t.clientX, clientY: t.clientY });
+      if (sqDragState) {
+        if (!sqDragState.didDrag) {
+          sqSelectObj(sqDragState.objId);
+        }
+        sqDragState = null;
+      } else {
+        sqBgClick({ clientX: t.clientX, clientY: t.clientY });
+      }
       sqDraw.hover = null;
       sqDrawRender();
     }
@@ -2103,12 +3287,12 @@ function sqDrawUndo() {
 }
 
 function sqDrawClear() {
+  if (sqDrawShapeMode !== 'free') { sqShapeClear(); return; }
   sqDraw.pts=[]; sqDraw.closed=false; sqDraw.segs=[]; sqDraw.hover=null; sqDraw.selectedSeg=null;
-  sqDrawViewBox = { x:0, y:0, w:460, h:460 }; sqDrawApplyViewBox();
+  if (!sqObjects.length) {
+    sqDrawViewBox = { x:0, y:0, w:460, h:460 }; sqDrawApplyViewBox();
+  }
   sqDrawRenderSegs(); sqDrawRender();
-  document.getElementById('sqft-draw-area').textContent='—';
-  const cw = document.getElementById('sqft-draw-cost-wrap');
-  if (cw) cw.style.display='none';
 }
 
 function sqDrawSegFocus(i, e) {
@@ -2120,53 +3304,482 @@ function sqDrawSegFocus(i, e) {
   if (inp) { inp.scrollIntoView({block:'nearest'}); inp.focus(); inp.select(); }
 }
 
+// ─── SHAPE MODES ──────────────────────────────────────────────────────────────
+let sqDrawShapeMode = 'free';
+let sqCircleInputMode = 'radius';
+let sqObjects = [];
+let sqObjIdCounter = 0;
+let sqSelectedObjId = null;
+let sqInspCircleMode = 'radius';
+
+function sqNetArea() {
+  return sqObjects.reduce((sum, o) => sum + o.area * (o.sign === '+' ? 1 : -1), 0);
+}
+
+// ── Objects management ────────────────────────────────────────────────────────
+function sqObjsUpdate() {
+  const netWrap = document.getElementById('sqft-net-wrap');
+  const netArea = document.getElementById('sqft-net-area');
+  const cntEl = document.getElementById('sqft-obj-count');
+  if (!sqObjects.length) {
+    if (netWrap) netWrap.style.display = 'none';
+  } else {
+    if (netWrap) netWrap.style.display = '';
+    if (cntEl) cntEl.textContent = `${sqObjects.length} shape${sqObjects.length>1?'s':''}`;
+    if (netArea) netArea.textContent = sqNetArea().toFixed(2) + ' sq ft';
+  }
+  sqDrawUpdateCost();
+  sqDrawRender();
+}
+
+function sqClearAllObjects() {
+  sqObjects = [];
+  sqSelectedObjId = null;
+  sqHideSidebar();
+  sqObjsUpdate();
+}
+
+// ── Selection / Inspector ─────────────────────────────────────────────────────
+function sqHideSidebar() {
+  const insp = document.getElementById('sqft-inspector');
+  if (insp) insp.style.display = 'none';
+  sqShowDrawContext();
+}
+
+function sqShowDrawContext() {
+  const isFree = sqDrawShapeMode === 'free';
+  const fs = document.getElementById('sqft-freehand-section');
+  const ss = document.getElementById('sqft-shape-section');
+  if (fs) fs.style.display = isFree ? '' : 'none';
+  if (ss) ss.style.display = isFree ? 'none' : '';
+}
+
+function sqSelectObj(id) {
+  sqSelectedObjId = id;
+  const obj = sqObjects.find(o => o.id === id);
+  if (!obj) return;
+  // Show inspector, hide draw context
+  const insp = document.getElementById('sqft-inspector');
+  if (insp) insp.style.display = '';
+  document.getElementById('sqft-freehand-section').style.display = 'none';
+  document.getElementById('sqft-shape-section').style.display = 'none';
+  // Populate inspector
+  const typeNames = { free:'Free Shape', sq:'Square', rect:'Rectangle', tri:'Triangle', circle:'Circle' };
+  document.getElementById('sqft-insp-label').textContent = typeNames[obj.type] || obj.type;
+  document.getElementById('sqft-insp-area').textContent = obj.area > 0 ? obj.area.toFixed(2) + ' sq ft' : '—';
+  // Sign buttons
+  document.getElementById('sqft-insp-sign-add').classList.toggle('active-sign-add', obj.sign === '+');
+  document.getElementById('sqft-insp-sign-sub').classList.toggle('active-sign-sub', obj.sign === '-');
+  // Show seg list for free, form for preset
+  const segWrap = document.getElementById('sqft-insp-segs');
+  const formWrap = document.getElementById('sqft-insp-form');
+  if (obj.type === 'free') {
+    segWrap.style.display = '';
+    formWrap.style.display = 'none';
+    sqRenderInspSegs(obj);
+  } else {
+    segWrap.style.display = 'none';
+    formWrap.style.display = '';
+    sqShowInspForm(obj);
+  }
+  sqDrawRender();
+}
+
+function sqDeselectObj() {
+  sqSelectedObjId = null;
+  sqHideSidebar();
+  sqDrawRender();
+}
+
+function sqSelSetSign(sign) {
+  const obj = sqObjects.find(o => o.id === sqSelectedObjId);
+  if (!obj) return;
+  obj.sign = sign;
+  document.getElementById('sqft-insp-sign-add').classList.toggle('active-sign-add', sign === '+');
+  document.getElementById('sqft-insp-sign-sub').classList.toggle('active-sign-sub', sign === '-');
+  sqObjsUpdate();
+}
+
+function sqDeleteSelected() {
+  const idx = sqObjects.findIndex(o => o.id === sqSelectedObjId);
+  if (idx >= 0) sqObjects.splice(idx, 1);
+  sqSelectedObjId = null;
+  sqHideSidebar();
+  sqObjsUpdate();
+}
+
+function sqRenderInspSegs(obj) {
+  const c = document.getElementById('sqft-insp-segs');
+  if (!c || !obj.segs) return;
+  c.innerHTML = obj.segs.map((s,i) => `
+    <div class="sqft-draw-seg-row">
+      <span class="sqft-draw-seg-label">${i+1}</span>
+      <input class="sqft-draw-seg-inp" type="number" min="0" value="${s.ft}" placeholder="ft"
+        oninput="sqInspSegSet(${obj.id},${i},'ft',this.value)" style="width:38px">
+      <span class="sqft-draw-seg-unit">'</span>
+      <input class="sqft-draw-seg-inp" type="number" min="0" max="11" value="${s.in}" placeholder="in"
+        oninput="sqInspSegSet(${obj.id},${i},'in',this.value)" style="width:32px">
+      <span class="sqft-draw-seg-unit">"</span>
+    </div>`).join('');
+}
+
+function sqInspSegSet(objId, i, field, val) {
+  const obj = sqObjects.find(o => o.id === objId);
+  if (!obj || !obj.segs || !obj.segs[i]) return;
+  obj.segs[i][field] = val;
+  sqRecalcFreeArea(obj);
+  document.getElementById('sqft-insp-area').textContent = obj.area > 0 ? obj.area.toFixed(2) + ' sq ft' : '—';
+  sqObjsUpdate();
+}
+
+function sqRecalcFreeArea(obj) {
+  if (!obj.pts || !obj.segs) return;
+  const n = obj.pts.length;
+  const coords = [{x:0,y:0}];
+  for (let i = 0; i < n; i++) {
+    const s = obj.segs[i] || {ft:'0',in:'0'};
+    const len = (parseFloat(s.ft)||0) + (parseFloat(s.in)||0)/12;
+    if (len <= 0) { obj.area = 0; return; }
+    const a = obj.pts[i], b = obj.pts[(i+1)%n];
+    const dx = b.gx-a.gx, dy = b.gy-a.gy, d = Math.hypot(dx,dy);
+    if (d === 0) { obj.area = 0; return; }
+    const prev = coords[coords.length-1];
+    coords.push({x: prev.x+(dx/d)*len, y: prev.y-(dy/d)*len});
+  }
+  let area = 0;
+  for (let i = 0; i < n; i++) { const j=(i+1)%n; area += coords[i].x*coords[j].y - coords[j].x*coords[i].y; }
+  obj.area = Math.abs(area)/2;
+}
+
+function sqShowInspForm(obj) {
+  ['sq','rect','tri','circle'].forEach(t => {
+    const el = document.getElementById('sqft-insp-form-' + t);
+    if (el) el.style.display = t === obj.type ? '' : 'none';
+  });
+  if (!obj.params) return;
+  const p = obj.params;
+  const setV = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  if (obj.type === 'sq') {
+    setV('sqft-insp-sq-sft', p.sft); setV('sqft-insp-sq-sin', p.sin);
+  } else if (obj.type === 'rect') {
+    setV('sqft-insp-rect-lft', p.lft); setV('sqft-insp-rect-lin', p.lin);
+    setV('sqft-insp-rect-wft', p.wft); setV('sqft-insp-rect-win', p.win);
+  } else if (obj.type === 'tri') {
+    setV('sqft-insp-tri-aft', p.aft); setV('sqft-insp-tri-ain', p.ain);
+    setV('sqft-insp-tri-bft', p.bft); setV('sqft-insp-tri-bin', p.bin);
+    setV('sqft-insp-tri-cft', p.cft); setV('sqft-insp-tri-cin', p.cin);
+  } else if (obj.type === 'circle') {
+    sqInspSetCircleMode(obj.params.circleMode || 'radius');
+    setV('sqft-insp-circle-rft', p.rft); setV('sqft-insp-circle-rin', p.rin);
+    setV('sqft-insp-circle-cft', p.cft); setV('sqft-insp-circle-cin', p.cin);
+  }
+}
+
+function sqInspSetCircleMode(mode) {
+  sqInspCircleMode = mode;
+  document.getElementById('sqft-insp-circle-btn-radius').classList.toggle('active-circle-mode', mode === 'radius');
+  document.getElementById('sqft-insp-circle-btn-circum').classList.toggle('active-circle-mode', mode === 'circum');
+  document.getElementById('sqft-insp-circle-radius-row').style.display = mode === 'radius' ? '' : 'none';
+  document.getElementById('sqft-insp-circle-circum-row').style.display = mode === 'circum' ? '' : 'none';
+  sqInspFormCalc();
+}
+
+function sqInspFormCalc() {
+  const obj = sqObjects.find(o => o.id === sqSelectedObjId);
+  if (!obj || obj.type === 'free') return;
+  const getIn = (ftId, inId) => {
+    const ft = parseFloat(document.getElementById(ftId).value) || 0;
+    const inches = parseFloat(document.getElementById(inId).value) || 0;
+    return ft * 12 + inches;
+  };
+  const toFt = v => v / 12;
+  let area = null, params = {};
+  if (obj.type === 'sq') {
+    params = { sft: document.getElementById('sqft-insp-sq-sft').value, sin: document.getElementById('sqft-insp-sq-sin').value };
+    const sIn = getIn('sqft-insp-sq-sft','sqft-insp-sq-sin');
+    if (sIn > 0) area = Math.pow(toFt(sIn), 2);
+  } else if (obj.type === 'rect') {
+    params = { lft: document.getElementById('sqft-insp-rect-lft').value, lin: document.getElementById('sqft-insp-rect-lin').value,
+                wft: document.getElementById('sqft-insp-rect-wft').value, win: document.getElementById('sqft-insp-rect-win').value };
+    const lIn = getIn('sqft-insp-rect-lft','sqft-insp-rect-lin'), wIn = getIn('sqft-insp-rect-wft','sqft-insp-rect-win');
+    if (lIn > 0 && wIn > 0) area = toFt(lIn) * toFt(wIn);
+  } else if (obj.type === 'tri') {
+    params = { aft: document.getElementById('sqft-insp-tri-aft').value, ain: document.getElementById('sqft-insp-tri-ain').value,
+                bft: document.getElementById('sqft-insp-tri-bft').value, bin: document.getElementById('sqft-insp-tri-bin').value,
+                cft: document.getElementById('sqft-insp-tri-cft').value, cin: document.getElementById('sqft-insp-tri-cin').value };
+    const aIn=getIn('sqft-insp-tri-aft','sqft-insp-tri-ain'), bIn=getIn('sqft-insp-tri-bft','sqft-insp-tri-bin'), cIn=getIn('sqft-insp-tri-cft','sqft-insp-tri-cin');
+    if (aIn>0&&bIn>0&&cIn>0) { const a=toFt(aIn),b=toFt(bIn),c=toFt(cIn),s=(a+b+c)/2,d=s*(s-a)*(s-b)*(s-c); if(d>=0) area=Math.sqrt(d); }
+  } else if (obj.type === 'circle') {
+    params = { circleMode: sqInspCircleMode, rft: document.getElementById('sqft-insp-circle-rft').value, rin: document.getElementById('sqft-insp-circle-rin').value,
+                cft: document.getElementById('sqft-insp-circle-cft').value, cin: document.getElementById('sqft-insp-circle-cin').value };
+    if (sqInspCircleMode === 'radius') {
+      const rIn = getIn('sqft-insp-circle-rft','sqft-insp-circle-rin');
+      if (rIn > 0) area = Math.PI * Math.pow(toFt(rIn), 2);
+    } else {
+      const cIn = getIn('sqft-insp-circle-cft','sqft-insp-circle-cin');
+      if (cIn > 0) { const C = toFt(cIn); area = C*C/(4*Math.PI); }
+    }
+  }
+  if (area !== null && area > 0) { obj.area = area; obj.params = {...obj.params, ...params}; }
+  document.getElementById('sqft-insp-area').textContent = obj.area > 0 ? obj.area.toFixed(2) + ' sq ft' : '—';
+  sqObjsUpdate();
+}
+
+// ── Hit testing ───────────────────────────────────────────────────────────────
+function sqHitTestObjects(svgX, svgY) {
+  for (let i = sqObjects.length - 1; i >= 0; i--) {
+    const obj = sqObjects[i];
+    if (obj.type === 'free' && obj.pts && obj.pts.length >= 3) {
+      // Point-in-polygon
+      let inside = false;
+      const n = obj.pts.length;
+      for (let j = 0, k = n-1; j < n; k = j++) {
+        const xi = sqGpx(obj.pts[j].gx), yi = sqGpy(obj.pts[j].gy);
+        const xk = sqGpx(obj.pts[k].gx), yk = sqGpy(obj.pts[k].gy);
+        if (((yi > svgY) !== (yk > svgY)) && (svgX < (xk-xi)*(svgY-yi)/(yk-yi)+xi)) inside = !inside;
+      }
+      if (inside) return obj.id;
+    } else if (obj.cx !== undefined) {
+      // Bounding circle hit
+      if (Math.hypot(svgX - obj.cx, svgY - obj.cy) < 120) return obj.id;
+    }
+  }
+  return null;
+}
+
+// ── Commit shapes ─────────────────────────────────────────────────────────────
+function sqCommitFreehand() {
+  if (!sqDraw.closed || sqDraw.pts.length < 3) return;
+  const pts = sqDraw.pts.map(p => ({...p}));
+  const segs = sqDraw.segs.map(s => ({...s}));
+  const n = pts.length;
+  // Compute area using seg lengths and grid directions
+  const coords = [{x:0,y:0}];
+  let valid = true;
+  for (let i = 0; i < n; i++) {
+    const s = segs[i] || {ft:'0',in:'0'};
+    const len = (parseFloat(s.ft)||0) + (parseFloat(s.in)||0)/12;
+    if (len <= 0) { valid = false; break; }
+    const a = pts[i], b = pts[(i+1)%n];
+    const dx = b.gx-a.gx, dy = b.gy-a.gy, d = Math.hypot(dx,dy);
+    if (d === 0) { valid = false; break; }
+    const prev = coords[coords.length-1];
+    coords.push({x: prev.x+(dx/d)*len, y: prev.y-(dy/d)*len});
+  }
+  let area = 0;
+  if (valid) {
+    for (let i = 0; i < n; i++) { const j=(i+1)%n; area += coords[i].x*coords[j].y - coords[j].x*coords[i].y; }
+    area = Math.abs(area)/2;
+  }
+  sqDraw.pts = []; sqDraw.closed = false; sqDraw.segs = []; sqDraw.hover = null; sqDraw.selectedSeg = null;
+  sqDrawRenderSegs();
+  const obj = { id: ++sqObjIdCounter, type: 'free', sign: '+', area, label: `Free (${n}pt)`, pts, segs };
+  sqObjects.push(obj);
+  sqSelectObj(obj.id);
+  sqObjsUpdate();
+}
+
+function sqAddPresetToCanvas() {
+  const areaText = document.getElementById('sqft-draw-area').textContent;
+  if (!areaText || areaText === '—') return;
+  const area = parseFloat(areaText);
+  if (!(area > 0)) return;
+  const type = sqDrawShapeMode;
+  const params = sqReadPresetParams(type);
+  const label = { sq:'Square', rect:'Rectangle', tri:'Triangle', circle:'Circle' }[type] || type;
+  const obj = { id: ++sqObjIdCounter, type, sign: '+', area, label, params, cx: 230, cy: 230 };
+  sqObjects.push(obj);
+  sqShapeClear();
+  sqSelectObj(obj.id);
+  sqObjsUpdate();
+}
+
+function sqReadPresetParams(type) {
+  const v = id => document.getElementById(id).value;
+  if (type === 'sq') return { sft: v('sqft-sq-sft'), sin: v('sqft-sq-sin') };
+  if (type === 'rect') return { lft: v('sqft-rect-lft'), lin: v('sqft-rect-lin'), wft: v('sqft-rect-wft'), win: v('sqft-rect-win') };
+  if (type === 'tri') return { aft: v('sqft-tri-aft'), ain: v('sqft-tri-ain'), bft: v('sqft-tri-bft'), bin: v('sqft-tri-bin'), cft: v('sqft-tri-cft'), cin: v('sqft-tri-cin') };
+  if (type === 'circle') return { circleMode: sqCircleInputMode, rft: v('sqft-circle-rft'), rin: v('sqft-circle-rin'), cft: v('sqft-circle-cft'), cin: v('sqft-circle-cin') };
+  return {};
+}
+
+// ── Shape mode switch ─────────────────────────────────────────────────────────
+function sqDrawSetShape(shape) {
+  sqDrawShapeMode = shape;
+  sqDeselectObj();
+  ['free','sq','rect','tri','circle'].forEach(s =>
+    document.getElementById('sqft-shapebtn-' + s).classList.toggle('active-shape', s === shape)
+  );
+  const isFree = shape === 'free';
+  const svg = document.getElementById('sqft-draw-svg');
+  if (svg) svg.style.cursor = isFree ? 'crosshair' : 'default';
+  if (!isFree) {
+    ['sq','rect','tri','circle'].forEach(s =>
+      document.getElementById('sqft-shapeform-' + s).style.display = s === shape ? '' : 'none'
+    );
+    sqShapeCalc();
+  } else {
+    sqDrawRenderSegs();
+    sqDrawUpdateArea();
+    sqDrawRender();
+  }
+}
+
+function sqSetCircleMode(mode) {
+  sqCircleInputMode = mode;
+  document.getElementById('sqft-circle-btn-radius').classList.toggle('active-circle-mode', mode === 'radius');
+  document.getElementById('sqft-circle-btn-circum').classList.toggle('active-circle-mode', mode === 'circum');
+  document.getElementById('sqft-circle-radius-row').style.display = mode === 'radius' ? '' : 'none';
+  document.getElementById('sqft-circle-circum-row').style.display = mode === 'circum' ? '' : 'none';
+  sqShapeCalc();
+}
+
+function sqShapeGetIn(ftId, inId) {
+  const ft = parseFloat(document.getElementById(ftId).value) || 0;
+  const inches = parseFloat(document.getElementById(inId).value) || 0;
+  return ft * 12 + inches;
+}
+
+function sqShapeCalc() {
+  const el = document.getElementById('sqft-draw-area');
+  let area = null;
+  const toFt = v => v / 12;
+  if (sqDrawShapeMode === 'sq') {
+    const sIn = sqShapeGetIn('sqft-sq-sft','sqft-sq-sin');
+    if (sIn > 0) area = Math.pow(toFt(sIn), 2);
+  } else if (sqDrawShapeMode === 'rect') {
+    const lIn = sqShapeGetIn('sqft-rect-lft','sqft-rect-lin'), wIn = sqShapeGetIn('sqft-rect-wft','sqft-rect-win');
+    if (lIn > 0 && wIn > 0) area = toFt(lIn) * toFt(wIn);
+  } else if (sqDrawShapeMode === 'tri') {
+    const aIn=sqShapeGetIn('sqft-tri-aft','sqft-tri-ain'), bIn=sqShapeGetIn('sqft-tri-bft','sqft-tri-bin'), cIn=sqShapeGetIn('sqft-tri-cft','sqft-tri-cin');
+    if (aIn>0&&bIn>0&&cIn>0) { const a=toFt(aIn),b=toFt(bIn),c=toFt(cIn),s=(a+b+c)/2,d=s*(s-a)*(s-b)*(s-c); if(d>=0) area=Math.sqrt(d); }
+  } else if (sqDrawShapeMode === 'circle') {
+    if (sqCircleInputMode === 'radius') {
+      const rIn = sqShapeGetIn('sqft-circle-rft','sqft-circle-rin'); if (rIn > 0) area = Math.PI * Math.pow(toFt(rIn), 2);
+    } else {
+      const cIn = sqShapeGetIn('sqft-circle-cft','sqft-circle-cin'); if (cIn > 0) { const C=toFt(cIn); area=C*C/(4*Math.PI); }
+    }
+  }
+  if (el) el.textContent = (area !== null && area > 0) ? area.toFixed(2) + ' sq ft' : '—';
+  sqDrawUpdateCost();
+  sqDrawRender();
+}
+
+function sqShapeRender() { sqDrawRender(); }
+
+function sqShapeClear() {
+  ['sqft-sq-sft','sqft-sq-sin','sqft-rect-lft','sqft-rect-lin','sqft-rect-wft','sqft-rect-win',
+   'sqft-tri-aft','sqft-tri-ain','sqft-tri-bft','sqft-tri-bin','sqft-tri-cft','sqft-tri-cin',
+   'sqft-circle-rft','sqft-circle-rin','sqft-circle-cft','sqft-circle-cin']
+  .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const el = document.getElementById('sqft-draw-area');
+  if (el) el.textContent = '—';
+  sqDrawRender();
+}
+
+// ── Canvas render ─────────────────────────────────────────────────────────────
 function sqDrawRender() {
   const svg = document.getElementById('sqft-draw-svg');
   if (!svg) return;
-  let h = `<rect width="460" height="460" fill="#080f08"/>` ;
-  // grid dots
-  for (let gx=0; gx<=SQDCOLS; gx++)
-    for (let gy=0; gy<=SQDROWS; gy++)
-      h += `<circle cx="${sqGpx(gx)}" cy="${sqGpy(gy)}" r="1.2" fill="#1e3a1e"/>`;
-  const n = sqDraw.pts.length;
-  // edges
-  const edgeCount = sqDraw.closed ? n : n-1;
-  for (let i=0; i<edgeCount; i++) {
-    const a=sqDraw.pts[i], b=sqDraw.pts[(i+1)%n];
-    const sel = sqDraw.selectedSeg===i;
-    h += `<line x1="${sqGpx(a.gx)}" y1="${sqGpy(a.gy)}" x2="${sqGpx(b.gx)}" y2="${sqGpy(b.gy)}" stroke="${sel?'#a0e0a0':'#3a7a3a'}" stroke-width="${sel?3:2}"/>`;
-    const mx=(sqGpx(a.gx)+sqGpx(b.gx))/2, my=(sqGpy(a.gy)+sqGpy(b.gy))/2;
-    h += `<circle cx="${mx}" cy="${my}" r="9" fill="transparent" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
-    h += `<circle cx="${mx}" cy="${my}" r="6" fill="${sel?'#1a4a1a':'#0e1f0e'}" stroke="${sel?'#6dd86d':'#2a4a2a'}" stroke-width="${sel?1.5:1}" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
-    h += `<text x="${mx}" y="${my+3}" text-anchor="middle" font-size="5.5" fill="${sel?'#ffffff':'#6dd86d'}" font-weight="bold" style="pointer-events:none">${i+1}</text>`;
+  let h = `<rect width="460" height="460" fill="#080f08" onclick="sqBgClick(event)"/>`;
+  // Grid dots
+  for (let gx=0;gx<=SQDCOLS;gx++)
+    for (let gy=0;gy<=SQDROWS;gy++)
+      h += `<circle cx="${sqGpx(gx)}" cy="${sqGpy(gy)}" r="1.2" fill="#1e3a1e" style="pointer-events:none"/>`;
+
+  // Committed objects
+  sqObjects.forEach(obj => {
+    const isSel = obj.id === sqSelectedObjId;
+    const isAdd = obj.sign === '+';
+    const stroke = isSel ? (isAdd ? '#6dd86d' : '#e86d6d') : (isAdd ? '#3a8a3a' : '#994444');
+    const fill = isAdd ? 'rgba(50,130,50,0.15)' : 'rgba(150,60,60,0.15)';
+    const sw = isSel ? 2.5 : 1.5;
+    const opa = isSel ? '' : ' opacity="0.7"';
+    const drag = `onmousedown="sqObjDragStart(${obj.id},event)" onclick="sqObjClick(${obj.id},event)" style="cursor:move"`;
+
+    if (obj.type === 'free' && obj.pts && obj.pts.length >= 3) {
+      const ptsStr = obj.pts.map(p=>`${sqGpx(p.gx)},${sqGpy(p.gy)}`).join(' ');
+      h += `<g ${drag}${opa}>`;
+      h += `<polygon points="${ptsStr}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      if (isSel) {
+        obj.pts.forEach(p => h += `<circle cx="${sqGpx(p.gx)}" cy="${sqGpy(p.gy)}" r="4" fill="${stroke}" stroke="#080f08" stroke-width="1" style="pointer-events:none"/>`);
+      }
+      const ccx = obj.pts.reduce((s,p)=>s+sqGpx(p.gx),0)/obj.pts.length;
+      const ccy = obj.pts.reduce((s,p)=>s+sqGpy(p.gy),0)/obj.pts.length;
+      h += `<text x="${ccx}" y="${ccy}" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="${stroke}" font-weight="900" opacity="0.8" style="pointer-events:none">${obj.sign}</text>`;
+      h += `</g>`;
+    } else if (obj.cx !== undefined) {
+      const cx = obj.cx, cy = obj.cy;
+      const lbl=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="${stroke}" font-weight="700" style="pointer-events:none">${t}</text>`;
+      h += `<g ${drag}${opa}>`;
+      if (obj.type === 'sq') {
+        const s = isSel ? 110 : 100;
+        h+=`<rect x="${cx-s/2}" y="${cy-s/2}" width="${s}" height="${s}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="2"/>`;
+        h+=lbl(cx,cy,'Sq');
+      } else if (obj.type === 'rect') {
+        const w=130,rh=80;
+        h+=`<rect x="${cx-w/2}" y="${cy-rh/2}" width="${w}" height="${rh}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="2"/>`;
+        h+=lbl(cx,cy,'Rect');
+      } else if (obj.type === 'tri') {
+        const s=90;
+        h+=`<polygon points="${cx},${cy-s} ${cx-s},${cy+s*0.6} ${cx+s},${cy+s*0.6}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        h+=lbl(cx,cy+4,'Tri');
+      } else if (obj.type === 'circle') {
+        const r=70;
+        h+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        h+=lbl(cx,cy,'Circle');
+      }
+      if (isSel) h+=`<circle cx="${cx}" cy="${cy}" r="5" fill="${stroke}" stroke="#080f08" stroke-width="1" style="pointer-events:none"/>`;
+      h+=`<text x="${cx}" y="${cy+28}" text-anchor="middle" font-size="9" fill="${stroke}" opacity="0.7" style="pointer-events:none">${obj.area.toFixed(1)} ft²</text>`;
+      h += `</g>`;
+    }
+  });
+
+  // Preset form schematic (when in preset mode, nothing selected)
+  if (sqDrawShapeMode !== 'free' && sqSelectedObjId === null) {
+    const cx=230,cy=230,stroke='#6dd86d',fill='rgba(60,140,60,0.08)',sw=2;
+    const lbl=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#4a9a4a" font-weight="700" style="pointer-events:none">${t}</text>`;
+    if (sqDrawShapeMode==='sq') { const s=160; h+=`<rect x="${cx-s/2}" y="${cy-s/2}" width="${s}" height="${s}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="3" style="pointer-events:none"/>`;h+=lbl(cx,cy-s/2-16,'Side'); }
+    else if (sqDrawShapeMode==='rect') { const w=200,rh=120; h+=`<rect x="${cx-w/2}" y="${cy-rh/2}" width="${w}" height="${rh}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="3" style="pointer-events:none"/>`;h+=lbl(cx,cy-rh/2-16,'Length');h+=lbl(cx-w/2-24,cy,'W'); }
+    else if (sqDrawShapeMode==='tri') { const tx1=cx,ty1=cy-140,tx2=cx-130,ty2=cy+90,tx3=cx+130,ty3=cy+90; h+=`<polygon points="${tx1},${ty1} ${tx2},${ty2} ${tx3},${ty3}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" style="pointer-events:none"/>`;h+=lbl((tx1+tx2)/2-22,(ty1+ty2)/2,'A');h+=lbl(cx,ty2+18,'B');h+=lbl((tx1+tx3)/2+22,(ty1+ty3)/2,'C'); }
+    else if (sqDrawShapeMode==='circle') { const r=150; h+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" style="pointer-events:none"/>`; if(sqCircleInputMode==='radius'){h+=`<line x1="${cx}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="${stroke}" stroke-width="1.5" stroke-dasharray="5 3" style="pointer-events:none"/>`;h+=lbl(cx+r/2,cy-16,'Radius');}else{h+=lbl(cx,cy,'Circumference');} }
   }
-  // hover preview edge
-  if (!sqDraw.closed && n>=1 && sqDraw.hover) {
-    const last=sqDraw.pts[n-1];
-    const close=sqDrawNearFirst(sqDraw.hover);
-    const hx=close?sqGpx(sqDraw.pts[0].gx):sqGpx(sqDraw.hover.gx);
-    const hy=close?sqGpy(sqDraw.pts[0].gy):sqGpy(sqDraw.hover.gy);
-    h += `<line x1="${sqGpx(last.gx)}" y1="${sqGpy(last.gy)}" x2="${hx}" y2="${hy}" stroke="#4a9a4a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
+
+  // Active freehand polygon (in-progress drawing)
+  if (sqDrawShapeMode === 'free' && (sqDraw.pts.length > 0 || sqDraw.hover)) {
+    const n = sqDraw.pts.length;
+    const edgeCount = sqDraw.closed ? n : n-1;
+    for (let i=0;i<edgeCount;i++) {
+      const a=sqDraw.pts[i],b=sqDraw.pts[(i+1)%n];
+      const sel=sqDraw.selectedSeg===i;
+      h+=`<line x1="${sqGpx(a.gx)}" y1="${sqGpy(a.gy)}" x2="${sqGpx(b.gx)}" y2="${sqGpy(b.gy)}" stroke="${sel?'#a0e0a0':'#3a7a3a'}" stroke-width="${sel?3:2}" style="pointer-events:none"/>`;
+      const mx=(sqGpx(a.gx)+sqGpx(b.gx))/2,my=(sqGpy(a.gy)+sqGpy(b.gy))/2;
+      h+=`<circle cx="${mx}" cy="${my}" r="9" fill="transparent" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
+      h+=`<circle cx="${mx}" cy="${my}" r="6" fill="${sel?'#1a4a1a':'#0e1f0e'}" stroke="${sel?'#6dd86d':'#2a4a2a'}" stroke-width="${sel?1.5:1}" style="cursor:pointer" onclick="sqDrawSegFocus(${i},event)"/>`;
+      h+=`<text x="${mx}" y="${my+3}" text-anchor="middle" font-size="5.5" fill="${sel?'#ffffff':'#6dd86d'}" font-weight="bold" style="pointer-events:none">${i+1}</text>`;
+    }
+    if (!sqDraw.closed && n>=1 && sqDraw.hover) {
+      const last=sqDraw.pts[n-1],close=sqDrawNearFirst(sqDraw.hover);
+      const hx=close?sqGpx(sqDraw.pts[0].gx):sqGpx(sqDraw.hover.gx);
+      const hy=close?sqGpy(sqDraw.pts[0].gy):sqGpy(sqDraw.hover.gy);
+      h+=`<line x1="${sqGpx(last.gx)}" y1="${sqGpy(last.gy)}" x2="${hx}" y2="${hy}" stroke="#4a9a4a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5" style="pointer-events:none"/>`;
+    }
+    if (n>=3 && !sqDraw.closed)
+      h+=`<circle cx="${sqGpx(sqDraw.pts[0].gx)}" cy="${sqGpy(sqDraw.pts[0].gy)}" r="7" fill="none" stroke="#6dd86d" stroke-width="1" opacity="0.5" style="pointer-events:none"/>`;
+    for (let i=0;i<n;i++) {
+      const p=sqDraw.pts[i],big=i===0&&n>=3;
+      h+=`<circle cx="${sqGpx(p.gx)}" cy="${sqGpy(p.gy)}" r="${big?4:3}" fill="${big?'#6dd86d':'#4a9a4a'}" stroke="#080f08" stroke-width="1" style="pointer-events:none"/>`;
+    }
+    if (!sqDraw.closed && sqDraw.hover && !(n>=3&&sqDrawNearFirst(sqDraw.hover)))
+      h+=`<circle cx="${sqGpx(sqDraw.hover.gx)}" cy="${sqGpy(sqDraw.hover.gy)}" r="2" fill="#3a7a3a" opacity="0.7" style="pointer-events:none"/>`;
   }
-  // close-target ring around first point
-  if (n>=3 && !sqDraw.closed)
-    h += `<circle cx="${sqGpx(sqDraw.pts[0].gx)}" cy="${sqGpy(sqDraw.pts[0].gy)}" r="7" fill="none" stroke="#6dd86d" stroke-width="1" opacity="0.5"/>`;
-  // vertex dots
-  for (let i=0; i<n; i++) {
-    const p=sqDraw.pts[i];
-    const big=i===0&&n>=3;
-    h += `<circle cx="${sqGpx(p.gx)}" cy="${sqGpy(p.gy)}" r="${big?4:3}" fill="${big?'#6dd86d':'#4a9a4a'}" stroke="#080f08" stroke-width="1"/>`;
-  }
-  // hover dot
-  if (!sqDraw.closed && sqDraw.hover && !(n>=3&&sqDrawNearFirst(sqDraw.hover)))
-    h += `<circle cx="${sqGpx(sqDraw.hover.gx)}" cy="${sqGpy(sqDraw.hover.gy)}" r="2" fill="#3a7a3a" opacity="0.7"/>`;
   svg.innerHTML = h;
 }
 
 function sqDrawRenderSegs() {
   const c = document.getElementById('sqft-draw-segs');
   if (!c) return;
-  if (!sqDraw.segs.length) { c.innerHTML='<div class="sqft-draw-hint">Click grid to start drawing</div>'; return; }
+  if (!sqDraw.segs.length) { c.innerHTML='<div class="sqft-draw-hint">Click grid to draw · Close shape to add</div>'; return; }
   c.innerHTML = sqDraw.segs.map((s,i) => {
     const sel = sqDraw.selectedSeg===i;
     return `<div class="sqft-draw-seg-row${sel?' sqft-draw-seg-selected':''}" onclick="sqDrawSegFocus(${i})">
@@ -2185,6 +3798,7 @@ function sqDrawSegSet(i, field, val) {
 
 function sqDrawUpdateArea() {
   const el = document.getElementById('sqft-draw-area');
+  if (!el) return;
   if (!sqDraw.closed || sqDraw.pts.length<3) { el.textContent='—'; return; }
   const n = sqDraw.pts.length;
   const coords=[{x:0,y:0}];
@@ -2204,28 +3818,45 @@ function sqDrawUpdateArea() {
 }
 
 function sqDrawUpdateCost() {
-  const areaText = document.getElementById('sqft-draw-area').textContent;
   const priceVal = parseFloat(document.getElementById('sqft-draw-price').value) || 0;
   const costWrap = document.getElementById('sqft-draw-cost-wrap');
   if (!costWrap) return;
-  if (areaText === '—' || priceVal <= 0) { costWrap.style.display='none'; return; }
-  const areaNum = parseFloat(areaText);
-  if (!areaNum) { costWrap.style.display='none'; return; }
+  let areaNum = 0;
+  if (sqObjects.length > 0) {
+    areaNum = sqNetArea();
+  } else {
+    const areaEl = document.getElementById('sqft-draw-area');
+    const areaText = areaEl ? areaEl.textContent : '';
+    if (!areaText || areaText === '—') { costWrap.style.display='none'; return; }
+    areaNum = parseFloat(areaText) || 0;
+  }
+  if (areaNum <= 0 || priceVal <= 0) { costWrap.style.display='none'; return; }
   document.getElementById('sqft-draw-cost').textContent = '$' + (priceVal * areaNum).toFixed(2);
   costWrap.style.display = '';
 }
 
 function sqDrawSave(btn) {
-  const areaText = document.getElementById('sqft-draw-area').textContent;
-  if (!areaText || areaText === '—') return;
+  let areaNum, areaText, label;
+  if (sqObjects.length > 0) {
+    areaNum = sqNetArea();
+    areaText = areaNum.toFixed(2) + ' sq ft';
+    label = `${sqObjects.length} shape${sqObjects.length > 1 ? 's' : ''}`;
+  } else {
+    const areaEl = document.getElementById('sqft-draw-area');
+    areaText = areaEl ? areaEl.textContent : '';
+    if (!areaText || areaText === '—') return;
+    areaNum = parseFloat(areaText);
+    const shapeLabel = { sq:'Square', rect:'Rectangle', tri:'Triangle', circle:'Circle' };
+    label = shapeLabel[sqDrawShapeMode] || 'Shape';
+  }
+  if (!(areaNum > 0)) return;
   const priceVal = parseFloat(document.getElementById('sqft-draw-price').value) || 0;
-  const areaNum = parseFloat(areaText);
   let sub = '', costTotal = 0;
   if (priceVal > 0 && areaNum > 0) {
     costTotal = priceVal * areaNum;
     sub = `$${priceVal.toFixed(2)}/sq ft · $${costTotal.toFixed(2)} total`;
   }
-  const entry = { badge:'DRAW', label:`${sqDraw.pts.length}-sided shape`, result:areaText, sub, costTotal };
+  const entry = { badge:'DRAW', label, result:areaText, sub, costTotal };
   const projects = loadProjects();
   if (!projects.length) { _commitSave(entry, null, btn); return; }
   _pendingSave = entry; _pendingSaveBtn = btn;
@@ -2240,7 +3871,7 @@ function sqDrawSave(btn) {
 
 // ─── LAYOUT TAB ───────────────────────────────────────────────────────────────
 const LAY = {
-  mode: 'divide', divMode: 'count', field: 'sft',
+  mode: 'divide', field: 'sft',
   sft: '', sin: '', snu: '', sde: '',
   nparts: '',
   secft: '', secin: '', secnu: '', secde: '',
@@ -2249,8 +3880,7 @@ const LAY = {
   price: '', tax: '',
 };
 
-const LAY_ADV_COUNT  = { sft:'sin', sin:'snu', snu:'sde', sde:'nparts', nparts:'sft' };
-const LAY_ADV_SIZE   = { sft:'sin', sin:'snu', snu:'sde', sde:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
+const LAY_ADV_DIVIDE = { sft:'sin', sin:'snu', snu:'sde', sde:'nparts', nparts:'secft', secft:'secin', secin:'secnu', secnu:'secde', secde:'sft' };
 const LAY_ADV_BOARDS = { sft:'sin', sin:'snu', snu:'sde', sde:'bft', bft:'bwh', bwh:'bnu', bnu:'bde', bde:'gft', gft:'gwh', gwh:'gnu', gnu:'gde', gde:'price', price:'tax', tax:'sft' };
 
 const LAY_ALL_FIELDS = ['sft','sin','snu','sde','nparts','secft','secin','secnu','secde','bft','bwh','bnu','bde','gft','gwh','gnu','gde','price','tax'];
@@ -2260,20 +3890,12 @@ function setLayMode(m) {
   document.getElementById('lay-mode-divide').classList.toggle('active-mode', m==='divide');
   document.getElementById('lay-mode-boards').classList.toggle('active-mode', m==='boards');
   document.getElementById('lay-divide-row').style.display    = m==='divide' ? 'block' : 'none';
+  document.getElementById('lay-divide-hint').style.display   = m==='divide' ? 'block' : 'none';
   document.getElementById('lay-boards-rows').style.display   = m==='boards' ? 'block' : 'none';
   setLayField('sft');
   layRender();
 }
 
-function setLayDivMode(dm) {
-  LAY.divMode = dm;
-  document.getElementById('lay-dm-count').classList.toggle('active-divmode', dm==='count');
-  document.getElementById('lay-dm-size').classList.toggle('active-divmode', dm==='size');
-  document.getElementById('lay-count-row').style.display = dm==='count' ? 'flex' : 'none';
-  document.getElementById('lay-size-row').style.display  = dm==='size'  ? 'flex' : 'none';
-  setLayField('sft');
-  layRender();
-}
 
 function setLayField(f) {
   LAY.field = f;
@@ -2292,15 +3914,23 @@ function layW(d) {
     layRender();
     return;
   }
-  const maxLen = (f==='sin'||f==='secin') ? 2 : (f==='snu'||f==='sde'||f==='bnu'||f==='bde'||f==='gnu'||f==='gde'||f==='secnu'||f==='secde') ? 3 : (f==='sft'||f==='secft'||f==='bft'||f==='gft') ? 4 : (f==='bwh'||f==='gwh') ? 2 : 10;
-  if (LAY[f].length >= maxLen) return;
   LAY[f] += d;
   layRender();
 }
 
 function layAdv() {
-  const map = LAY.mode === 'boards' ? LAY_ADV_BOARDS : (LAY.divMode === 'size' ? LAY_ADV_SIZE : LAY_ADV_COUNT);
-  setLayField(map[LAY.field] || 'sft');
+  const map = LAY.mode === 'boards' ? LAY_ADV_BOARDS : LAY_ADV_DIVIDE;
+  const next = map[LAY.field] || 'sft';
+  if (next === 'sft') {
+    const mainEl = document.getElementById('lay-main');
+    const topEl  = document.getElementById('lay-top');
+    const main   = mainEl ? mainEl.textContent : '';
+    const top    = topEl  ? topEl.textContent  : '';
+    if (main && main !== '—') {
+      layHistoryPush(top, main, { ...LAY });
+    }
+  }
+  setLayField(next);
 }
 
 function layDel() {
@@ -2312,6 +3942,51 @@ function layClear() {
   LAY_ALL_FIELDS.forEach(f => LAY[f] = '');
   setLayField('sft');
   layRender();
+}
+
+// ─── LAYOUT HISTORY ────────────────────────────────────────────────────────────
+const layHistory = [];
+let layHistoryCollapsed = true;
+
+function layHistoryPush(expr, result, state) {
+  layHistory.push({ expr, result, _state: state });
+  layHistoryRender();
+  document.getElementById('lay-history-clear-btn').style.display = layHistoryCollapsed ? 'none' : '';
+}
+function layHistoryRender() {
+  const list = document.getElementById('lay-history-list');
+  if (!list) return;
+  list.innerHTML = layHistory.map((h, i) =>
+    (i > 0 ? '<div class="lay-history-sep"></div>' : '') +
+    `<div class="lay-history-row" onclick="layHistoryRecall(${i})">
+       <div class="lay-history-expr">${escHtml(h.expr)}</div>
+       <div class="lay-history-result">${escHtml(h.result)}</div>
+     </div>`
+  ).join('');
+  list.scrollTop = list.scrollHeight;
+}
+function layHistoryClear() {
+  layHistory.length = 0;
+  layHistoryRender();
+  document.getElementById('lay-history-clear-btn').style.display = 'none';
+}
+function layHistoryRecall(i) {
+  const h = layHistory[i];
+  if (!h) return;
+  const savedMode = h._state.mode || 'divide';
+  LAY_ALL_FIELDS.forEach(f => LAY[f] = h._state[f] || '');
+  LAY.mode = savedMode;
+  setLayMode(savedMode);
+  setLayField('sft');
+  layRender();
+}
+function toggleLayHistory() {
+  layHistoryCollapsed = !layHistoryCollapsed;
+  const panel = document.getElementById('lay-history');
+  const toggle = panel.querySelector('.lay-history-toggle');
+  panel.classList.toggle('collapsed', layHistoryCollapsed);
+  toggle.textContent = layHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('lay-history-clear-btn').style.display = layHistoryCollapsed || layHistory.length === 0 ? 'none' : '';
 }
 
 function layRender() {
@@ -2327,29 +4002,23 @@ function layRender() {
   const spanIn = (parseInt(LAY.sft||'0') * 12) + parseInt(LAY.sin||'0') + (sDe > 0 ? parseInt(LAY.snu||'0') / sDe : 0);
 
   if (LAY.mode === 'divide') {
-    if (LAY.divMode === 'count') {
-      const n = parseInt(LAY.nparts||'0');
-      if (spanIn > 0 && n > 0) {
-        const partIn = spanIn / n;
-        top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${n}`;
-        main.textContent = fmtInches(partIn);
-        sub.textContent  = fmtInchesOnly(partIn) + ' each';
-      } else {
-        top.textContent  = ''; main.textContent = '—'; sub.textContent  = '';
-      }
+    const n = parseInt(LAY.nparts||'0');
+    const secDe = parseInt(LAY.secde||'0');
+    const secIn = (parseInt(LAY.secft||'0') * 12) + parseInt(LAY.secin||'0') + (secDe > 0 ? parseInt(LAY.secnu||'0') / secDe : 0);
+    if (spanIn > 0 && n > 0) {
+      const partIn = spanIn / n;
+      top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${n}`;
+      main.textContent = fmtInches(partIn);
+      sub.textContent  = fmtInchesOnly(partIn) + ' each';
+    } else if (spanIn > 0 && secIn > 0) {
+      const cnt    = Math.floor(spanIn / secIn);
+      const remIn  = spanIn - cnt * secIn;
+      const secStr = fmtInches(secIn);
+      top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${secStr}`;
+      main.textContent = `${cnt} section${cnt !== 1 ? 's' : ''}`;
+      sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
     } else {
-      const secDe = parseInt(LAY.secde||'0');
-      const secIn = (parseInt(LAY.secft||'0') * 12) + parseInt(LAY.secin||'0') + (secDe > 0 ? parseInt(LAY.secnu||'0') / secDe : 0);
-      if (spanIn > 0 && secIn > 0) {
-        const n      = Math.floor(spanIn / secIn);
-        const remIn  = spanIn - n * secIn;
-        const secStr = fmtInches(secIn);
-        top.textContent  = `${LAY.sft||'0'}' ${LAY.sin||'0'}" ÷ ${secStr}`;
-        main.textContent = `${n} section${n !== 1 ? 's' : ''}`;
-        sub.textContent  = remIn > 0.001 ? fmtInchesOnly(remIn) + ' rem.' : 'fits exactly';
-      } else {
-        top.textContent  = ''; main.textContent = '—'; sub.textContent  = '';
-      }
+      top.textContent  = ''; main.textContent = '—'; sub.textContent  = '';
     }
   } else {
     const bDe   = parseInt(LAY.bde||'0');
@@ -2388,10 +4057,133 @@ function layRender() {
   }
 }
 
+// ─── STANDARD CALC TAB ────────────────────────────────────────────────────────
+const CALC = { display: '0', a: null, op: null, fresh: true };
+const calcHistory = [];
+let calcHistoryCollapsed = true;
+
+function calcApply(a, op, b) {
+  if (op === '+') return a + b;
+  if (op === '−') return a - b;
+  if (op === '×') return a * b;
+  if (op === '÷') return b !== 0 ? a / b : NaN;
+  return b;
+}
+
+function calcFmt(v) {
+  if (!isFinite(v)) return 'Error';
+  return parseFloat(v.toPrecision(12)).toString();
+}
+
+function calcRender() {
+  const el = document.getElementById('calc-main');
+  const len = CALC.display.length;
+  el.style.fontSize = len > 14 ? '1.4rem' : len > 10 ? '1.9rem' : '2.6rem';
+  el.textContent = CALC.display;
+  document.getElementById('calc-top').textContent =
+    (CALC.a !== null && CALC.op) ? `${calcFmt(CALC.a)} ${CALC.op}` : '';
+}
+
+function calcDigit(d) {
+  if (CALC.fresh) {
+    CALC.display = (d === '.') ? '0.' : (d === '0' ? '0' : d);
+    CALC.fresh = false;
+  } else {
+    if (d === '.' && CALC.display.includes('.')) return;
+    if (CALC.display.replace('-','').length >= 15) return;
+    CALC.display = (CALC.display === '0' && d !== '.') ? d : CALC.display + d;
+  }
+  calcRender();
+}
+
+function calcOp(op) {
+  if (CALC.display === 'Error') return;
+  const val = parseFloat(CALC.display);
+  if (CALC.op && !CALC.fresh) {
+    const expr = `${calcFmt(CALC.a)} ${CALC.op} ${calcFmt(val)}`;
+    CALC.display = calcFmt(calcApply(CALC.a, CALC.op, val));
+    calcHistoryPush(expr, CALC.display);
+  }
+  CALC.a = parseFloat(CALC.display);
+  CALC.op = op;
+  CALC.fresh = true;
+  calcRender();
+}
+
+function calcEq() {
+  if (CALC.op === null || CALC.display === 'Error') return;
+  const b = parseFloat(CALC.display);
+  const expr = `${calcFmt(CALC.a)} ${CALC.op} ${calcFmt(b)}`;
+  const result = calcApply(CALC.a, CALC.op, b);
+  CALC.display = calcFmt(result);
+  calcHistoryPush(expr, CALC.display);
+  CALC.a = null;
+  CALC.op = null;
+  CALC.fresh = true;
+  calcRender();
+}
+
+function calcHistoryPush(expr, result) {
+  calcHistory.push({ expr, result });
+  calcHistoryRender();
+}
+function calcHistoryRender() {
+  const list = document.getElementById('calc-history-list');
+  if (!list) return;
+  list.innerHTML = calcHistory.map((h, i) =>
+    (i > 0 ? '<div class="calc-history-sep"></div>' : '') +
+    `<div class="calc-history-row" onclick="calcHistoryRecall(${i})">
+       <div class="calc-history-expr">${escHtml(h.expr)}</div>
+       <div class="calc-history-result">${escHtml(h.result)}</div>
+     </div>`
+  ).join('');
+  list.scrollTop = list.scrollHeight;
+  document.getElementById('calc-history-clear-btn').style.display =
+    calcHistoryCollapsed || calcHistory.length === 0 ? 'none' : '';
+}
+function calcHistoryClear() {
+  calcHistory.length = 0;
+  calcHistoryRender();
+}
+function calcHistoryRecall(i) {
+  const h = calcHistory[i];
+  if (!h) return;
+  CALC.display = h.result;
+  CALC.a = null; CALC.op = null; CALC.fresh = true;
+  calcRender();
+}
+function toggleCalcHistory() {
+  calcHistoryCollapsed = !calcHistoryCollapsed;
+  const panel = document.getElementById('calc-history');
+  panel.classList.toggle('collapsed', calcHistoryCollapsed);
+  panel.querySelector('.calc-history-toggle').textContent = calcHistoryCollapsed ? '▶' : '◀';
+  document.getElementById('calc-history-clear-btn').style.display =
+    calcHistoryCollapsed || calcHistory.length === 0 ? 'none' : '';
+}
+
+function calcClear() {
+  CALC.display = '0'; CALC.a = null; CALC.op = null; CALC.fresh = true;
+  calcRender();
+}
+
+function calcSign() {
+  if (CALC.display === '0' || CALC.display === 'Error') return;
+  CALC.display = CALC.display.startsWith('-') ? CALC.display.slice(1) : '-' + CALC.display;
+  calcRender();
+}
+
+function calcDel() {
+  if (CALC.fresh || CALC.display === 'Error') { CALC.display = '0'; CALC.fresh = false; }
+  else if (CALC.display.length <= 1 || (CALC.display.length === 2 && CALC.display[0] === '-')) CALC.display = '0';
+  else CALC.display = CALC.display.slice(0, -1);
+  calcRender();
+}
+
 // ─── Keyboard input ───────────────────────────────────────────────────────────
 let fracKbField = 'whole';
 
 function getActiveTab() {
+  if (document.getElementById('tab-calc').classList.contains('active'))   return 'calc';
   if (document.getElementById('tab-frac').classList.contains('active'))   return 'frac';
   if (document.getElementById('tab-const').classList.contains('active'))  return 'const';
   if (document.getElementById('tab-sqft').classList.contains('active'))   return 'sqft';
@@ -2404,7 +4196,21 @@ document.addEventListener('keydown', e => {
   if (!tab) return;
   const k = e.key;
 
-  if (tab === 'frac') {
+  if (tab === 'calc') {
+    if (k >= '0' && k <= '9') calcDigit(k);
+    else if (k === '.')                  calcDigit('.');
+    else if (k === 'Backspace')          calcDel();
+    else if (k === 'Escape')             calcClear();
+    else if (k === 'Enter' || k === '=') calcEq();
+    else if (k === '+') calcOp('+');
+    else if (k === '-') calcOp('−');
+    else if (k === '*') calcOp('×');
+    else if (k === '/') calcOp('÷');
+    else return;
+    e.preventDefault();
+  }
+
+  else if (tab === 'frac') {
     if (k >= '0' && k <= '9') {
       if      (fracKbField === 'whole') fW(k);
       else if (fracKbField === 'num')   fN(k);
@@ -2434,12 +4240,28 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
   }
 
+  else if (tab === 'sqft' && sqftActiveSub === 'linft') {
+    if (k >= '0' && k <= '9') lfW(k);
+    else if (k === "'") lfW("'");
+    else if (k === 'Backspace') lfDel();
+    else if (k === 'Escape')    lfClear();
+    else if (k === '+') lfPressOp('+');
+    else if (k === '-') lfPressOp('−');
+    else if (k === '*') lfPressOp('×');
+    else if (k === '/') lfPressOp('÷');
+    else if (k === 'Enter' || k === '=') lfPressEquals();
+    else return;
+  }
   else if (tab === 'sqft') {
     if (k >= '0' && k <= '9') sqW(k);
     else if (k === "'") sqW("'");
-    else if (k === '.') sqW('.');
     else if (k === 'Backspace') sqDel();
     else if (k === 'Escape')    sqClear();
+    else if (k === '+') sqPressOp('+');
+    else if (k === '-') sqPressOp('−');
+    else if (k === '*') sqPressOp('×');
+    else if (k === '/') sqPressOp('÷');
+    else if (k === 'Enter' || k === '=') sqPressEquals();
     else return;
     e.preventDefault();
   }
@@ -2447,7 +4269,6 @@ document.addEventListener('keydown', e => {
   else if (tab === 'layout') {
     if (k >= '0' && k <= '9') layW(k);
     else if (k === "'" || k === 'Tab') layAdv();
-    else if (k === '.') layW('.');
     else if (k === 'Backspace') layDel();
     else if (k === 'Escape')    layClear();
     else return;
@@ -2614,6 +4435,12 @@ function saveCurrentResult(btn) {
     entry = { badge:'BUILD',
       label:  document.getElementById('c-top').textContent || '',
       result, sub: document.getElementById('c-sub').textContent || '' };
+  } else if (tab === 'sqft' && sqftActiveSub === 'linft') {
+    const result = document.getElementById('lf-main').textContent;
+    if (!result || result === '0 lin ft') return;
+    entry = { badge:'LIN FT',
+      label:  document.getElementById('lf-top').textContent || '',
+      result, sub: document.getElementById('lf-sub').textContent || '' };
   } else if (tab === 'sqft') {
     const result = document.getElementById('sq-main').textContent;
     if (!result || result === '0 sq ft') return;
@@ -2694,8 +4521,18 @@ function _commitSave(entry, projectId, btn) {
   storeSaves(saves);
   if (btn) {
     btn.classList.add('saved');
-    btn.textContent = 'SAVED';
-    setTimeout(() => { btn.classList.remove('saved'); btn.textContent = 'SAVE'; }, 900);
+    btn.textContent = btn.classList.contains('sqft-draw-save-btn') ? 'SAVED' : 'SAVED';
+    setTimeout(() => {
+      btn.classList.remove('saved');
+      btn.textContent = btn.classList.contains('sqft-draw-save-btn') ? 'Save' : 'SAVE';
+    }, 900);
+  }
+  const tab = getActiveTab();
+  if (tab === 'layout') layClear();
+  else if (tab === 'sqft') {
+    if (sqftActiveSub === 'draw')  sqDrawClear();
+    else if (sqftActiveSub === 'linft') lfClear();
+    else sqClear();
   }
 }
 
@@ -2706,9 +4543,14 @@ function openSaveEdit(id) {
   const s = saves.find(x => x.id === id);
   if (!s) return;
   _editSaveId = id;
+  document.getElementById('save-edit-item').value   = s.item   || '';
   document.getElementById('save-edit-label').value  = s.label  || '';
   document.getElementById('save-edit-result').value = s.result || '';
   document.getElementById('save-edit-sub').value    = s.sub    || '';
+  const projects = loadProjects();
+  const sel = document.getElementById('save-edit-project');
+  sel.innerHTML = '<option value="">No project</option>' +
+    projects.map(p => `<option value="${p.id}"${s.projectId===p.id?' selected':''}>${escHtml(p.name)}</option>`).join('');
   document.getElementById('save-edit-sheet').classList.remove('hidden');
 }
 
@@ -2722,9 +4564,12 @@ function commitSaveEdit() {
   const saves = loadSaves();
   const s = saves.find(x => x.id === _editSaveId);
   if (s) {
-    s.label  = document.getElementById('save-edit-label').value.trim();
-    s.result = document.getElementById('save-edit-result').value.trim();
-    s.sub    = document.getElementById('save-edit-sub').value.trim();
+    s.item      = document.getElementById('save-edit-item').value.trim();
+    s.label     = document.getElementById('save-edit-label').value.trim();
+    s.result    = document.getElementById('save-edit-result').value.trim();
+    s.sub       = document.getElementById('save-edit-sub').value.trim();
+    const projVal = document.getElementById('save-edit-project').value;
+    s.projectId = projVal ? parseInt(projVal) : null;
     // Re-parse costTotal from sub in case this is an old save without it
     if (!s.costTotal) {
       const m = s.sub.match(/total\s+\$([\d,]+\.?\d*)/i);
@@ -2740,6 +4585,7 @@ function openMatAdd() {
   document.getElementById('mat-name').value = '';
   document.getElementById('mat-qty').value  = '';
   document.getElementById('mat-cost').value = '';
+  document.getElementById('mat-tax').value  = '';
   document.getElementById('mat-total-preview').textContent = '';
   document.getElementById('mat-add-sheet').classList.remove('hidden');
 }
@@ -2749,10 +4595,17 @@ function closeMatAdd() {
 function matPreview() {
   const qty  = parseFloat(document.getElementById('mat-qty').value  || '0');
   const cost = parseFloat(document.getElementById('mat-cost').value || '0');
+  const tax  = parseFloat(document.getElementById('mat-tax').value  || '0');
   const el = document.getElementById('mat-total-preview');
+  const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   if (qty > 0 && cost > 0) {
-    const t = qty * cost;
-    el.textContent = 'Total: $' + t.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const sub = qty * cost;
+    if (tax > 0) {
+      const taxAmt = sub * tax / 100;
+      el.innerHTML = `Subtotal: ${fmt(sub)}&nbsp;&nbsp;Tax: ${fmt(taxAmt)}&nbsp;&nbsp;<strong>Total: ${fmt(sub + taxAmt)}</strong>`;
+    } else {
+      el.textContent = 'Total: ' + fmt(sub);
+    }
   } else {
     el.textContent = '';
   }
@@ -2762,13 +4615,18 @@ function commitMatAdd() {
   if (!name) { document.getElementById('mat-name').focus(); return; }
   const qty  = parseFloat(document.getElementById('mat-qty').value  || '0');
   const cost = parseFloat(document.getElementById('mat-cost').value || '0');
-  const total = qty * cost;
+  const tax  = parseFloat(document.getElementById('mat-tax').value  || '0');
+  const sub  = qty * cost;
+  const taxAmt = sub * tax / 100;
+  const total = sub + taxAmt;
   const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const subParts = [qty > 0 ? `${qty} × ${fmt(cost)}` : fmt(cost)];
+  if (tax > 0) subParts.push(`+ ${tax}% tax`);
   const entry = {
     id: Date.now(),
     badge: 'MAT',
     label: name,
-    result: qty > 0 ? `${qty} × ${fmt(cost)}` : fmt(cost),
+    result: subParts.join(' '),
     sub: total > 0 ? fmt(total) + ' total' : '',
     projectId: savesFilter !== 'all' ? savesFilter : null,
     costTotal: total || cost,
@@ -2777,6 +4635,65 @@ function commitMatAdd() {
   saves.unshift(entry);
   storeSaves(saves);
   closeMatAdd();
+  renderSavesList();
+}
+
+let laborMode = 'hourly';
+const LABOR_MODE_CFG = {
+  hourly: { qty: 'HOURS',   rate: 'RATE ($/HR)',     qtyUnit: 'hr',     rateUnit: '/hr' },
+  sqft:   { qty: 'SQ FT',   rate: 'RATE ($/SQ FT)',  qtyUnit: 'sq ft',  rateUnit: '/sq ft' },
+  linft:  { qty: 'LIN FT',  rate: 'RATE ($/LIN FT)', qtyUnit: 'lin ft', rateUnit: '/lin ft' },
+};
+function setLaborMode(mode) {
+  laborMode = mode;
+  const m = LABOR_MODE_CFG[mode];
+  document.getElementById('labor-qty-label').textContent  = m.qty;
+  document.getElementById('labor-rate-label').textContent = m.rate;
+  ['hourly','sqft','linft'].forEach(id =>
+    document.getElementById('labor-mode-' + id).classList.toggle('active', id === mode)
+  );
+  laborPreview();
+}
+function openLaborAdd() {
+  laborMode = 'hourly';
+  document.getElementById('labor-desc').value  = '';
+  document.getElementById('labor-hours').value = '';
+  document.getElementById('labor-rate').value  = '';
+  document.getElementById('labor-total-preview').textContent = '';
+  setLaborMode('hourly');
+  document.getElementById('labor-add-sheet').classList.remove('hidden');
+}
+function closeLaborAdd() {
+  document.getElementById('labor-add-sheet').classList.add('hidden');
+}
+function laborPreview() {
+  const qty  = parseFloat(document.getElementById('labor-hours').value || '0');
+  const rate = parseFloat(document.getElementById('labor-rate').value  || '0');
+  const el = document.getElementById('labor-total-preview');
+  const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  el.textContent = (qty > 0 && rate > 0) ? 'Total: ' + fmt(qty * rate) : '';
+}
+function commitLaborAdd() {
+  const desc = document.getElementById('labor-desc').value.trim();
+  if (!desc) { document.getElementById('labor-desc').focus(); return; }
+  const qty  = parseFloat(document.getElementById('labor-hours').value || '0');
+  const rate = parseFloat(document.getElementById('labor-rate').value  || '0');
+  const total = qty * rate;
+  const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const m = LABOR_MODE_CFG[laborMode];
+  const entry = {
+    id: Date.now(),
+    badge: 'LABOR',
+    label: desc,
+    result: qty > 0 ? `${qty} ${m.qtyUnit} × ${fmt(rate)}${m.rateUnit}` : fmt(rate),
+    sub: total > 0 ? fmt(total) + ' total' : '',
+    projectId: savesFilter !== 'all' ? savesFilter : null,
+    costTotal: total || rate,
+  };
+  const saves = loadSaves();
+  saves.unshift(entry);
+  storeSaves(saves);
+  closeLaborAdd();
   renderSavesList();
 }
 
@@ -2821,6 +4738,7 @@ function renderSavesList() {
       <div class="save-card" onclick="openSaveEdit(${s.id})">
         <span class="save-badge">${s.badge}</span>
         <div class="save-body">
+          ${s.item ? `<div class="save-item">${escHtml(s.item)}</div>` : ''}
           ${s.label ? `<div class="save-label">${escHtml(s.label)}</div>` : ''}
           <div class="save-result">${escHtml(s.result)}</div>
           ${s.sub ? `<div class="save-sub">${escHtml(s.sub)}</div>` : ''}
@@ -2835,7 +4753,152 @@ function renderSavesList() {
   }).join('');
 }
 
+// ─── Export ───────────────────────────────────────────────────────────────────
+let _exportDocType = 'ESTIMATE';
+function setExportDocType(type, btn) {
+  _exportDocType = type;
+  document.querySelectorAll('.export-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function openExport() {
+  const saves = _exportSaves();
+  const projects = loadProjects();
+  const proj = savesFilter !== 'all' ? projects.find(p => p.id === savesFilter) : null;
+  const label = proj ? `"${proj.name}"` : 'unassigned saves';
+  document.getElementById('export-sheet-sub').textContent =
+    `${saves.length} item${saves.length !== 1 ? 's' : ''} — ${label}`;
+  document.getElementById('export-job-name').value = proj ? proj.name : '';
+  document.getElementById('export-customer').value = '';
+  document.getElementById('export-sheet').classList.remove('hidden');
+}
+function closeExport() {
+  document.getElementById('export-sheet').classList.add('hidden');
+}
+function _exportSaves() {
+  const saves = loadSaves();
+  return savesFilter === 'all'
+    ? saves.filter(s => !s.projectId)
+    : saves.filter(s => s.projectId === savesFilter);
+}
+function _fmtMoney(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function exportPDF() {
+  const saves = _exportSaves();
+  const docType = _exportDocType;
+  const jobName = document.getElementById('export-job-name').value.trim();
+  const customer = document.getElementById('export-customer').value.trim();
+  const dateStr = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  const total = saves.reduce((sum, s) => sum + (s.costTotal || 0), 0);
+  const infoLines = [
+    jobName   ? `<strong>Job:</strong> ${escHtml(jobName)}`   : '',
+    customer  ? `<strong>To:</strong> ${escHtml(customer)}`   : '',
+    `<strong>Date:</strong> ${dateStr}`,
+  ].filter(Boolean).join('<br>');
+  const rows = saves.map(s => `<tr>
+    <td>
+      <div class="print-item-type">${escHtml(s.badge)}</div>
+      ${s.item  ? `<div class="print-item-item">${escHtml(s.item)}</div>`   : ''}
+      ${s.label ? `<div class="print-item-label">${escHtml(s.label)}</div>` : ''}
+      <div class="print-item-result">${escHtml(s.result)}</div>
+      ${s.sub ? `<div class="print-item-notes">${escHtml(s.sub)}</div>` : ''}
+    </td>
+    <td>${s.costTotal > 0 ? _fmtMoney(s.costTotal) : ''}</td>
+  </tr>`).join('');
+  document.getElementById('print-view').innerHTML = `
+    <div class="print-doc">
+      <div class="print-doc-header">
+        <div class="print-doc-type">${docType}</div>
+        <div class="print-doc-info">${infoLines}</div>
+      </div>
+      <table class="print-items">
+        <thead><tr><th>DESCRIPTION</th><th>AMOUNT</th></tr></thead>
+        <tbody>
+          ${rows}
+          ${total > 0 ? `<tr class="print-total-row"><td>TOTAL</td><td>${_fmtMoney(total)}</td></tr>` : ''}
+        </tbody>
+      </table>
+      <div class="print-footer">Prepared with Handyman Calculator</div>
+    </div>`;
+  closeExport();
+  window.print();
+}
+function exportCSV() {
+  const saves = _exportSaves();
+  const projects = loadProjects();
+  const projMap = Object.fromEntries(projects.map(p => [p.id, p.name]));
+  const rows = [['Badge','Item','Label','Result','Notes','Project','Cost']];
+  saves.forEach(s => {
+    rows.push([
+      s.badge || '', s.item || '', s.label || '', s.result || '', s.sub || '',
+      s.projectId ? (projMap[s.projectId] || '') : '',
+      s.costTotal != null ? s.costTotal.toFixed(2) : ''
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`));
+  });
+  _downloadFile(rows.map(r => r.join(',')).join('\r\n'), 'text/csv', 'handyman-saves.csv');
+  closeExport();
+}
+function exportJSON() {
+  const saves = _exportSaves();
+  const projects = loadProjects();
+  const proj = savesFilter !== 'all' ? projects.find(p => p.id === savesFilter) : null;
+  const data = {
+    exported: new Date().toISOString(),
+    project: proj ? proj.name : null,
+    saves: saves.map(s => ({
+      badge: s.badge,
+      item: s.item || null,
+      label: s.label || null,
+      result: s.result,
+      notes: s.sub || null,
+      cost: s.costTotal || null
+    }))
+  };
+  _downloadFile(JSON.stringify(data, null, 2), 'application/json', 'handyman-saves.json');
+  closeExport();
+}
+function _downloadFile(content, mimeType, filename) {
+  const url = URL.createObjectURL(new Blob([content], { type: mimeType }));
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
 updateSavesBadge();
+
+// Desktop draw: wheel zoom + middle-mouse pan
+(function() {
+  const svg = document.getElementById('sqft-draw-svg');
+  svg.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    const rect = this.getBoundingClientRect();
+    const pt = this.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    const sp = pt.matrixTransform(this.getScreenCTM().inverse());
+    const factor = e.deltaY > 0 ? 1.12 : 1 / 1.12;
+    const newW = Math.min(460, Math.max(60, sqDrawViewBox.w * factor));
+    const ratio = newW / sqDrawViewBox.w;
+    sqDrawViewBox = {
+      x: Math.max(0, Math.min(460 - newW, sp.x - (sp.x - sqDrawViewBox.x) * ratio)),
+      y: Math.max(0, Math.min(460 - newW, sp.y - (sp.y - sqDrawViewBox.y) * ratio)),
+      w: newW, h: newW
+    };
+    sqDrawApplyViewBox();
+  }, { passive: false });
+
+  svg.addEventListener('mousedown', function(e) {
+    if (e.button === 1) {
+      e.preventDefault();
+      sqDrawMousePan = { startX: e.clientX, startY: e.clientY, vbX: sqDrawViewBox.x, vbY: sqDrawViewBox.y };
+    }
+  });
+  svg.addEventListener('mouseup', function(e) {
+    if (e.button === 1) sqDrawMousePan = null;
+  });
+  // Prevent default middle-click scroll
+  svg.addEventListener('auxclick', function(e) { if (e.button === 1) e.preventDefault(); });
+})();
+
+sqRender();
+lfRender();
 </script>
 </body>
 </html>
