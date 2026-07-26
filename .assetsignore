@@ -1,0 +1,14 @@
+node_modules/
+.wrangler/
+**/.wrangler/
+package.json
+package-lock.json
+*.tmp.*
+*.cjs
+*.mjs
+.git
+.git/**
+**/.git
+**/.git/**
+*.bak
+index_prev.html

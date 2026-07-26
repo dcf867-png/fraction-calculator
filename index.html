@@ -4570,9 +4570,20 @@ function commitSaveEdit() {
     s.sub       = document.getElementById('save-edit-sub').value.trim();
     const projVal = document.getElementById('save-edit-project').value;
     s.projectId = projVal ? parseInt(projVal) : null;
-    // Re-parse costTotal from sub in case this is an old save without it
-    if (!s.costTotal) {
-      const m = s.sub.match(/total\s+\$([\d,]+\.?\d*)/i);
+    // Recalculate costTotal when RESULT still has a "qty × $price[ + tax% tax]" shape
+    const fmt = v => '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const qp = s.result.match(/^([\d.]+)(?:\s+[a-zA-Z]+)?\s*×\s*\$([\d,]+\.?\d*)/);
+    if (qp) {
+      const qty  = parseFloat(qp[1]);
+      const rate = parseFloat(qp[2].replace(/,/g, ''));
+      let total = qty * rate;
+      const taxM = s.result.match(/\+\s*([\d.]+)%\s*tax/i);
+      if (taxM) total += total * parseFloat(taxM[1]) / 100;
+      s.costTotal = total;
+      s.sub = total > 0 ? fmt(total) + ' total' : '';
+    } else {
+      // Otherwise fall back to whatever total the user typed into NOTES
+      const m = s.sub.match(/\$([\d,]+\.?\d*)\s*total/i);
       if (m) s.costTotal = parseFloat(m[1].replace(/,/g, ''));
     }
   }
